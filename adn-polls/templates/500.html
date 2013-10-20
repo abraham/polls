@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}500: BROKe{% end %}
+
+
+{% block container %}
+<div class="starter-template">
+    <div class="page-header">
+        <h1>blar·ney!</h1>
+    </div>
+
+    <p class="lead text-muted">
+        {{ globals().get('message', 'Whadja brake this time?') }}
+    </p>
+</div>
+{% end %}

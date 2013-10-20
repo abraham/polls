@@ -1,0 +1,7 @@
+export MONGODB_CONNECTION=
+export MONGODB_NAME=
+export COOKIE_SECRET=
+export ADN_CLIENT_ID=
+export ADN_CLIENT_SECRET=
+export BASE_WEB_URL=
+export DEBUG=False

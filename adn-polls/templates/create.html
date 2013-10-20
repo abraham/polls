@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Create a new poll{% end %}
+
+
+{% block container %}
+<div class="starter-template">
+    <div class="page-header">
+        <h1>Create a new poll <small class="text-muted">that will be visible to everyone</small></h1>
+    </div>
+
+    <div class="col-md-8">
+        <form role="form" method="post" action="/create">
+
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea class="form-control" id="question" name="question" rows="3" maxlength="150" placeholder="How awesome is @abraham for making this amazing tool?" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="options">Options</label>
+                <input type="text" class="form-control" id="options" name="options" maxlength="100" placeholder="So awesome!" required>
+                <input type="text" class="form-control" id="options" name="options" maxlength="100" placeholder="Beyond awesome!" required>
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="The most epic!">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="!!!">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="Need moar cowbell!">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="This is lame!">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="One seriously bearded dude!">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="The cake is a lie">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="My spoon is too big">
+                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="He was dead the whole time">
+            </div>
+
+          {% raw xsrf_input %}
+
+          <button type="submit" class="btn btn-default btn-lg pull-right "><span class="glyphicon glyphicon-heart-empty"></span> Create</button>
+        </form>
+    </div>
+</div>
+{% end %}
+
+{% block scripts %}
+    <script>
+        $('input').on('focus', function() {
+            $(this).next('.hidden').hide().removeClass('hidden').slideDown();
+        });
+    </script>
+{% end %}

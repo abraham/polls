@@ -1,0 +1,60 @@
+import os
+import tornado
+import tornado.web
+import pymongo
+
+
+from app import (
+    MainHandler,
+    CreateHandler,
+    PollsIdHandler,
+    PollsIdVotesHandler,
+    AuthRedirectHandler,
+    AuthLogoutHandler,
+    AuthCallbackHandler,
+)
+
+
+def get_db():
+    db_uri = os.environ.get('MONGODB_CONNECTION')
+    db_name = os.environ.get('MONGODB_NAME')
+    connection = pymongo.MongoClient(db_uri)
+    return connection[db_name]
+db = get_db()
+
+
+settings = {
+    'debug' : os.environ.get('DEBUG') in ('True', 'true', True),
+    'cookie_secret': os.environ.get('COOKIE_SECRET'),
+}
+
+
+base_args = {
+    'db': db
+}
+
+application = tornado.web.Application([
+    (r'/', MainHandler, base_args),
+    (r'/create', CreateHandler, base_args),
+    (r'/polls/([^/]+)', PollsIdHandler, base_args),
+    (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),
+    (r'/auth/redirect', AuthRedirectHandler),
+    (r'/auth/logout', AuthLogoutHandler),
+    (r'/auth/callback', AuthCallbackHandler, base_args),
+
+    (r'/css/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/css'}),
+    (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': 'addv-api/adn-polls/static/img'}),
+    (r'/js/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/js'}),
+    (r'/fonts/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/fonts'}),
+], **settings)
+
+
+if __name__ == '__main__':
+    port = os.environ.get('PORT', 8080)
+    print ''
+    print '==============='
+    print 'Starting server'
+    print '==============='
+    print 'DEBUG', settings['debug']
+    application.listen(port)
+    tornado.ioloop.IOLoop.instance().start()

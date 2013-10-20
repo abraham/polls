@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+
+{% block title %}Polls for App.net{% end %}
+
+
+{% block container %}
+<div class="">
+    <div class="page-header">
+        <h1>{{escape(question)}} <small class="text-muted">by @<a target="blanks" href="https://alpha.app.net/{{escape(owner_username)}}">{{escape(owner_username)}}</a></small></h1>
+    </div>
+    {% if total_votes == 0 %}
+        <br/><br/><br/>
+        <div><p class="lead">No one has cast a vote yet, be the first and make history!</p></div>
+        <br/><br/>
+    {% else %}
+        <div id="donutchart" style="width: 940px; height: 500px;"></div>
+    {% end %}
+    <div class="">
+        <!-- <h2>Vote</h2> -->
+        <form role="form" id="vote" data-poll-id="{{poll_id}}">
+            {% for option in options %}
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="option" id="option" value="{{option['_id']}}">
+                        {{escape(option['display_text'])}}
+                    </label>
+                </div>
+            {% end %}
+
+            {% raw xsrf_input %}
+            <br/>
+            {% if user_has_voted %}
+            <p>You already voted like a champ!</p>
+            {% elif user_is_authed %}
+            <a type="submit" id="post-vote" class="btn btn-default btn-lg disabled"><span class="glyphicon glyphicon-check"></span> Vote</a>
+            {% else %}
+            <h3>
+                <a href='/auth/redirect?redirect={{redirect}}' class="">Sign in and be a voting hero</a>
+            </h3>
+            {% end %}
+        </form>
+    </div>
+</div>
+
+{% end %}
+
+
+{% block scripts %}
+<script>
+
+    var poll_id = "{{poll_id}}";
+    google.load("visualization", "1", {packages: ["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var poll_options = {% raw options_array %};
+        var data = google.visualization.arrayToDataTable(poll_options);
+
+        var options = {
+            pieHole: 0.3
+        };
+
+        var elem = document.getElementById('donutchart');
+        if (elem) {
+            var chart = new google.visualization.PieChart(elem);
+            chart.draw(data, options);
+        }
+    }
+
+
+    function postVote() {
+        var option_id = $('[name="option"]:checked').prop('value');
+        var _xsrf = $('[name="_xsrf"]').prop('value');
+        if (!option_id) {
+            alert('You must select a value');
+            return
+        }
+        $.ajax({
+            type: "POST",
+            url: "/polls/" + poll_id + "/votes",
+            data: { option_id: option_id, _xsrf: _xsrf },
+            success: function(data){
+                $('#post-vote').slideUp(function() {
+                    $('#vote').append('<p>Nice vote! I bet your momma would be proud.</p>');
+                });
+            },
+            error: function(errMsg) {
+                console.log('ERROR', errMsg);
+                alert('Oooops...something went wrong.');
+            }
+        });
+    }
+
+
+    function enableVoteBtn() {
+        $('#post-vote').removeClass('disabled');
+    }
+
+
+$(function() {
+    $('#post-vote').on('click', postVote);
+    $('input').on('focus', enableVoteBtn);
+});
+
+</script
+{% end %}
