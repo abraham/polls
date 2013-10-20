@@ -2,9 +2,6 @@ import datetime
 from bson.objectid import ObjectId
 
 
-import utils
-
-
 '''
 poll: {
     _id: xyz,
