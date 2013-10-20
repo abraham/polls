@@ -7,7 +7,6 @@ import pymongo.errors
 import urllib
 import requests
 import time
-import datetime
 
 
 from models import polls, users
@@ -40,7 +39,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def set_json_cookie(self, args):
         '''write a dict of data to a secure cookie'''
-        args['created_at'] = datetime.datetime.utcnow()
+        args['created_at'] = int(time.time())
         args['version'] = '1'
         self.set_secure_cookie('c_is_for_cookie', json.dumps(args))
 
