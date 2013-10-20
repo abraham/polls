@@ -1,1 +1,1 @@
-web: python adn-poll/httpd.py
+web: python adn-polls/httpd.py
