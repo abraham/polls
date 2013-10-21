@@ -160,6 +160,8 @@ class MainHandler(BaseHandler):
             user_is_authed = True
 
         recent_polls = polls.find_recent(db=db)
+        for poll in recent_polls:
+            poll['votes'].reverse()
         context = {
             'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
