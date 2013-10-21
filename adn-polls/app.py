@@ -294,5 +294,6 @@ class PollsIdHandler(BaseHandler):
             'poll_id': poll['_id'],
             'title': poll['question'],
             'post_text': post_text,
+            'votes': poll['votes'],
         }
         html = self.render('templates/polls.html', **context)

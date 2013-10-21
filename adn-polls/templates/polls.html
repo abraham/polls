@@ -50,6 +50,19 @@
             {% end %}
         </form>
     </div>
+    {% if total_votes > 0 %}
+    <div class='col-md-8'>
+        <br/><br/>
+        <h4>People with opinions</h4>
+        <div>
+            {% for vote in votes[:20] %}
+                <a href="https://alpha.app.net/{{escape(vote['user_name'])}}" target="_blank">
+                    <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="57px" height="57px" />
+                </a>
+            {% end %}
+        </div>
+    </div>
+    {% end %}
 
     <div class='col-md-8'>
         <br/><br/>
