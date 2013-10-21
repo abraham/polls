@@ -280,7 +280,7 @@ class PollsIdHandler(BaseHandler):
         if poll['total_votes'] > 1:
             voted_on = ' has been answered by {} people. Do you agree with them?'.format(poll['total_votes'])
         post_text = '{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
-
+        poll['votes'].reverse()
         context = {
             'xsrf_input': self.xsrf_form_html(),
             'redirect': '/polls/{}'.format(poll['_id']),
