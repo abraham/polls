@@ -42,6 +42,7 @@ application = tornado.web.Application([
     (r'/auth/logout', AuthLogoutHandler),
     (r'/auth/callback', AuthCallbackHandler, base_args),
 
+    (r'/favicon.ico', tornado.web.RedirectHandler, {'url': 'https://abrah.am/favicon.ico'}),
     (r'/css/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/css'}),
     (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': 'addv-api/adn-polls/static/img'}),
     (r'/js/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/js'}),
