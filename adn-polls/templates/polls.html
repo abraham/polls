@@ -55,9 +55,9 @@
         <br/><br/>
         <h4>People with opinions</h4>
         <div>
-            {% for vote in votes[:20] %}
+            {% for vote in votes[:100] %}
                 <a href="https://alpha.app.net/{{escape(vote['user_name'])}}" target="_blank">
-                    <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="57px" height="57px" />
+                    <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
                 </a>
             {% end %}
         </div>
