@@ -55,7 +55,7 @@
         <br/><br/>
         <h4>Will your friends agree with you?</h4>
         <form role="form" id="post" data-poll-id="{{poll_id}}">
-            <textarea class="form-control" rows="3" id="post-text">{{escape(post_text)}}</textarea>
+            <textarea class="form-control" rows="5" id="post-text">{{escape(post_text)}}</textarea>
             {% raw xsrf_input %}
             <br/>
             {% if user_is_authed %}
