@@ -256,5 +256,6 @@ class PollsIdHandler(BaseHandler):
             'options': poll['options'],
             'total_votes': poll['total_votes'],
             'poll_id': poll['_id'],
+            'title': poll['question'],
         }
         html = self.render('templates/polls.html', **context)

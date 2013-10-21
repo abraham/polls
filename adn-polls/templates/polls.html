@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 
-{% block title %}Polls for App.net{% end %}
+{% block title %}{{escape(title)}}{% end %}
 
 
 {% block container %}
@@ -45,7 +45,7 @@
             </a>
             {% else %}
             <h3>
-                <a href='/auth/redirect?redirect={{redirect}}' class="">Sign in and be a voting hero</a>
+                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in and be a voting hero</a>
             </h3>
             {% end %}
         </form>

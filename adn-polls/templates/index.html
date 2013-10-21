@@ -28,12 +28,12 @@
                 </div>
 
                 <div class='col-md-offset-1'>
-                    <h3 class=""><a href="/polls/{{poll['_id']}}">{{poll['question']}}</a></h3>
-                    <p class="">Asked by <a href="https://alpha.app.net/{{poll['user_name']}}" target="_blank">@{{poll['user_name']}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                    <h3 class=""><a href="/polls/{{poll['_id']}}">{{escape(poll['question'])}}</a></h3>
+                    <p class="">Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{escape(poll['user_name'])}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
                     {% if len(poll['votes']) > 0 %}
                         and voted on by 
                         {% for vote in poll['votes'][:20] %}
-                            <img class="" src="{{vote['user_avatar']}}" title="@{{vote['user_name']}}" width="16px" height="16px"/>
+                            <img class="" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="16px" height="16px"/>
                         {% end %}
                     {% else %}
                         and you can be the <a href="/polls/{{poll['_id']}}">first to vote!</a>
