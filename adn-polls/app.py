@@ -14,8 +14,11 @@ from decorators import require_auth
 
 
 def write_error(self, status_code, **kwargs):
+    self.set_status(status_code)
     if status_code == 404:
         self.render('templates/404.html')
+    elif status_code in (500, 503):
+        self.render('templates/500.html')
     else:
         self.render('templates/500.html')
 
@@ -222,6 +225,33 @@ class PollsIdVotesHandler(BaseHandler):
         polls.vote(db=db, **args)
 
 
+class PostsHandler(BaseHandler):
+
+    @require_auth
+    def post(self):
+        self.check_xsrf_cookie()
+        db = self.db
+        user = self.user
+        text = self.get_argument('text')
+
+        if text in (u'', ''):
+            self.write_error(400)
+            return
+        
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        args = {
+            'text': text,
+        }
+        headers = {
+            'Authorization': 'Bearer {}'.format(user['access_token']),
+        }
+        response = requests.post(url, data=args, headers=headers)
+
+        if response.status_code != 200:
+            self.write_error(500)
+            return
+
+
 class PollsIdHandler(BaseHandler):
 
     def get(self, poll_id):
@@ -244,6 +274,12 @@ class PollsIdHandler(BaseHandler):
 
         if user_is_authed and user['_id'] in poll['votes_user_ids']:
             user_has_voted = True
+        url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll['_id']))
+
+        voted_on = ''
+        if poll['total_votes'] > 1:
+            voted_on = ' has been answered by {} people'.format(poll['total_votes'])
+        post_text = '{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
 
         context = {
             'xsrf_input': self.xsrf_form_html(),
@@ -257,5 +293,6 @@ class PollsIdHandler(BaseHandler):
             'total_votes': poll['total_votes'],
             'poll_id': poll['_id'],
             'title': poll['question'],
+            'post_text': post_text,
         }
         html = self.render('templates/polls.html', **context)

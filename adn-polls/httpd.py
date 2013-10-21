@@ -8,6 +8,7 @@ from app import (
     MainHandler,
     CreateHandler,
     PollsIdHandler,
+    PostsHandler,
     PollsIdVotesHandler,
     AuthRedirectHandler,
     AuthLogoutHandler,
@@ -33,11 +34,13 @@ base_args = {
     'db': db
 }
 
+
 application = tornado.web.Application([
     (r'/', MainHandler, base_args),
     (r'/create', CreateHandler, base_args),
     (r'/polls/([^/]+)', PollsIdHandler, base_args),
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),
+    (r'/posts', PostsHandler, base_args),
     (r'/auth/redirect', AuthRedirectHandler),
     (r'/auth/logout', AuthLogoutHandler),
     (r'/auth/callback', AuthCallbackHandler, base_args),

@@ -23,7 +23,7 @@
     {% else %}
     <div id="donutchart" style="width: 940px; height: 500px;"></div>
     {% end %}
-    <div class="">
+    <div class='col-md-10'>
         <form role="form" id="vote" data-poll-id="{{poll_id}}">
             {% for option in options %}
                 <div class="radio">
@@ -46,6 +46,26 @@
             {% else %}
             <h3>
                 <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in and be a voting hero</a>
+            </h3>
+            {% end %}
+        </form>
+    </div>
+
+    <div class='col-md-8'>
+        <br/><br/>
+        <h4>Will your friends agree with you?</h4>
+        <form role="form" id="post" data-poll-id="{{poll_id}}">
+            <textarea class="form-control" rows="3" id="post-text">{{escape(post_text)}}</textarea>
+            {% raw xsrf_input %}
+            <br/>
+            {% if user_is_authed %}
+            <a type="submit" id="post-post" class="btn btn-default btn-lg pull-right">
+                <span class="glyphicon glyphicon-share"></span>
+                 Post
+            </a>
+            {% else %}
+            <h3>
+                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in to share like a BOSS</a>
             </h3>
             {% end %}
         </form>
@@ -78,8 +98,8 @@
 
 
     function postVote() {
-        var option_id = $('[name="option"]:checked').prop('value');
-        var _xsrf = $('[name="_xsrf"]').prop('value');
+        var option_id = $('#vote [name="option"]:checked').prop('value');
+        var _xsrf = $('#vote [name="_xsrf"]').prop('value');
         if (!option_id) {
             alert('You must select a value');
             return
@@ -100,6 +120,26 @@
         });
     }
 
+    function postPost() {
+        var text = $('#post textarea').prop('value');
+        var _xsrf = $('#post [name="_xsrf"]').prop('value');
+        if (!text) {
+            alert('There must be some text to post...');
+            return
+        }
+        $.ajax({
+            type: "POST",
+            url: "/posts",
+            data: { text: text, _xsrf: _xsrf },
+            success: function(data){
+                alert('Nobody posts like you, and I mean nobody!')
+            },
+            error: function(errMsg) {
+                console.log('ERROR', errMsg);
+                alert('Oooops...something went wrong.');
+            }
+        });
+    }
 
     function enableVoteBtn() {
         $('#post-vote').removeClass('disabled');
@@ -108,6 +148,7 @@
 
 $(function() {
     $('#post-vote').on('click', postVote);
+    $('#post-post').on('click', postPost);
     $('#vote input').on('focus', enableVoteBtn);
     $('#vote input').on('click', enableVoteBtn);
 });
