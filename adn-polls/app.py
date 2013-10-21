@@ -36,6 +36,16 @@ class BaseHandler(tornado.web.RequestHandler):
         if db is not None and user_id is not None:
             self.user = users.find_by_id(db=db, user_id=user_id)
 
+        proto = self.request.headers.get('X-Forwarded-Proto', 'http')
+        origin = self.request.headers.get('Origin', None)
+
+        # Add HSTS headers if SSL
+        if proto.lower() == 'https' :
+            self.set_header('Strict-Transport-Security', 'max-age="31536000"; includeSubDomains')
+
+        if proto == 'http' and os.environ.get('DEBUG') not in ('True', 'true', True):
+            print 'not on ssl and not in debug'
+        print self.request.path
 
     def set_json_cookie(self, args):
         '''write a dict of data to a secure cookie'''
