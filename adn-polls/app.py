@@ -188,7 +188,7 @@ class CreateHandler(BaseHandler):
         for option in self.get_arguments('options'):
             if option != '':
                 options.append(option[:100])
-        options.reverse()
+        # options.reverse()
         args = {
             'poll_type': 'multiplechoice',
             'display_type': 'donut',
