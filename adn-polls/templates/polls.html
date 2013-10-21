@@ -99,7 +99,8 @@
 
 $(function() {
     $('#post-vote').on('click', postVote);
-    $('input').on('focus', enableVoteBtn);
+    $('#vote input').on('focus', enableVoteBtn);
+    $('#vote input').on('click', enableVoteBtn);
 });
 
 </script
