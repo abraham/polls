@@ -29,8 +29,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.db = db
         self.user = None
         self.cookie = None
-        proto = self.request.headers.get('X-Forwarded-Proto', 'http')
-        origin = self.request.headers.get('Origin', None)
+
         cookie = self.get_json_cookie()
         self.cookie = cookie
         user_id = cookie.get('user_id')
@@ -38,12 +37,15 @@ class BaseHandler(tornado.web.RequestHandler):
         if db is not None and user_id is not None:
             self.user = users.find_by_id(db=db, user_id=user_id)
 
+
+    def prepare(self):
+        proto = self.request.headers.get('X-Forwarded-Proto', 'http')
+
         if proto.lower() == 'https' :
             self.set_header('Strict-Transport-Security', 'max-age="31536000"; includeSubDomains')
-
         if proto == 'http' and os.environ.get('DEBUG') not in ('True', 'true', True):
             print 'Redirecting to SSL'
-            self.redirect(self.request.path)
+            self.redirect(self.request.path + 'test')
 
 
     def set_json_cookie(self, args):
