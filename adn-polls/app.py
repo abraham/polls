@@ -278,7 +278,7 @@ class PollsIdHandler(BaseHandler):
 
         voted_on = ''
         if poll['total_votes'] > 1:
-            voted_on = ' has been answered by {} people'.format(poll['total_votes'])
+            voted_on = ' has been answered by {} people. Do you agree with them?'.format(poll['total_votes'])
         post_text = '{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
 
         context = {
