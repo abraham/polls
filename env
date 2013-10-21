@@ -1,7 +1,7 @@
-export MONGODB_CONNECTION=
-export MONGODB_NAME=
-export COOKIE_SECRET=
-export ADN_CLIENT_ID=
-export ADN_CLIENT_SECRET=
-export BASE_WEB_URL=
-export DEBUG=False
+export MONGODB_CONNECTION=localhost
+export MONGODB_NAME=adn-polls-dev
+export COOKIE_SECRET=Bn2K]_51="BqRs3)]64.711q))4456H)$O1K2x265s @%3@7iZ|G680_1"
+export ADN_CLIENT_ID=KgWW36vGe8LQPN696ftSUqdKUvjzuYqF
+export ADN_CLIENT_SECRET=ZsRZdgvhJ4efu7garts4NpvQD3jML5Ez
+export BASE_WEB_URL=http://abraham.dev:8080
+export DEBUG=True
