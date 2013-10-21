@@ -24,7 +24,7 @@ db = get_db()
 
 
 settings = {
-    'debug' : os.environ.get('DEBUG') in ('True', 'true', True),
+    'debug': os.environ.get('DEBUG') in ('True', 'true', True),
     'cookie_secret': os.environ.get('COOKIE_SECRET'),
 }
 
