@@ -7,17 +7,23 @@
 {% block container %}
 <div class="">
     <div class="page-header">
-        <h1>{{escape(question)}} <small class="text-muted">by @<a target="blanks" href="https://alpha.app.net/{{escape(owner_username)}}">{{escape(owner_username)}}</a></small></h1>
+        <h1>
+            {{escape(question)}}
+            <small class="text-muted">
+                by @<a target="blanks" href="https://alpha.app.net/{{escape(owner_username)}}">{{escape(owner_username)}}</a>
+            </small>
+        </h1>
     </div>
     {% if total_votes == 0 %}
         <br/><br/><br/>
-        <div><p class="lead">No one has cast a vote yet, be the first and make history!</p></div>
+        <div>
+            <p class="lead">No one has cast a vote yet, be the first and make history!</p>
+        </div>
         <br/><br/>
     {% else %}
-        <div id="donutchart" style="width: 940px; height: 500px;"></div>
+    <div id="donutchart" style="width: 940px; height: 500px;"></div>
     {% end %}
     <div class="">
-        <!-- <h2>Vote</h2> -->
         <form role="form" id="vote" data-poll-id="{{poll_id}}">
             {% for option in options %}
                 <div class="radio">
@@ -31,9 +37,12 @@
             {% raw xsrf_input %}
             <br/>
             {% if user_has_voted %}
-            <p>You already voted like a champ!</p>
+            <p><strong>You already voted like a champ!</strong></p>
             {% elif user_is_authed %}
-            <a type="submit" id="post-vote" class="btn btn-default btn-lg disabled"><span class="glyphicon glyphicon-check"></span> Vote</a>
+            <a type="submit" id="post-vote" class="btn btn-default btn-lg disabled">
+                <span class="glyphicon glyphicon-check"></span>
+                 Vote
+            </a>
             {% else %}
             <h3>
                 <a href='/auth/redirect?redirect={{redirect}}' class="">Sign in and be a voting hero</a>
