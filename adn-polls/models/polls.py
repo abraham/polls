@@ -128,6 +128,14 @@ def find_active(db):
     return polls
 
 
+def find_vintage(db):
+    results = db.polls.find({'status': 'active'}).sort('active_at', 1).limit(20)
+    polls = []
+    for poll in results:
+        polls.append(poll)
+    return polls
+
+
 def find_by_id(db, str_id):
     query = {
         '_id': ObjectId(str_id),

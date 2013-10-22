@@ -210,6 +210,26 @@ class ActiveHandler(BaseHandler):
         self.render('templates/list.html', **context)
 
 
+class VintageHandler(BaseHandler):
+
+    def get(self):
+        db = self.db
+        user = self.user
+        user_is_authed = False
+        if user is not None:
+            user_is_authed = True
+
+        vintage_polls = polls.find_vintage(db=db)
+        for poll in vintage_polls:
+            poll['votes'].reverse()
+        context = {
+            'header_title': 'Active polls',
+            'user_is_authed': user_is_authed,
+            'recent_polls': vintage_polls,
+        }
+        self.render('templates/list.html', **context)
+
+
 class CreateHandler(BaseHandler):
 
     @require_auth
