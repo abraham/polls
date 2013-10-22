@@ -120,6 +120,7 @@ class AuthCallbackHandler(BaseHandler):
         token = response.json()
         adn_id = token['token']['user']['id']
         user = users.find_by_adn_id(db=db, adn_id=adn_id)
+        existing_user = True
         if user is None:
             new_user = {
                 'access_token': token['access_token'],
@@ -129,6 +130,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_cover': token['token']['user']['cover_image']['url'],
             }
             user = users.create(db=db, **new_user)
+            existing_user = True
         else:
             update = {
                 'user_id': user['_id'],
@@ -141,12 +143,13 @@ class AuthCallbackHandler(BaseHandler):
 
         self.set_json_cookie({'user_id': str(user['_id'])})
         self.redirect(redirect)
-        action = {
-            'user_name': user['user_name'],
-            'user_avatar': user['user_avatar'],
-            'user_id': user['_id'],
-        }
-        actions.new_user(db=db, **action)
+        if existing_user == False:
+            action = {
+                'user_name': user['user_name'],
+                'user_avatar': user['user_avatar'],
+                'user_id': user['_id'],
+            }
+            actions.new_user(db=db, **action)
 
 
 class AuthLogoutHandler(BaseHandler):
