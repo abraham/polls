@@ -206,6 +206,32 @@ class CreateHandler(BaseHandler):
         self.redirect('/polls/{}'.format(str_id))
 
 
+class PollsIdPrevHandler(BaseHandler):
+
+    def get(self, polls_id):
+        db = self.db
+        user = self.user
+        poll = polls.find_prev(db=db, current_id_str=polls_id)
+        if poll is None:
+            self.write_error(404)
+            return
+        url = '/polls/{}'.format(str(poll['_id']))
+        self.redirect(url)
+
+
+class PollsIdNextHandler(BaseHandler):
+
+    def get(self, polls_id):
+        db = self.db
+        user = self.user
+        poll = polls.find_next(db=db, current_id_str=polls_id)
+        if poll is None:
+            self.write_error(404)
+            return
+        url = '/polls/{}'.format(str(poll['_id']))
+        self.redirect(url)
+
+
 class PollsIdVotesHandler(BaseHandler):
 
     @require_auth

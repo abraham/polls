@@ -5,6 +5,20 @@
 
 
 {% block container %}
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="/polls/{{poll_id}}/prev">Prev</a>
+        </li>
+    </ul>
+
+    <ul class="nav navbar-nav pull-right">
+        <li class='pull-right'>
+            <a href="/polls/{{poll_id}}/next">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <div class="">
     <div class="page-header">
         <h1>
