@@ -49,8 +49,37 @@
         </style>
     </head>
 
-
     <body> 
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/">Recent</a>
+                    </li>
+                    <li>
+                        <a href="/">Active</a>
+                    </li>
+                    <li>
+                        <a href="/create">Create a poll for free</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav pull-right">
+                    {% if globals().get('poll_id', False) %}
+                    <li>
+                        <a href="/polls/{{poll_id}}/prev">Prev</a>
+                    </li>
+                    <li>
+                        <a href="/polls/{{poll_id}}/next">Next</a>
+                    </li>
+                    {% end %}
+                </ul>
+            </div>
+        </nav>
+
         <div id="wrap">
             <div class="container">
                 {% block container %}{% end %}
@@ -60,12 +89,11 @@
         <div id="footer">
           <div class="container">
             <p class="text-muted credit">
-                <a href="/create">Create a poll for free</a> /
-                <a href="/">View recent polls</a> /
-                <a href='/auth/logout'>Logout</a> /
-                Built with <span class="glyphicon glyphicon-heart-empty"></span> by <a href="https://abrah.am">Abraham Williams</a> for use with <a href="https://app.net">App.net</a> /
+                Built with <span class="glyphicon glyphicon-heart-empty"></span> by <a href="https://abrah.am" target="_blank">Abraham Williams</a> for use with <a href="https://app.net" target="_blank">App.net</a> /
                 Follow <a href="https://alpha.app.net/intent/follow/?user_id=@polls" target="_blank">@polls</a> /
-                <a href="https://alpha.app.net/intent/post/?text=%40abraham%20feedback%20about%20%40polls%20" target='_blank'>Feedback</a>
+                <a href="https://alpha.app.net/intent/post/?text=%40abraham%20feedback%20about%20%40polls%20" target='_blank'>Feedback</a> /
+                <a href="/create">Create a poll for free</a> /
+                <a href='/auth/logout'>Logout</a>
             </p>
           </div>
         </div>
