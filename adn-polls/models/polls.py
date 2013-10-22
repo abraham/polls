@@ -113,6 +113,14 @@ def vote(db, poll_id, option_id, user_id, user_name, user_avatar, post_id=None, 
 
 
 def find_recent(db):
+    results = db.polls.find({'status': 'active'}).sort('created_at', -1).limit(20)
+    polls = []
+    for poll in results:
+        polls.append(poll)
+    return polls
+
+
+def find_active(db):
     results = db.polls.find({'status': 'active'}).sort('active_at', -1).limit(20)
     polls = []
     for poll in results:

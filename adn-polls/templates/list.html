@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Polls for App.net{% end %}
+
+{% block container %}
+    <div class="starter-template">
+        <div class="page-header">
+            <h1>{{header_title}}</h1>
+        </div>
+
+        {% for poll in recent_polls %}
+        <div class="row">
+
+            <div class='col-md-1'>
+                <img class='img-rounded list-avatar' src="{{poll['user_avatar']}}" width="57px" height="57px" />
+            </div>
+
+            <div class='col-md-offset-1'>
+                <h3 class=""><a href="/polls/{{poll['_id']}}">{{escape(poll['question'])}}</a></h3>
+                <p class="">Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{escape(poll['user_name'])}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                {% if len(poll['votes']) > 0 %}
+                    and voted on by 
+                    {% if len(poll['votes']) > 20 %}
+                        {% for vote in poll['votes'][:15] %}
+                            <img class="" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="16px" height="16px"/>
+                        {% end %}
+                        {% set more=len(poll['votes']) - 15 %}
+                        and {{more}} more
+                    {% else %}
+                        {% for vote in poll['votes'] %}
+                            <img class="" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="16px" height="16px"/>
+                        {% end %}
+                    {% end %}
+                {% else %}
+                    and you can be the <a href="/polls/{{poll['_id']}}">first to vote!</a>
+                {% end %}
+                </p>
+            </div>
+
+        </div>
+        {% end %}
+    </div>
+{% end %}
+
+
+{% block scripts %}
+<script>
+$(function() {
+    $('.datetime').each(function(index, elem){
+        var $elem = $(elem);
+        var fromNow = moment.utc($elem.data('datetime')).fromNow()
+        $elem.text(fromNow);
+    });
+});
+</script>
+{% end %}

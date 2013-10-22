@@ -6,6 +6,8 @@ import pymongo
 
 from app import (
     MainHandler,
+    RecentHandler,
+    ActiveHandler,
     CreateHandler,
     PollsIdHandler,
     PostsHandler,
@@ -39,6 +41,8 @@ base_args = {
 
 application = tornado.web.Application([
     (r'/', MainHandler, base_args),
+    (r'/recent', RecentHandler, base_args),
+    (r'/active', ActiveHandler, base_args),
     (r'/create', CreateHandler, base_args),
     (r'/polls/([^/]+)', PollsIdHandler, base_args),
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),

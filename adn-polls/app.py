@@ -163,10 +163,51 @@ class MainHandler(BaseHandler):
         for poll in recent_polls:
             poll['votes'].reverse()
         context = {
+            'header_title': 'Index',
             'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
         }
-        self.render('templates/index.html', **context)
+        self.render('templates/list.html', **context)
+
+
+class RecentHandler(BaseHandler):
+
+    def get(self):
+        db = self.db
+        user = self.user
+        user_is_authed = False
+        if user is not None:
+            user_is_authed = True
+
+        recent_polls = polls.find_recent(db=db)
+        for poll in recent_polls:
+            poll['votes'].reverse()
+        context = {
+            'header_title': 'Recent polls',
+            'user_is_authed': user_is_authed,
+            'recent_polls': recent_polls,
+        }
+        self.render('templates/list.html', **context)
+
+
+class ActiveHandler(BaseHandler):
+
+    def get(self):
+        db = self.db
+        user = self.user
+        user_is_authed = False
+        if user is not None:
+            user_is_authed = True
+
+        recent_polls = polls.find_active(db=db)
+        for poll in recent_polls:
+            poll['votes'].reverse()
+        context = {
+            'header_title': 'Active polls',
+            'user_is_authed': user_is_authed,
+            'recent_polls': recent_polls,
+        }
+        self.render('templates/list.html', **context)
 
 
 class CreateHandler(BaseHandler):
