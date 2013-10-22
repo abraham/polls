@@ -28,7 +28,7 @@
             {% for option in options %}
                 <div class="radio">
                     <label>
-                        <input type="radio" name="option" id="option" value="{{option['_id']}}">
+                        <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
                         {{escape(option['display_text'])}}
                     </label>
                 </div>
@@ -39,7 +39,7 @@
             {% if user_has_voted %}
             <p><strong>You already voted like a champ!</strong></p>
             {% elif user_is_authed %}
-            <a type="submit" id="post-vote" class="btn btn-default btn-lg disabled">
+            <a type="submit" id="post-vote" class="btn btn-default btn-lg disabled" tabindex=2>
                 <span class="glyphicon glyphicon-check"></span>
                  Vote
             </a>
@@ -68,11 +68,11 @@
         <br/><br/>
         <h4>Will your friends agree with you?</h4>
         <form role="form" id="post" data-poll-id="{{poll_id}}">
-            <textarea class="form-control" rows="5" id="post-text">{{escape(post_text)}}</textarea>
             {% raw xsrf_input %}
+            <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{escape(post_text)}}</textarea>
             <br/>
             {% if user_is_authed %}
-            <a type="submit" id="post-post" class="btn btn-default btn-lg pull-right">
+            <a type="submit" id="post-post" class="btn btn-default btn-lg pull-right" tabindex=4>
                 <span class="glyphicon glyphicon-share"></span>
                  Post
             </a>
