@@ -7,9 +7,10 @@ import pymongo.errors
 import urllib
 import requests
 import time
+from bson.objectid import ObjectId
 
 
-from models import polls, users
+from models import polls, users, actions
 from decorators import require_auth
 
 
@@ -140,6 +141,12 @@ class AuthCallbackHandler(BaseHandler):
 
         self.set_json_cookie({'user_id': str(user['_id'])})
         self.redirect(redirect)
+        action = {
+            'user_name': user['user_name'],
+            'user_avatar': user['user_avatar'],
+            'user_id': user['_id'],
+        }
+        actions.new_user(db=db, **action)
 
 
 class AuthLogoutHandler(BaseHandler):
@@ -159,15 +166,12 @@ class MainHandler(BaseHandler):
         if user is not None:
             user_is_authed = True
 
-        recent_polls = polls.find_recent(db=db)
-        for poll in recent_polls:
-            poll['votes'].reverse()
+        recent_actions = actions.find_recent(db=db)
         context = {
-            'header_title': 'Index',
             'user_is_authed': user_is_authed,
-            'recent_polls': recent_polls,
+            'recent_actions': recent_actions,
         }
-        self.render('templates/list.html', **context)
+        self.render('templates/actions.html', **context)
 
 
 class RecentHandler(BaseHandler):
@@ -265,6 +269,14 @@ class CreateHandler(BaseHandler):
         poll = polls.create(db=self.db, **args)
         str_id = str(poll['_id'])
         self.redirect('/polls/{}'.format(str_id))
+        action = {
+            'user_name': user['user_name'],
+            'user_avatar': user['user_avatar'],
+            'user_id': user['_id'],
+            'question': question,
+            'poll_id': poll['_id'],
+        }
+        actions.new_poll(db=db, **action)
 
 
 class PollsIdPrevHandler(BaseHandler):
@@ -309,9 +321,25 @@ class PollsIdVotesHandler(BaseHandler):
             'user_id': user['_id'],
             'user_name': user['user_name'],
             'user_avatar': user['user_avatar'],
-
         }
         polls.vote(db=db, **args)
+
+        poll = polls.find_by_id(db=db, str_id=poll_id)
+        if poll is not None:
+            option = ''
+            for o in poll['options']:
+                if ObjectId(option_id) == o['_id']:
+                    option = o['display_text']
+                    continue
+            action = {
+                'user_name': user['user_name'],
+                'user_avatar': user['user_avatar'],
+                'user_id': user['_id'],
+                'question': poll['question'],
+                'poll_id': poll['_id'],
+                'option': option,
+            }
+            actions.new_vote(db=db, **action)
 
 
 class PostsHandler(BaseHandler):
