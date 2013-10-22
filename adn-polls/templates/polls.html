@@ -50,10 +50,10 @@
             {% end %}
         </form>
     </div>
-    {% if total_votes > 0 %}
+    {% if total_votes > 5 %}
     <div class='col-md-8'>
         <br/><br/>
-        <h4>People with opinions</h4>
+        <h4>{{total_votes}} people with opinions</h4>
         <div>
             {% for vote in votes[:100] %}
                 <a href="https://alpha.app.net/{{escape(vote['user_name'])}}" target="_blank">
