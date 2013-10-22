@@ -30,6 +30,9 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_cover):
         'user_cover': user_cover,
         'user_name': user_name,
 
+        'polls_count': 0,
+        'votes_count': 0,
+
         'created_at': timestamp,
         'active_at': timestamp,
         'updated_at': timestamp,
