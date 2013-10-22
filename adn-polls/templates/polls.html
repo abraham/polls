@@ -110,6 +110,8 @@
     var poll_id = "{{poll_id}}";
     google.load("visualization", "1", {packages: ["corechart"]});
     google.setOnLoadCallback(drawChart);
+
+
     function drawChart() {
         var poll_options = {% raw options_array %};
         var data = google.visualization.arrayToDataTable(poll_options);
@@ -150,6 +152,7 @@
         event.preventDefault()
     }
 
+
     function postPost(event) {
         var text = $('#post textarea').prop('value');
         var _xsrf = $('#post [name="_xsrf"]').prop('value');
@@ -171,6 +174,7 @@
         });
         event.preventDefault()
     }
+
 
     function enableVoteBtn() {
         $('#post-vote').removeClass('disabled');
