@@ -148,22 +148,22 @@ def find_next(db, current_id_str):
     '''Find the next poll not voted on'''
     query = {
         '_id': {
-            '$gt': ObjectId(current_id_str),
+            '$lt': ObjectId(current_id_str),
         },
         'status': 'active',
     }
-    return db.polls.find_one(query, sort=[('_id', 1)])
+    return db.polls.find_one(query, sort=[('_id', -1)])
 
 
 def find_prev(db, current_id_str):
     '''Find the next poll not voted on'''
     query = {
         '_id': {
-            '$lt': ObjectId(current_id_str),
+            '$gt': ObjectId(current_id_str),
         },
         'status': 'active',
     }
-    return db.polls.find_one(query, sort=[('_id', -1)])
+    return db.polls.find_one(query, sort=[('_id', 1)])
 
 
 def build_options_array(options):
