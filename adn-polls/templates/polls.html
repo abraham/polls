@@ -40,7 +40,7 @@
             {% if user_has_voted %}
             <p><strong>You already voted like a champ!</strong> Why not <a href="/polls/{{poll_id}}/next">try another poll?</a></p>
             {% elif user_is_authed and post_id %}
-            <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right" disabled="disabled" tabindex=2>
+            <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
                 <span class="glyphicon glyphicon-check"></span>
                  Vote and post to ADN
             </button>
