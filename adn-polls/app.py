@@ -69,6 +69,19 @@ class BaseHandler(tornado.web.RequestHandler):
             return json.loads(value)
 
 
+class mdHandler(BaseHandler):
+
+    def get(self):
+        '''Return the markdown files for terms and privacy policy'''
+        import markdown2
+        path = 'adn-polls/static/md{}.md'.format(self.request.path)
+        html = markdown2.markdown_path(path)
+        context = {
+            'html': html,
+        }
+        self.render('templates/md.html', **context)
+
+
 class AuthRedirectHandler(BaseHandler):
 
     def get(self):
