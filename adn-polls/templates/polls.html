@@ -37,7 +37,7 @@
             {% raw xsrf_input %}
             <br/>
             {% if user_has_voted %}
-            <p><strong>You already voted like a champ!</strong></p>
+            <p><strong>You already voted like a champ!</strong> Why not <a href="/polls/{{poll_id}}/next">try another poll?</a></p>
             {% elif user_is_authed %}
             <button type="submit" id="post-vote" class="btn btn-default btn-lg disabled" tabindex=2>
                 <span class="glyphicon glyphicon-check"></span>
