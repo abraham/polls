@@ -41,10 +41,10 @@ options: {
 '''
 
 
-def create(db, poll_type, display_type, question, options, user_name, user_avatar, user_id):
+def create(db, poll_id, poll_type, display_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
     timestamp = datetime.datetime.utcnow()
     new_poll = {
-        '_id': ObjectId(),
+        '_id': poll_id,
         'poll_type': poll_type,
         'display_type': display_type,
         'question': question,
@@ -63,8 +63,8 @@ def create(db, poll_type, display_type, question, options, user_name, user_avata
         'active_at': timestamp,
         'status': 'active',
 
-        'post_id': None,
-        'post_url': None,
+        'post_id': post_id,
+        'post_url': post_url,
     }
 
     for option in options:

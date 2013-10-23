@@ -273,13 +273,30 @@ class CreateHandler(BaseHandler):
         user = self.user
         self.check_xsrf_cookie()
 
+        poll_id = ObjectId()
+        poll_id_str = str(poll_id)
         question = self.get_argument('question')[:150]
         options = []
         for option in self.get_arguments('options'):
             if option != '':
                 options.append(option[:100])
-        # options.reverse()
+
+        text = 'Q: {}\n\nVote on @polls: {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        headers = {
+            'Authorization': 'Bearer {}'.format(user['access_token']),
+        }
         args = {
+            'text': text,
+        }
+        response = requests.post(url, data=args, headers=headers)
+        if response.status_code != 200:
+            print 'create error', response.body
+            raise Exception
+        post = response.json()
+
+        args = {
+            'poll_id': poll_id,
             'poll_type': 'multiplechoice',
             'display_type': 'donut',
             'question': question,
@@ -287,17 +304,19 @@ class CreateHandler(BaseHandler):
             'user_id': user['_id'],
             'user_name': user['user_name'],
             'user_avatar': user['user_avatar'],
+            'post_id': post['data']['id'],
+            'post_url': post['data']['canonical_url'],
 
         }
         poll = polls.create(db=self.db, **args)
-        str_id = str(poll['_id'])
-        self.redirect('/polls/{}'.format(str_id))
+        self.redirect('/polls/{}'.format(poll_id_str))
         action = {
             'user_name': user['user_name'],
             'user_avatar': user['user_avatar'],
             'user_id': user['_id'],
             'question': question,
             'poll_id': poll['_id'],
+            'post_url': post['data']['canonical_url'],
         }
         actions.new_poll(db=db, **action)
 
