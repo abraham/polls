@@ -210,7 +210,8 @@ class RecentHandler(BaseHandler):
         for poll in recent_polls:
             poll['votes'].reverse()
         context = {
-            'header_title': 'Recent polls',
+            'header_title': 'New polls',
+            'header_subtitle': 'are the latest and (maybe) greatest',
             'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
         }
@@ -230,7 +231,8 @@ class ActiveHandler(BaseHandler):
         for poll in recent_polls:
             poll['votes'].reverse()
         context = {
-            'header_title': 'Active polls',
+            'header_title': 'Trending polls',
+            'header_subtitle': 'are movers and shakers',
             'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
         }
@@ -250,7 +252,8 @@ class VintageHandler(BaseHandler):
         for poll in vintage_polls:
             poll['votes'].reverse()
         context = {
-            'header_title': 'Active polls',
+            'header_title': 'Vintage polls',
+            'header_subtitle': 'have not been voted on in a while',
             'user_is_authed': user_is_authed,
             'recent_polls': vintage_polls,
         }
