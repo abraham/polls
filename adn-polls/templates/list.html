@@ -11,7 +11,7 @@
         {% for poll in recent_polls %}
         <div class="media">
             <a class="pull-left" href="#">
-                <img class="media-object img-rounded" src="{{poll['user_avatar']}}?h=114&w=114"  title="@{{escape(poll['user_name'])}}" width="57px" height="57px">
+                <img class="media-object img-rounded" src="{{poll['user_avatar']}}?h=114&w=114" title="@{{escape(poll['user_name'])}}" width="57px" height="57px">
             </a>
             <div class="media-body">
                 <h4 class="media-heading"><a href="/polls/{{poll['_id']}}">{{escape(poll['question'])}}</a></h4>
