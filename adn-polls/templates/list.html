@@ -16,7 +16,15 @@
             </a>
             <div class="media-body">
                 <h4 class="media-heading"><a href="/polls/{{poll['_id']}}">{{poll['question']}}</a></h4>
-                <p class="">Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{poll['user_name']}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                <p class="">
+                    Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{poll['user_name']}}</a>
+                    {% if poll['post_url'] %}
+                    <a href="{{poll['post_url']}}" target="_blank">
+                        <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                    </a>
+                    {% else %}
+                    <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                    {% end %}
                 {% if len(poll['votes']) > 0 %}
                     and voted on by 
                     {% if len(poll['votes']) > 20 %}
