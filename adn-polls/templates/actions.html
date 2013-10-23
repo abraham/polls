@@ -28,7 +28,15 @@
                         <h4 class="media-heading">
                             <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
                         </h4>
-                        New poll by <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a> <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        New poll by
+                        <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a>
+                        {% if action.get('post_url', False) %}
+                        <a href="{{action['post_url']}}" target="_blank">
+                            <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        </a>
+                        {% else %}
+                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        {% end %}
                     </div>
                 </div>
             {% elif action['type'] == 'new_user' %}
@@ -52,7 +60,17 @@
                         <h4 class="media-heading">
                             {{action['option']}}
                         </h4>
-                        New vote on <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a> by <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a> <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        New vote on
+                        <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
+                        by
+                        <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a>
+                        {% if action.get('post_url', False) %}
+                        <a href="{{action['post_url']}}" target="_blank">
+                            <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        </a>
+                        {% else %}
+                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                        {% end %}
                     </div>
                 </div>
             {% end %}
