@@ -143,7 +143,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_cover': token['token']['user']['cover_image']['url'],
             }
             user = users.create(db=db, **new_user)
-            existing_user = True
+            existing_user = False
         else:
             update = {
                 'user_id': user['_id'],
