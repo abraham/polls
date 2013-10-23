@@ -1,16 +1,17 @@
+{% autoescape xhtml_escape %}
 {% extends "base.html" %}
 
 
-{% block title %}{{escape(title)}}{% end %}
+{% block title %}{{title}}{% end %}
 
 
 {% block container %}
 <div class="">
     <div class="page-header">
         <h1>
-            {{escape(question)}}
+            {{question}}
             <small class="text-muted">
-                by @<a target="blanks" href="https://alpha.app.net/intent/follow/?user_id=@{{escape(owner_username)}}">{{escape(owner_username)}}</a>
+                by @<a target="blanks" href="https://alpha.app.net/intent/follow/?user_id=@{{escape(owner_username)}}">{{owner_username}}</a>
             </small>
         </h1>
     </div>
@@ -29,7 +30,7 @@
                 <div class="radio">
                     <label>
                         <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
-                        {{escape(option['display_text'])}}
+                        {{option['display_text']}}
                     </label>
                 </div>
             {% end %}
@@ -62,7 +63,7 @@
         <div>
             {% for vote in votes[:100] %}
                 <a href="https://alpha.app.net/{{escape(vote['user_name'])}}" target="_blank">
-                    <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{escape(vote['user_name'])}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
+                    <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
                 </a>
             {% end %}
         </div>
@@ -74,7 +75,7 @@
         <h4>Will your friends agree with you?</h4>
         <form role="form" id="post" data-poll-id="{{poll_id}}">
             {% raw xsrf_input %}
-            <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{escape(post_text)}}</textarea>
+            <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
             <br/>
             {% if user_is_authed %}
             <button type="submit" id="post-post" class="btn btn-default btn-lg pull-right" tabindex=4>
@@ -102,7 +103,7 @@
 
 
     function drawChart() {
-        var poll_options = {% raw options_array %};
+        var poll_options = {% raw json_encode(options_array) %};
         var data = google.visualization.arrayToDataTable(poll_options);
 
         var options = {

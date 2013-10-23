@@ -1,3 +1,4 @@
+{% autoescape xhtml_escape %}
 {% extends "base.html" %}
 
 {% block title %}Polls for App.net{% end %}
@@ -11,22 +12,22 @@
         {% for poll in recent_polls %}
         <div class="media">
             <a class="pull-left" href="#">
-                <img class="media-object img-rounded" src="{{poll['user_avatar']}}?h=114&w=114" title="@{{escape(poll['user_name'])}}" width="57px" height="57px">
+                <img class="media-object img-rounded" src="{{poll['user_avatar']}}?h=114&w=114" title="@{{poll['user_name']}}" width="57px" height="57px">
             </a>
             <div class="media-body">
-                <h4 class="media-heading"><a href="/polls/{{poll['_id']}}">{{escape(poll['question'])}}</a></h4>
-                <p class="">Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{escape(poll['user_name'])}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                <h4 class="media-heading"><a href="/polls/{{poll['_id']}}">{{poll['question']}}</a></h4>
+                <p class="">Asked by <a href="https://alpha.app.net/{{escape(poll['user_name'])}}" target="_blank">@{{poll['user_name']}}</a> <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
                 {% if len(poll['votes']) > 0 %}
                     and voted on by 
                     {% if len(poll['votes']) > 20 %}
                         {% for vote in poll['votes'][:15] %}
-                            <img class="" src="{{vote['user_avatar']}}?h=32&w=32" title="@{{escape(vote['user_name'])}}" width="16px" height="16px"/>
+                            <img class="" src="{{vote['user_avatar']}}?h=32&w=32" title="@{{vote['user_name']}}" width="16px" height="16px"/>
                         {% end %}
                         {% set more=len(poll['votes']) - 15 %}
                         and {{more}} more
                     {% else %}
                         {% for vote in poll['votes'] %}
-                            <img class="" src="{{vote['user_avatar']}}?h=32&w=32" title="@{{escape(vote['user_name'])}}" width="16px" height="16px"/>
+                            <img class="" src="{{vote['user_avatar']}}?h=32&w=32" title="@{{vote['user_name']}}" width="16px" height="16px"/>
                         {% end %}
                     {% end %}
                 {% else %}
