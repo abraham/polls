@@ -281,7 +281,7 @@ class CreateHandler(BaseHandler):
             if option != '':
                 options.append(option[:100])
 
-        text = 'Q: {}\n\nVote on @polls: {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
+        text = 'Q: {}\n\nVote on @polls at {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(user['access_token']),
@@ -368,11 +368,30 @@ class PollsIdVotesHandler(BaseHandler):
 
         poll = polls.find_by_id(db=db, str_id=poll_id)
         if poll is not None:
+            post_url = None
             option = ''
             for o in poll['options']:
                 if ObjectId(option_id) == o['_id']:
                     option = o['display_text']
                     continue
+
+            if poll['post_id'] is not None:
+                text = '@{}: {}'.format(poll['user_name'], option,)
+                url = 'https://alpha-api.app.net/stream/0/posts'
+                headers = {
+                    'Authorization': 'Bearer {}'.format(user['access_token']),
+                }
+                args = {
+                    'text': text,
+                    'reply_to': poll['post_id'],
+                }
+                response = requests.post(url, data=args, headers=headers)
+                if response.status_code != 200:
+                    print 'create error', response.body
+                    raise Exception
+                post = response.json()
+                post_url = post['data']['canonical_url']
+
             action = {
                 'user_name': user['user_name'],
                 'user_avatar': user['user_avatar'],
@@ -380,6 +399,7 @@ class PollsIdVotesHandler(BaseHandler):
                 'question': poll['question'],
                 'poll_id': poll['_id'],
                 'option': option,
+                'post_url': post_url,
             }
             actions.new_vote(db=db, **action)
 
@@ -454,5 +474,6 @@ class PollsIdHandler(BaseHandler):
             'title': poll['question'],
             'post_text': post_text,
             'votes': poll['votes'],
+            'post_id': poll['post_id'],
         }
         html = self.render('templates/polls.html', **context)

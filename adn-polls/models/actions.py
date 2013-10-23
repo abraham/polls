@@ -33,7 +33,7 @@ def new_user(db, user_name, user_avatar, user_id):
     return action
 
 
-def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option):
+def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option, post_url):
     '''Create new_vote actions'''
     timestamp = datetime.datetime.utcnow()
     action = {
@@ -46,6 +46,7 @@ def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option):
         'question': question,
         'option': option,
         'poll_id': poll_id,
+        'post_url': post_url,
 
         'created_at': timestamp,
     }
@@ -54,7 +55,7 @@ def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option):
     return action
 
 
-def new_poll(db, user_name, user_avatar, user_id, question, poll_id):
+def new_poll(db, user_name, user_avatar, user_id, question, poll_id, post_url):
     '''Create new_poll actions'''
     timestamp = datetime.datetime.utcnow()
     action = {
@@ -66,6 +67,7 @@ def new_poll(db, user_name, user_avatar, user_id, question, poll_id):
 
         'question': question,
         'poll_id': poll_id,
+        'post_url': post_url,
 
         'created_at': timestamp,
     }
