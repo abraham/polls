@@ -376,7 +376,7 @@ class PollsIdVotesHandler(BaseHandler):
                     continue
 
             if poll['post_id'] is not None:
-                text = '@{}: {}'.format(poll['user_name'], option,)
+                text = '@{} {}'.format(poll['user_name'], option,)
                 url = 'https://alpha-api.app.net/stream/0/posts'
                 headers = {
                     'Authorization': 'Bearer {}'.format(user['access_token']),
