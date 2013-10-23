@@ -478,5 +478,7 @@ class PollsIdHandler(BaseHandler):
             'post_text': post_text,
             'votes': poll['votes'],
             'post_id': poll['post_id'],
+            'post_url': poll['post_url'],
+            'created_at': poll['created_at'],
         }
         html = self.render('templates/polls.html', **context)

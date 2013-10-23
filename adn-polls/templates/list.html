@@ -41,16 +41,3 @@
 
     </div>
 {% end %}
-
-
-{% block scripts %}
-<script>
-$(function() {
-    $('.datetime').each(function(index, elem){
-        var $elem = $(elem);
-        var fromNow = moment.utc($elem.data('datetime')).fromNow()
-        $elem.text(fromNow);
-    });
-});
-</script>
-{% end %}
