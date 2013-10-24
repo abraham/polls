@@ -79,12 +79,13 @@
             {% end %}
 
         </form>
+        <br/>
     </div>
 
 
     {% if total_votes > 5 %}
-    <div class='col-md-8'>
-        <br/><br/>
+    <div class='col-md-10'>
+        <br/>
         <h4>{{total_votes}} people with opinions</h4>
         <div>
             {% for vote in votes[:100] %}
@@ -93,12 +94,13 @@
             </a>
             {% end %}
         </div>
+        <br/>
     </div>
     {% end %}
 
 
     <div class='col-md-10'>
-        <br/><br/>
+        <br/>
         <h4>Will your friends agree with you?</h4>
         <form role="form" id="post" data-poll-id="{{poll_id}}">
             {% raw xsrf_input %}
@@ -120,6 +122,7 @@
             {% end %}
 
         </form>
+        <br/>
     </div>
 </div>
 {% end %}
