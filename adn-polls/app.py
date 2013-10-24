@@ -334,7 +334,7 @@ class CreateHandler(BaseHandler):
             if option != '':
                 options.append(option[:100])
 
-        text = 'Q: {}\n\nVote on @polls at {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
+        text = u'Q: {}\n\nVote on @polls at {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(user['access_token']),
@@ -511,7 +511,7 @@ class PollsIdHandler(BaseHandler):
         voted_on = ''
         if poll['total_votes'] > 1:
             voted_on = ' has been answered by {} people. Do you agree with them?'.format(poll['total_votes'])
-        post_text = '{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
+        post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
         poll['votes'].reverse()
         context = {
             'xsrf_input': self.xsrf_form_html(),
