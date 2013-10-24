@@ -7,6 +7,8 @@
 
 {% block container %}
 <div class="">
+
+
     <div class="page-header">
         <h1>
             {{question}}
@@ -22,15 +24,20 @@
             </small>
         </h1>
     </div>
+
+
     {% if total_votes == 0 %}
-        <br/><br/><br/>
-        <div>
-            <p class="lead">No one has cast a vote yet, be the first and make history!</p>
-        </div>
-        <br/><br/>
+    <br/><br/><br/>
+    <div>
+        <p class="lead">No one has cast a vote yet, be the first and make history!</p>
+    </div>
+    <br/><br/>
+
     {% else %}
     <div id="donutchart" style="width: 940px; height: 500px;"></div>
     {% end %}
+
+
     <div class='col-md-10'>
         <form role="form" id="vote" data-poll-id="{{poll_id}}">
             {% raw xsrf_input %}
@@ -74,6 +81,7 @@
         </form>
     </div>
 
+
     {% if total_votes > 5 %}
     <div class='col-md-8'>
         <br/><br/>
@@ -87,6 +95,7 @@
         </div>
     </div>
     {% end %}
+
 
     <div class='col-md-10'>
         <br/><br/>
@@ -113,7 +122,6 @@
         </form>
     </div>
 </div>
-
 {% end %}
 
 
