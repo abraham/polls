@@ -16,6 +16,7 @@ from app import (
     PollsIdVotesHandler,
     PollsIdPrevHandler,
     PollsIdNextHandler,
+    UsersIdHandler,
     AuthRedirectHandler,
     AuthLogoutHandler,
     AuthCallbackHandler,
@@ -55,6 +56,8 @@ application = tornado.web.Application([
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),
     (r'/polls/([^/]+)/prev', PollsIdPrevHandler, base_args),
     (r'/polls/([^/]+)/next', PollsIdNextHandler, base_args),
+
+    (r'/users/([^/]+)', UsersIdHandler, base_args),
 
     (r'/create', CreateHandler, base_args),
     (r'/posts', PostsHandler, base_args),

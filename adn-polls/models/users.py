@@ -72,6 +72,6 @@ def find_by_adn_id(db, adn_id):
 def find_by_id(db, user_id):
     '''Find an existing user by their id'''
     query = {
-        '_id': ObjectId(user_id),
+        '_id': user_id,
     }
     return db.users.find_one(query)

@@ -7,9 +7,9 @@
     <div class="starter-template">
         <div class="page-header">
             <h1>
-                Polls for App.net
+                {{header_title}}
                 <small>
-                    by <a href="https://alpha.app.net/intent/follow/?user_id=@abraham" target="_blank">@abraham</a>
+                    {% raw header_subtitle %}
                     {% if not user_is_authed %}
                         / <a href="/auth/redirect">Sign in and be a hero</a>
                     {% end %}

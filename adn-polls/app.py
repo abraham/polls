@@ -39,7 +39,7 @@ class BaseHandler(tornado.web.RequestHandler):
         user_id = cookie.get('user_id')
 
         if db is not None and user_id is not None:
-            self.user = users.find_by_id(db=db, user_id=user_id)
+            self.user = users.find_by_id(db=db, user_id=ObjectId(user_id))
 
 
     def prepare(self):
@@ -191,6 +191,8 @@ class MainHandler(BaseHandler):
 
         recent_actions = actions.find_recent(db=db)
         context = {
+            'header_title': 'Polls for App.net',
+            'header_subtitle': 'by <a href="https://alpha.app.net/abraham" target="_blank">@abraham</a>',
             'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
@@ -216,6 +218,33 @@ class RecentHandler(BaseHandler):
             'recent_polls': recent_polls,
         }
         self.render('templates/list.html', **context)
+
+
+class UsersIdHandler(BaseHandler):
+
+    def get(self, user_id):
+        db = self.db
+        user = self.user
+        user_is_authed = False
+        if user is not None:
+            user_is_authed = True
+
+        try:
+            viewed_user = users.find_by_id(db=db, user_id=ObjectId(user_id))
+        except pymongo.errors.InvalidId, e:
+            self.send_error(404)
+            return
+        if viewed_user is None:
+            self.send_error(404)
+
+        recent_actions = actions.find_recent_by_user_id(db=db, user_id=ObjectId(user_id))
+        context = {
+            'header_title': '@{}'.format(viewed_user['user_name']),
+            'header_subtitle': 'recent activity',
+            'user_is_authed': user_is_authed,
+            'recent_actions': recent_actions,
+        }
+        self.render('templates/actions.html', **context)
 
 
 class ActiveHandler(BaseHandler):

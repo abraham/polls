@@ -83,3 +83,15 @@ def find_recent(db):
     for action in results:
         actions.append(action)
     return actions
+
+
+def find_recent_by_user_id(db, user_id):
+    '''Find recent actions'''
+    query = {
+        'user_id': user_id,
+    }
+    results = db.actions.find(query).sort('created_at', -1).limit(100)
+    actions = []
+    for action in results:
+        actions.append(action)
+    return actions
