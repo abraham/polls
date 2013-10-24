@@ -40,13 +40,13 @@
                     </div>
                 </div>
             {% elif action['type'] == 'new_user' %}
-                <a class="pull-right" href="https://alpha.app.net/{{action['user_name']}}" target="_blank">
+                <a class="pull-right" href="/users/{{action['user_id']}}">
                     <img class="media-object img-rounded " src="{{action['user_avatar']}}?h=114&w=114" title="@{{action['user_name']}}" width="57px" height="57px">
                 </a>
                 <div class="media-body">
                     <div class='pull-right'>
                         <h4 class="media-heading">
-                            <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a> signed up for Polls
+                            <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a> signed up for Polls
                         </h4>
                         New user <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
                     </div>
