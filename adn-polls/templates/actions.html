@@ -29,7 +29,7 @@
                             <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
                         </h4>
                         New poll by
-                        <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a>
+                        <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
                         {% if action.get('post_url', False) %}
                         <a href="{{action['post_url']}}" target="_blank">
                             <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
@@ -63,7 +63,7 @@
                         New vote on
                         <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
                         by
-                        <a href="https://alpha.app.net/{{action['user_name']}}" target="_blank">@{{action['user_name']}}</a>
+                        <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
                         {% if action.get('post_url', False) %}
                         <a href="{{action['post_url']}}" target="_blank">
                             <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>

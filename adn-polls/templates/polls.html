@@ -13,7 +13,7 @@
         <h1>
             {{question}}
             <small class="text-muted">
-                by @<a target="blanks" href="https://alpha.app.net/{{escape(owner_username)}}">{{owner_username}}</a>
+                by @<a href="/users/{{owner_id}}">{{owner_username}}</a>
                 {% if post_url %}
                 <a href="{{post_url}}" target="_blank">
                     <span class='datetime' data-datetime="{{created_at}}">{{created_at}}</span>
@@ -89,7 +89,7 @@
         <h4>{{total_votes}} people with opinions</h4>
         <div>
             {% for vote in votes[:100] %}
-            <a href="https://alpha.app.net/{{escape(vote['user_name'])}}" target="_blank">
+            <a href="/users/{{vote['user_id']}}">
                 <img class="img-rounded" src="{{vote['user_avatar']}}" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
             </a>
             {% end %}

@@ -192,7 +192,7 @@ class MainHandler(BaseHandler):
         recent_actions = actions.find_recent(db=db)
         context = {
             'header_title': 'Polls for App.net',
-            'header_subtitle': 'by <a href="https://alpha.app.net/abraham" target="_blank">@abraham</a>',
+            'header_subtitle': 'by <a href="/users/526455a9fa99c900026ce821">@abraham</a>',
             'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
@@ -521,6 +521,7 @@ class PollsIdHandler(BaseHandler):
             'user_is_authed': user_is_authed,
             'user_has_voted': user_has_voted,
             'owner_username': poll['user_name'],
+            'owner_id': poll['user_id'],
             'question': poll['question'],
             'options_array': polls.build_options_array(poll['options']),
             'options': poll['options'],
