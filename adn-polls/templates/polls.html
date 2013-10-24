@@ -11,7 +11,7 @@
         <h1>
             {{question}}
             <small class="text-muted">
-                by @<a target="blanks" href="https://alpha.app.net/intent/follow/?user_id=@{{escape(owner_username)}}">{{owner_username}}</a>
+                by @<a target="blanks" href="https://alpha.app.net/{{escape(owner_username)}}">{{owner_username}}</a>
                 {% if post_url %}
                 <a href="{{post_url}}" target="_blank">
                     <span class='datetime' data-datetime="{{created_at}}">{{created_at}}</span>
