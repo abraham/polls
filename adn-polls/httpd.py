@@ -9,6 +9,7 @@ from app import (
     RecentHandler,
     ActiveHandler,
     VintageHandler,
+    TopHandler,
     CreateHandler,
     PollsIdHandler,
     PostsHandler,
@@ -44,15 +45,20 @@ base_args = {
 
 application = tornado.web.Application([
     (r'/', MainHandler, base_args),
+
     (r'/recent', RecentHandler, base_args),
     (r'/active', ActiveHandler, base_args),
     (r'/vintage', VintageHandler, base_args),
-    (r'/create', CreateHandler, base_args),
+    (r'/top', TopHandler, base_args),
+
     (r'/polls/([^/]+)', PollsIdHandler, base_args),
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),
     (r'/polls/([^/]+)/prev', PollsIdPrevHandler, base_args),
     (r'/polls/([^/]+)/next', PollsIdNextHandler, base_args),
+
+    (r'/create', CreateHandler, base_args),
     (r'/posts', PostsHandler, base_args),
+
     (r'/auth/redirect', AuthRedirectHandler),
     (r'/auth/logout', AuthLogoutHandler),
     (r'/auth/callback', AuthCallbackHandler, base_args),
