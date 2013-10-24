@@ -236,11 +236,13 @@ class UsersIdHandler(BaseHandler):
             return
         if viewed_user is None:
             self.send_error(404)
+            return
 
         recent_actions = actions.find_recent_by_user_id(db=db, user_id=ObjectId(user_id))
+        subtitle = u'<a href="https://alpha.app.net/{}" target="_blank"><span class="glyphicon glyphicon-link"></span></a> recent activity'
         context = {
-            'header_title': '@{}'.format(viewed_user['user_name']),
-            'header_subtitle': 'recent activity',
+            'header_title': u'@{}'.format(viewed_user['user_name']),
+            'header_subtitle': subtitle.format(viewed_user['user_name']),
             'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
