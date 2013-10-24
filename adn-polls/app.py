@@ -274,7 +274,7 @@ class TopHandler(BaseHandler):
             poll['votes'].reverse()
         context = {
             'header_title': 'Top polls',
-            'header_subtitle': 'have have (almost) ALL THE VOTES',
+            'header_subtitle': 'have (almost) ALL THE VOTES',
             'user_is_authed': user_is_authed,
             'recent_polls': top_polls,
         }
