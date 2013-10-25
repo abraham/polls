@@ -26,16 +26,11 @@
     </div>
 
 
+    <div id="donutchart" style="width: 940px; height: 500px;">
     {% if total_votes == 0 %}
-    <br/><br/><br/>
-    <div>
-        <p class="lead">No one has cast a vote yet, be the first and make history!</p>
-    </div>
-    <br/><br/>
-
-    {% else %}
-    <div id="donutchart" style="width: 940px; height: 500px;"></div>
+        <p class="lead" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
     {% end %}
+    </div>
 
 
     <div class='col-md-10'>
@@ -133,7 +128,10 @@
 
     var poll_id = "{{poll_id}}";
     google.load("visualization", "1", {packages: ["corechart"]});
+    {% if total_votes > 0 %}
     google.setOnLoadCallback(drawChart);
+    {% end %}
+
 
 
     function drawChart() {
