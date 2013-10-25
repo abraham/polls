@@ -125,43 +125,84 @@
 
 {% block scripts %}
 <script>
-
-    var poll_id = "{{poll_id}}";
     google.load("visualization", "1", {packages: ["corechart"]});
-    {% if total_votes > 0 %}
-    google.setOnLoadCallback(drawChart);
-    {% end %}
+
+    var data, chart;
+    var pollId = "{{poll_id}}";
+    var pollOptions = {% raw json_encode(options_object) %};
+    var chartElem = document.getElementById('donutchart');
+    var votes = {{total_votes}};
+
+    if (votes > 0) {
+        google.setOnLoadCallback(init);
+    }
 
 
-    var poll_options = {% raw json_encode(options_array) %};
+    function init() {
+        data = new google.visualization.DataTable();
+        data.addColumn('string', 'Option');
+        data.addColumn('number', 'Votes');
+        chart = new google.visualization.PieChart(chartElem);
+        setZeroPollOptions(data, pollOptions);
+        drawChart(chart, data);
+        setPollOptions(data, pollOptions);
+        drawChart(chart, data);
+
+    }
 
 
-
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable(poll_options);
-
-        var options = {
-            pieHole: 0.3
-        };
-
-        var elem = document.getElementById('donutchart');
-        if (elem) {
-            var chart = new google.visualization.PieChart(elem);
-            chart.draw(data, options);
+    function setZeroPollOptions(data, options) {
+        var index = 0;
+        for (id in options) {
+            data.addRow([options[id]['text'], 0]);
+            options[id]['index'] = index;
+            index++;
         }
+    }
+
+
+    function setPollOptions(data, options) {
+        for (id in options) {
+            data.setValue(options[id]['index'], 1, options[id]['votes']);
+        }
+    }
+
+
+    function incrementVote(chart, data, option_id) {
+        pollOptions[option_id]['votes'] += 1;
+        data.setValue(pollOptions[option_id]['index'], 1, pollOptions[option_id]['votes']);
+        drawChart(chart, data);
+    }
+
+
+    function drawChart(chart, data) {
+        var chart_options = {
+            pieHole: 0.3,
+            animation: {
+                duration: 1000,
+                easing: 'inAndOut'
+            }
+        };
+        chart.draw(data, chart_options);
     }
 
 
     function postVote(event) {
         var option_id = $('#vote [name="option"]:checked').prop('value');
         var _xsrf = $('#vote [name="_xsrf"]').prop('value');
+        if (votes == 0) {
+            init();
+        }
+
+        incrementVote(chart, data, option_id);
         if (!option_id) {
             alert('You must select a value');
             return false;
         }
+
         $.ajax({
             type: "POST",
-            url: "/polls/" + poll_id + "/votes",
+            url: "/polls/" + pollId + "/votes",
             data: { option_id: option_id, _xsrf: _xsrf },
             success: function(data){
                 $('#post-vote').slideUp(function() {
@@ -180,10 +221,12 @@
     function postPost(event) {
         var text = $('#post textarea').prop('value');
         var _xsrf = $('#post [name="_xsrf"]').prop('value');
+
         if (!text) {
             alert('There must be some text to post...');
             return false;
         }
+
         $.ajax({
             type: "POST",
             url: "/posts",
@@ -205,14 +248,14 @@
     }
 
 
-$(function() {
-    $('#post-vote').on('click', postVote);
-    $('#post-vote').on('submit', postVote);
-    $('#post-post').on('click', postPost);
-    $('#post-post').on('submit', postPost);
-    $('#vote input').on('focus', enableVoteBtn);
-    $('#vote input').on('click', enableVoteBtn);
-});
+    $(function() {
+        $('#post-vote').on('click', postVote);
+        $('#post-vote').on('submit', postVote);
+        $('#post-post').on('click', postPost);
+        $('#post-post').on('submit', postPost);
+        $('#vote input').on('focus', enableVoteBtn);
+        $('#vote input').on('click', enableVoteBtn);
+    });
 
 </script>
 {% end %}

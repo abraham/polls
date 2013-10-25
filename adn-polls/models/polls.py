@@ -174,8 +174,13 @@ def find_prev(db, current_id_str):
     return db.polls.find_one(query, sort=[('_id', 1)])
 
 
-def build_options_array(options):
-    options_array = [['Option','Votes']]
+def build_options_object(options):
+    options_object = {}
     for option in options:
-        options_array.append([str(option['display_text']), option['votes']])
-    return options_array
+        _id = str(option['_id'])
+        options_object[_id] = {
+            '_id': _id,
+            'text': option['display_text'],
+            'votes': option['votes'],
+        }
+    return options_object

@@ -523,7 +523,7 @@ class PollsIdHandler(BaseHandler):
             'owner_username': poll['user_name'],
             'owner_id': poll['user_id'],
             'question': poll['question'],
-            'options_array': polls.build_options_array(poll['options']),
+            'options_object': polls.build_options_object(poll['options']),
             'options': poll['options'],
             'total_votes': poll['total_votes'],
             'poll_id': poll['_id'],
