@@ -4,7 +4,7 @@
 {% block title %}Polls for App.net{% end %}
 
 {% block container %}
-    <div class="">
+    <div class="row">
         <div class="page-header">
             <h1>
                 {{header_title}}
@@ -22,6 +22,7 @@
         var pollOptions = {};
         </script>
 
+        <div class='col-md-12'>
         {% for poll in active_polls %}
             <div class='row'>
                 <div class="">
@@ -73,6 +74,7 @@
                 {% end %}
             </div>
         {% end %}
+        </div>
 
 
     </div>
