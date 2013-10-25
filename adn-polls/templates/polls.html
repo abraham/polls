@@ -33,7 +33,8 @@
     </div>
 
 
-    <div class='col-md-10'>
+    <div class='row'>
+    <div class='col-md-8 col-md-offset-2'>
         <form role="form" id="vote" data-poll-id="{{poll_id}}">
             {% raw xsrf_input %}
 
@@ -76,10 +77,12 @@
         </form>
         <br/>
     </div>
+    </div>
 
 
     {% if total_votes > 5 %}
-    <div class='col-md-10'>
+    <div class='row'>
+    <div class='col-md-8 col-md-offset-2'>
         <br/>
         <h4>{{total_votes}} people with opinions</h4>
         <div>
@@ -91,13 +94,15 @@
         </div>
         <br/>
     </div>
+    </div>
     {% end %}
 
 
-    <div class='col-md-10'>
+    <div class='row'>
+    <div class='col-md-8 col-md-offset-2'>
         <br/>
         <h4>Will your friends agree with you?</h4>
-        <form role="form" id="post" data-poll-id="{{poll_id}}">
+        <form role="form" id="post" data-poll-id="{{poll_id}}" >
             {% raw xsrf_input %}
 
             <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
@@ -118,6 +123,7 @@
 
         </form>
         <br/>
+    </div>
     </div>
 </div>
 {% end %}
