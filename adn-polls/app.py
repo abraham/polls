@@ -208,6 +208,8 @@ class IndexHandler(BaseHandler):
             poll['votes'].reverse()
             random.shuffle(poll['options'])
             poll['options_object'] = polls.build_options_object(poll['options'])
+            poll['redirect'] = '/polls/{}'.format(poll['_id'])
+
 
         context = {
             'header_title': 'Polls for App.net',
