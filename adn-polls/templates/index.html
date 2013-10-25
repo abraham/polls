@@ -5,6 +5,8 @@
 
 {% block container %}
     <div class="row">
+
+
         <div class="page-header">
             <h1>
                 {{header_title}}
@@ -17,10 +19,12 @@
             </h1>
         </div>
 
+
         <script>
         var pollIds = [];
         var pollOptions = {};
         </script>
+
 
         <div class='col-md-12'>
             {% for poll in active_polls %}
