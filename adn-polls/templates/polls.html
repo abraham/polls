@@ -133,9 +133,11 @@
     {% end %}
 
 
+    var poll_options = {% raw json_encode(options_array) %};
+
+
 
     function drawChart() {
-        var poll_options = {% raw json_encode(options_array) %};
         var data = google.visualization.arrayToDataTable(poll_options);
 
         var options = {
