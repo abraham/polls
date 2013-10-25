@@ -26,104 +26,106 @@
         </div>
 
 
-        <div id="donutchart" style="height: 500px;">
-        {% if total_votes == 0 %}
-            <p class="lead" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
-        {% end %}
-        </div>
+        <div class="col-md-12">
 
 
-        <div class='row'>
-        <div class='col-md-8 col-md-offset-2'>
-            <form role="form" id="vote" data-poll-id="{{poll_id}}">
-                {% raw xsrf_input %}
-
-                {% for option in options %}
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
-                        {{option['display_text']}}
-                    </label>
-                </div>
-                {% end %}
-
-                <br/>
-
-                {% if user_has_voted %}
-                <p>
-                    <strong>You already voted like a champ!</strong>
-                    Why not <a href="/polls/{{poll_id}}/next">try another poll?</a>
-                </p>
-
-                {% elif user_is_authed and post_id %}
-                <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
-                    <span class="glyphicon glyphicon-check"></span>
-                     Vote and post to ADN
-                </button>
-
-                {% elif user_is_authed %}
-                <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right" disabled="disabled" tabindex=2>
-                    <span class="glyphicon glyphicon-check"></span>
-                     Vote
-                </button>
-
-                {% else %}
-                <h3>
-                    <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in and be a voting hero</a>
-                </h3>
-
-                {% end %}
-
-            </form>
-            <br/>
-        </div>
-        </div>
-
-
-        {% if total_votes > 5 %}
-        <div class='row'>
-        <div class='col-md-8 col-md-offset-2'>
-            <br/>
-            <h4>{{total_votes}} people with opinions</h4>
-            <div>
-                {% for vote in votes[:100] %}
-                <a href="/users/{{vote['user_id']}}">
-                    <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&w=114" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
-                </a>
-                {% end %}
+            <div id="donutchart" style="height: 500px;" class="row">
+            {% if total_votes == 0 %}
+                <p class="lead" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
+            {% end %}
             </div>
-            <br/>
-        </div>
-        </div>
-        {% end %}
 
 
-        <div class='row'>
-        <div class='col-md-8 col-md-offset-2'>
-            <br/>
-            <h4>Will your friends agree with you?</h4>
-            <form role="form" id="post" data-poll-id="{{poll_id}}" >
-                {% raw xsrf_input %}
+            <div class='row'>
+                <form role="form" id="vote" data-poll-id="{{poll_id}}" class="col-md-10 col-md-offset-1">
+                    {% raw xsrf_input %}
 
-                <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
-                
+                    {% for option in options %}
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
+                            {{option['display_text']}}
+                        </label>
+                    </div>
+                    {% end %}
+
+                    <br/>
+
+                    {% if user_has_voted %}
+                    <p>
+                        <strong>You already voted like a champ!</strong>
+                        Why not <a href="/polls/{{poll_id}}/next">try another poll?</a>
+                    </p>
+
+                    {% elif user_is_authed and post_id %}
+                    <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
+                        <span class="glyphicon glyphicon-check"></span>
+                         Vote and post to ADN
+                    </button>
+
+                    {% elif user_is_authed %}
+                    <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right" disabled="disabled" tabindex=2>
+                        <span class="glyphicon glyphicon-check"></span>
+                         Vote
+                    </button>
+
+                    {% else %}
+                    <h3>
+                        <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in and be a voting hero</a>
+                    </h3>
+
+                    {% end %}
+
+                </form>
                 <br/>
-                
-                {% if user_is_authed %}
-                <button type="submit" id="post-post" class="btn btn-default btn-lg pull-right btn-danger" tabindex=4>
-                    <span class="glyphicon glyphicon-share"></span>
-                     Post to ADN
-                </button>
-                
-                {% else %}
-                <h3>
-                    <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in to share like a BOSS</a>
-                </h3>
-                {% end %}
+            </div>
 
-            </form>
-            <br/>
-        </div>
+
+            {% if total_votes > 5 %}
+                <div class='row'>
+                    <div class='col-md-10 col-md-offset-1'>
+                        <br/>
+                        <h4>{{total_votes}} people with opinions</h4>
+                        <div>
+                            {% for vote in votes[:100] %}
+                            <a href="/users/{{vote['user_id']}}">
+                                <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
+                            </a>
+                            {% end %}
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+            {% end %}
+
+
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    <br/>
+                    <h4>Will your friends agree with you?</h4>
+                    <form role="form" id="post" data-poll-id="{{poll_id}}" >
+                        {% raw xsrf_input %}
+
+                        <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
+                        
+                        <br/>
+                        
+                        {% if user_is_authed %}
+                        <button type="submit" id="post-post" class="btn btn-default btn-lg pull-right btn-danger" tabindex=4>
+                            <span class="glyphicon glyphicon-share"></span>
+                             Post to ADN
+                        </button>
+                        
+                        {% else %}
+                        <h3>
+                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in to share like a BOSS</a>
+                        </h3>
+                        {% end %}
+
+                    </form>
+                    <br/>
+                </div>
+            </div>
         </div>
     </div>
 {% end %}
