@@ -194,7 +194,31 @@ class AuthLogoutHandler(BaseHandler):
         self.redirect('/')
 
 
-class MainHandler(BaseHandler):
+class IndexHandler(BaseHandler):
+
+    def get(self):
+        db = self.db
+        user = self.user
+        user_is_authed = False
+        if user is not None:
+            user_is_authed = True
+
+        active_polls = polls.find_active(db=db, limit=5, min_vote_count=5)
+        for poll in active_polls:
+            poll['votes'].reverse()
+            random.shuffle(poll['options'])
+            poll['options_object'] = polls.build_options_object(poll['options'])
+
+        context = {
+            'header_title': 'Polls for App.net',
+            'header_subtitle': 'clean, simple, beautiful',
+            'user_is_authed': user_is_authed,
+            'active_polls': active_polls,
+        }
+        self.render('templates/index.html', **context)
+
+
+class ActivityHandler(BaseHandler):
 
     def get(self):
         db = self.db
@@ -205,8 +229,8 @@ class MainHandler(BaseHandler):
 
         recent_actions = actions.find_recent(db=db)
         context = {
-            'header_title': 'Polls for App.net',
-            'header_subtitle': 'by <a href="/users/526455a9fa99c900026ce821">@abraham</a>',
+            'header_title': 'Recent activity',
+            'header_subtitle': '',
             'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
@@ -272,7 +296,7 @@ class ActiveHandler(BaseHandler):
         if user is not None:
             user_is_authed = True
 
-        recent_polls = polls.find_active(db=db)
+        recent_polls = polls.find_active(db=db, limit=20, min_vote_count=2)
         for poll in recent_polls:
             poll['votes'].reverse()
         context = {

@@ -1,0 +1,138 @@
+{% autoescape xhtml_escape %}
+{% extends "base.html" %}
+
+{% block title %}Polls for App.net{% end %}
+
+{% block container %}
+    <div class="">
+        <div class="page-header">
+            <h1>
+                {{header_title}}
+                <small>
+                    {% raw header_subtitle %}
+                    {% if not user_is_authed %}
+                        / <a href="/auth/redirect">Sign in and be a hero</a>
+                    {% end %}
+                </small>
+            </h1>
+        </div>
+
+        <script>
+        var pollIds = [];
+        var pollOptions = {};
+        </script>
+
+        {% for poll in active_polls %}
+            <div class='row'>
+                <div class="">
+
+                    <div class="page-header">
+                        <h2>
+                            <a href="/polls/{{poll['_id']}}">{{poll['question']}}</a>
+                            <small class="text-muted">
+                                by @<a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a>
+                                <a href="{{poll['post_url']}}" target="_blank">
+                                    <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                                </a>
+                            </small>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="donutchart-{{poll['_id']}}" class='row' style="width: 940px; height: 500px;"></div>
+
+
+            <script>
+            pollIds.push("{{poll['_id']}}");
+            pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
+
+            </script>
+
+
+            <div class='row'>
+                <h3>Vote and join the {{poll['total_votes']}} people with opinions</h3>
+                <div>
+                    {% for vote in poll['votes'][:15] %}
+                    <a href="/users/{{vote['user_id']}}">
+                        <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
+                    </a>
+                    {% end %}
+                </div>
+            </div>
+
+            <br>
+            <div class='row' style="padding-bottom: 50px;">
+                {% if user_is_authed %}
+                    <a id="post-vote" class="btn btn-default btn-lg pull-right" href="/polls/{{poll['_id']}}" style="margin-right:55px;">
+                         Vote and be awesome!
+                    </a>
+                {% else %}
+                    <a href='/auth/redirect?redirect={{escape(poll["redirect"])}}' class="pull-right">Sign in and be a voting hero</a>
+                {% end %}
+            </div>
+        {% end %}
+
+
+    </div>
+{% end %}
+
+{% block scripts %}
+<script>
+    google.load("visualization", "1", {packages: ["corechart"]});
+    google.setOnLoadCallback(init);
+
+
+    function init() {
+        for (index in pollIds) {
+            var id = pollIds[index];
+            initChart(id);
+        }
+    }
+
+
+    function initChart(id) {
+        var data, chart;
+        var chartElem = document.getElementById('donutchart-' + id);
+        data = new google.visualization.DataTable();
+        data.addColumn('string', 'Option');
+        data.addColumn('number', 'Votes');
+        chart = new google.visualization.PieChart(chartElem);
+        setZeroChartOptions(data, pollOptions[id]);
+        drawChart(chart, data);
+        setChartOptions(data, pollOptions[id]);
+        drawChart(chart, data);
+
+    }
+
+
+    function setZeroChartOptions(data, options) {
+        var index = 0;
+        for (id in options) {
+            data.addRow([options[id]['text'], 0]);
+            options[id]['index'] = index;
+            index++;
+        }
+    }
+
+
+    function setChartOptions(data, options) {
+        for (id in options) {
+            data.setValue(options[id]['index'], 1, options[id]['votes']);
+        }
+    }
+
+
+    function drawChart(chart, data) {
+        var chart_options = {
+            pieHole: 0.3,
+            animation: {
+                duration: 200,
+                easing: 'out'
+            }
+        };
+        chart.draw(data, chart_options);
+    }
+</script>
+{% end %}

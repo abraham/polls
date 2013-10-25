@@ -5,7 +5,8 @@ import pymongo
 
 
 from app import (
-    MainHandler,
+    IndexHandler,
+    ActivityHandler,
     RecentHandler,
     ActiveHandler,
     VintageHandler,
@@ -46,8 +47,9 @@ base_args = {
 
 
 application = tornado.web.Application([
-    (r'/', MainHandler, base_args),
+    (r'/', IndexHandler, base_args),
 
+    (r'/activity', ActivityHandler, base_args),
     (r'/recent', RecentHandler, base_args),
     (r'/active', ActiveHandler, base_args),
     (r'/vintage', VintageHandler, base_args),

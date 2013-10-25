@@ -120,14 +120,14 @@ def find_recent(db):
     return polls
 
 
-def find_active(db):
+def find_active(db, limit, min_vote_count):
     query = {
         'status': 'active',
         'total_votes': {
-            '$gt': 2,
+            '$gt': min_vote_count,
         }
     }
-    results = db.polls.find(query).sort('active_at', -1).limit(20)
+    results = db.polls.find(query).sort('active_at', -1).limit(limit)
     polls = []
     for poll in results:
         polls.append(poll)
