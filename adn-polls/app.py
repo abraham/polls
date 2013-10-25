@@ -84,8 +84,14 @@ class mdHandler(BaseHandler):
         import markdown2
         path = 'adn-polls/static/md{}.md'.format(self.request.path)
         html = markdown2.markdown_path(path)
+        title = 'Polls for App.net'
+        if self.request.path == '/terms':
+            title = 'Polls Terms of Service'
+        elif self.request.path == '/privacy':
+            title = 'Polls Privacy Policy'
         context = {
-            'html': html,
+            'unsafe_html': html,
+            'title': title,
         }
         self.render('templates/md.html', **context)
 
