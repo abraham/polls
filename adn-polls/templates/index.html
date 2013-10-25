@@ -23,60 +23,65 @@
         </script>
 
         <div class='col-md-12'>
-        {% for poll in active_polls %}
-            <div class='row'>
-                <div class="">
+            {% for poll in active_polls %}
+                <div class='row'>
+                    <div class="">
 
-                    <div class="page-header">
-                        <h2>
-                            <a href="/polls/{{poll['_id']}}">{{poll['question']}}</a>
-                            <small class="text-muted">
-                                by @<a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a>
-                                <a href="{{poll['post_url']}}" target="_blank">
-                                    <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
-                                </a>
-                            </small>
-                        </h2>
+                        <div class="page-header">
+                            <h2>
+                                <a href="/polls/{{poll['_id']}}">{{poll['question']}}</a>
+                                <small class="text-muted">
+                                    by @<a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a>
+                                    <a href="{{poll['post_url']}}" target="_blank">
+                                        <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at']}}</span>
+                                    </a>
+                                </small>
+                            </h2>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-            <div id="donutchart-{{poll['_id']}}" class='row' style="height: 500px;"></div>
+                <div id="donutchart-{{poll['_id']}}" class='row' style="height: 500px;"></div>
 
 
-            <script>
-            pollIds.push("{{poll['_id']}}");
-            pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
+                <script>
+                    pollIds.push("{{poll['_id']}}");
+                    pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
+                </script>
 
-            </script>
 
+                <div class='row'>
+                    <h3>Vote and join the {{poll['total_votes']}} people with opinions</h3>
+                    <div>
 
-            <div class='row'>
-                <h3>Vote and join the {{poll['total_votes']}} people with opinions</h3>
-                <div>
-                    {% for vote in poll['votes'][:15] %}
-                    <a href="/users/{{vote['user_id']}}">
-                        <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
-                    </a>
-                    {% end %}
+                        {% for vote in poll['votes'][:15] %}
+                            <a href="/users/{{vote['user_id']}}">
+                                <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57px" height="57px" style="margin-bottom: 5px;"/>
+                            </a>
+                        {% end %}
+
+                    </div>
                 </div>
-            </div>
 
-            <br>
-            <div class='row' style="padding-bottom: 50px;">
-                {% if user_is_authed %}
-                    <a id="post-vote" class="btn btn-default btn-lg pull-right" href="/polls/{{poll['_id']}}" style="margin-right:55px;">
-                         Vote and be awesome!
-                    </a>
-                {% else %}
-                    <a href='/auth/redirect?redirect={{escape(poll["redirect"])}}' class="btn btn-default btn-lg pull-right">Sign in and be a voting hero</a>
-                {% end %}
-            </div>
-        {% end %}
+
+                <br>
+                <div class='row' style="padding-bottom: 50px;">
+
+                    {% if user_is_authed %}
+                        <a id="post-vote" class="btn btn-default btn-lg pull-right" href="/polls/{{poll['_id']}}" style="margin-right:55px;">
+                             Vote and be awesome!
+                        </a>
+
+                    {% else %}
+                        <a href='/auth/redirect?redirect={{escape(poll["redirect"])}}' class="btn btn-default btn-lg pull-right">
+                            Sign in and be a voting hero
+                        </a>
+                    {% end %}
+
+                </div>
+            {% end %}
         </div>
-
-
     </div>
 {% end %}
 
