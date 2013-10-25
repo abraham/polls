@@ -129,14 +129,15 @@
 
         <script>
         $(function() {
-            $('.datetime').each(makeMoments);
             setInterval(makeMoments, 60 * 1000)
         });
 
-        function makeMoments(index, elem){
-            var $elem = $(elem);
-            var fromNow = moment.utc($elem.data('datetime')).fromNow();
-            $elem.text(fromNow);
+        function makeMoments(){
+            $('.datetime').each(function(index, elem) {
+                var $elem = $(elem);
+                var fromNow = moment.utc($elem.data('datetime')).fromNow();
+                $elem.text(fromNow);
+            });
         }
         </script>
 
