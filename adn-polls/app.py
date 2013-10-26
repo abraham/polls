@@ -364,9 +364,9 @@ class CreateHandler(BaseHandler):
 
     @require_auth
     def post(self):
+        self.check_xsrf_cookie()
         db = self.db
         user = self.user
-        self.check_xsrf_cookie()
 
         poll_id = ObjectId()
         poll_id_str = str(poll_id)
