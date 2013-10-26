@@ -204,7 +204,7 @@ class IndexHandler(BaseHandler):
         if user is not None:
             user_is_authed = True
 
-        active_polls = polls.find_active(db=db, limit=5, min_vote_count=5)
+        active_polls = polls.find_active(db=db, limit=5, min_vote_count=3)
         for poll in active_polls:
             poll['votes'].reverse()
             random.shuffle(poll['options'])
