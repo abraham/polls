@@ -287,7 +287,7 @@ class UsersIdHandler(BaseHandler):
             'recent_actions': recent_actions,
         }
         self.render('templates/actions.html', **context)
-        users.inc_view(db=db, user_id=viewed_user['_id'])
+        users.inc_views(db=db, user_id=viewed_user['_id'])
 
 
 class ActiveHandler(BaseHandler):

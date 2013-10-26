@@ -62,7 +62,7 @@ def find_by_id(db, user_id):
     return db.users.find_one(query)
 
 
-def inc_view(db, user_id):
+def inc_views(db, user_id):
     '''Increment the views field for a user'''
     query = {
             '_id': user_id,
