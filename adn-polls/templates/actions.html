@@ -41,10 +41,10 @@
                                 <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
                                 {% if action.get('post_url', False) %}
                                     <a href="{{action['post_url']}}" target="_blank">
-                                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
                                     </a>
                                 {% else %}
-                                    <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                                    <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
                                 {% end %}
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                                 <h4 class="media-heading">
                                     <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a> signed up for Polls
                                 </h4>
-                                New user <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                                New user <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
                             </div>
                         </div>
 
@@ -80,10 +80,10 @@
                                 <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
                                 {% if action.get('post_url', False) %}
                                     <a href="{{action['post_url']}}" target="_blank">
-                                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                                        <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
                                     </a>
                                 {% else %}
-                                    <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at']}}</span>
+                                    <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
                                 {% end %}
                             </div>
                         </div>
