@@ -168,3 +168,15 @@ def add_to_set(db, poll_id, field, value):
     }
     db.polls.update(query, mutation)
 
+
+def inc_views(db, poll_id):
+    '''Increment the views field for a user'''
+    query = {
+            '_id': poll_id,
+        }
+    mutation = {
+        '$inc': {
+            'views': 1,
+        }
+    }
+    db.polls.update(query, mutation)

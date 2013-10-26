@@ -616,6 +616,7 @@ class PollsIdHandler(BaseHandler):
             'options_object': polls.build_options_object(poll['options']),
             'options': poll['options'],
             'total_votes': poll['total_votes'],
+            'views': poll['views'],
             'poll_id': poll['_id'],
             'title': poll['question'],
             'post_text': post_text,
@@ -624,4 +625,6 @@ class PollsIdHandler(BaseHandler):
             'post_url': poll['post_url'],
             'created_at': poll['created_at'],
         }
-        html = self.render('templates/polls.html', **context)
+        self.render('templates/polls.html', **context)
+        
+        polls.inc_views(db=db, poll_id=poll['_id'])
