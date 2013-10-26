@@ -219,6 +219,9 @@ class IndexHandler(BaseHandler):
         }
         self.render('templates/index.html', **context)
 
+        for poll in active_polls:
+            polls.inc_views(db=db, poll_id=poll['_id'])
+
 
 class ActivityHandler(BaseHandler):
 
@@ -626,5 +629,5 @@ class PollsIdHandler(BaseHandler):
             'created_at': poll['created_at'],
         }
         self.render('templates/polls.html', **context)
-        
+
         polls.inc_views(db=db, poll_id=poll['_id'])
