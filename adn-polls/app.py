@@ -235,7 +235,7 @@ class ActivityHandler(BaseHandler):
 
         recent_actions = actions.find_recent(db=db)
         for action in recent_actions:
-            action['created_at_human'] = momentpy.from_now(action['created_at'], fromUTC=True)
+            action['created_at_human'] = momentpy.from_now(action['created_at'])
         context = {
             'header_title': 'Recent activity',
             'header_subtitle': '',
