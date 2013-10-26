@@ -3,22 +3,6 @@ from bson.objectid import ObjectId
 import time
 
 
-'''
-user: {
-    _id: 123,
-    user_name: abraham,
-    user_image: http://,
-    user_cover: http://,
-    adn_id: 123,
-    access_token: 123,
-
-    created_at: 123,
-    active_at: 123,
-    updated_at: 123,
-}
-'''
-
-
 def create(db, access_token, adn_id, user_name, user_avatar, user_cover):
     '''Create a new user'''
     timestamp = datetime.datetime.utcnow()
@@ -36,6 +20,7 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_cover):
         'created_at': timestamp,
         'active_at': timestamp,
         'updated_at': timestamp,
+        'views': 0,
     }
     db.users.insert(new_user)
     return new_user
