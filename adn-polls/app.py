@@ -637,7 +637,8 @@ class PollsIdHandler(BaseHandler):
             'post_id': poll['post_id'],
             'post_url': poll['post_url'],
             'created_at': poll['created_at'],
-            'created_at_human': momentpy.from_now(poll['created_at'], fromUTC=True),
+            # 'created_at_human': momentpy.from_now(poll['created_at'], fromUTC=True),
+            'created_at_human': poll['created_at'],
         }
         self.render('templates/polls.html', **context)
 
