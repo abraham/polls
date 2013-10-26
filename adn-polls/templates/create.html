@@ -1,17 +1,26 @@
 {% autoescape xhtml_escape %}
 {% extends "base.html" %}
 
+
 {% block title %}Create a new poll{% end %}
 
 
 {% block container %}
-<div class="starter-template">
+<div class="row">
+
+
     <div class="page-header">
-        <h1>Create a new poll <small class="text-muted">that will be visible to everyone</small></h1>
+        <h1>
+            Create a new poll
+            <small class="text-muted">
+                that will be visible to everyone
+            </small>
+        </h1>
     </div>
 
-    <div class="row">
-        <form role="form" method="post" action="/create" class='col-md-8 col-md-offset-2'>
+
+    <div class="col-md-8 col-md-offset-2">
+        <form role="form" method="post" action="/create" class='row'>
 
             <div class="form-group">
                 <label for="question">Question</label>
