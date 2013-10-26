@@ -442,6 +442,43 @@ class PollsIdNextHandler(BaseHandler):
         self.redirect(url)
 
 
+class PollsIdActionsHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        user = self.user
+        poll = polls.find_by_id(db=db, str_id=poll_id)
+        action_id = self.get_argument('actionId')
+        if poll is None:
+            self.write_error(404)
+            return
+
+        url = 'https://alpha-api.app.net/stream/0/posts/{}/{}'.format(poll['post_id'], action_id)
+        headers = {
+            'Authorization': 'Bearer {}'.format(user['access_token'])
+        }
+        result = requests.post(url, headers=headers)
+        response = result.json()
+
+        if result.status_code == 200:
+            self.write('success')
+            if action_id == 'star':
+                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=user['_id'])
+            elif action_id == 'repost':
+                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=user['_id'])
+            return
+        else:
+            if result.status_code == 400:
+                self.set_status(400)
+                self.write(response['meta']['error_message'])
+                return
+
+            print 'error taking action', result.content
+            raise Exception(result.content)
+
+
 class PollsIdVotesHandler(BaseHandler):
 
     @require_auth
@@ -482,8 +519,8 @@ class PollsIdVotesHandler(BaseHandler):
                 }
                 response = requests.post(url, data=args, headers=headers)
                 if response.status_code != 200:
-                    print 'create error', response.body
-                    raise Exception
+                    print 'create error', response.content
+                    raise Exception(response.content)
                 post = response.json()
                 post_url = post['data']['canonical_url']
 
@@ -533,6 +570,8 @@ class PollsIdHandler(BaseHandler):
         user = self.user
         user_is_authed = False
         user_has_voted = False
+        user_has_starred_post = False
+        user_has_reposted_post = False
 
         if user is not None:
             user_is_authed = True
@@ -548,6 +587,12 @@ class PollsIdHandler(BaseHandler):
 
         if user_is_authed and user['_id'] in poll['votes_user_ids']:
             user_has_voted = True
+        if user_is_authed and user['_id'] in poll['post_starred_by']:
+            user_has_starred_post = True
+        if user_is_authed and user['_id'] in poll['post_reposted_by']:
+            user_has_reposted_post = True
+
+
         url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll['_id']))
 
         voted_on = ''
@@ -557,10 +602,13 @@ class PollsIdHandler(BaseHandler):
         poll['votes'].reverse()
         random.shuffle(poll['options'])
         context = {
+            'xsrf_token': self.xsrf_token,
             'xsrf_input': self.xsrf_form_html(),
             'redirect': '/polls/{}'.format(poll['_id']),
             'user_is_authed': user_is_authed,
             'user_has_voted': user_has_voted,
+            'user_has_starred_post': user_has_starred_post,
+            'user_has_reposted_post': user_has_reposted_post,
             'owner_username': poll['user_name'],
             'owner_id': poll['user_id'],
             'question': poll['question'],

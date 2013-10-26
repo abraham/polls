@@ -2,6 +2,9 @@
 {% extends "base.html" %}
 
 
+{% block xsrf %}<meta name="_xsrf" content="{{xsrf_token}}">{% end %}
+
+
 {% block title %}{{title}}{% end %}
 
 
@@ -10,19 +13,29 @@
 
 
         <div class="page-header">
-            <h1>
-                {{question}}
-                <small class="text-muted">
-                    by @<a href="/users/{{owner_id}}">{{owner_username}}</a>
-                    {% if post_url %}
-                    <a href="{{post_url}}" target="_blank">
-                        <span class='datetime' data-datetime="{{created_at}}">{{created_at}}</span>
-                    </a>
-                    {% else %}
-                    <span class='datetime' data-datetime="{{created_at}}">{{created_at}}</span>
-                    {% end %}
-                </small>
-            </h1>
+            <h1>{{question}}</h1>
+        </div>
+
+
+        <div class="lead text-muted">
+
+            By <a href="/users/{{owner_id}}" title="Created by @{{owner_username}}">@{{owner_username}}</a>
+            <a href="{{post_url}}" target="_blank" title="View on ADN">
+                <span class='datetime' data-datetime="{{created_at}}">{{created_at}}</span></a>&nbsp;
+            <a href="{{post_url}}" target="_blank" title="View on ADN">
+                <span class="glyphicon glyphicon-link"></span></a>&nbsp;
+
+            {% if user_is_authed %}
+                <a class="adn-action-star adn-action-{{poll_id}} hover-pointer" data-poll-id="{{poll_id}}" title="Star on ADN">
+                {% if user_has_starred_post %}
+                    <span class="glyphicon glyphicon-star adn-action-take"></span></a>&nbsp;
+                {% else %}
+                    <span class="glyphicon glyphicon-star-empty"></span></a>&nbsp;
+                {% end %}
+                <a class="adn-action-repost adn-action-{{poll_id}} hover-pointer" data-poll-id="{{poll_id}}" title="Repost on ADN">
+                    <span class="glyphicon glyphicon-retweet {% if user_has_reposted_post %}adn-action-take{% end %}"></span></a>
+            {% end %}
+
         </div>
 
 

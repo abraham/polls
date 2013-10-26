@@ -6,6 +6,7 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Polls for App.net{% end %}</title>
+        {% block xsrf %}{% end %}
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 
         <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -46,6 +47,15 @@
 
             input#options {
                 margin-bottom: 20px
+            }
+
+            .hover-pointer {
+                cursor: pointer;
+                cursor: hand;
+            }
+
+            .adn-action-take {
+                color: #999;
             }
         </style>
     </head>
@@ -138,6 +148,8 @@
         $(function() {
             makeMoments();
             setInterval(makeMoments, 60 * 1000)
+            $(document).on('click', '.adn-action-star', starPoll);
+            $(document).on('click', '.adn-action-repost', repostPoll);
         });
 
         function makeMoments(){
@@ -146,6 +158,66 @@
                 var fromNow = moment.utc($elem.data('datetime')).fromNow();
                 $elem.text(fromNow);
             });
+        }
+
+
+        function starPoll(event) {
+            var $a = $(event.currentTarget);
+            var pollId = $a.data('poll-id');
+            $a.find('span')
+                .addClass('glyphicon-star')
+                .removeClass('glyphicon-star-empty')
+                .addClass('adn-action-take');
+            postAdnAction(pollId, 'star');
+        }
+
+
+        function repostPoll(event) {
+            var $a = $(event.currentTarget);
+            var pollId = $a.data('poll-id');
+            $a.find('span').addClass('adn-action-take');
+            postAdnAction(pollId, 'repost');
+        }
+
+
+        function postAdnAction(pollId, actionId) {
+            var data = {
+                actionId: actionId,
+                _xsrf: $('meta[name=_xsrf]').prop('content')
+            }
+            var params = {
+                pollId: pollId,
+                actionId: actionId
+            }
+            $.post('/polls/' + pollId + '/actions', data)
+                .done(postAdnActionDone)
+                .fail(postAdnActionFail(params));
+        }
+
+
+        function postAdnActionDone(data) {
+            // success
+        }
+
+
+        var postAdnActionFail = function(params) {
+            return function(data, textStatus, jqXHR) {
+                var $span = $('.adn-action-' + params.actionId + '.adn-action-' + params.pollId + ' span');
+                $span.removeClass('adn-action-take');
+                if ($span.hasClass('glyphicon-star')) {
+                    $span.find('span')
+                        .addClass('glyphicon-star-empty')
+                        .removeClass('glyphicon-star');
+                }
+
+                if (data.status == 400) {
+                    alert(data.responseText);
+                    return;
+                }
+
+                alert('Something went wrong.');
+                return;
+            }
         }
         </script>
 

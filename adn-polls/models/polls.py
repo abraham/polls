@@ -2,45 +2,6 @@ import datetime
 from bson.objectid import ObjectId
 
 
-'''
-poll: {
-    _id: xyz,
-    poll_type: multiplechoice,
-    display: 'donut',
-    user_name: abraham,
-    user_avatar: http://,
-    user_id: 123,
-    post_id: 123,
-    post_url: http://,
-    question: what the what,
-    total_votes: 4,
-    options: [],
-    votes: [],
-    created_at: 123,
-    updated_at: 123,
-    active_at: 123,
-    status: active,
-}
-
-votes: {
-    _id: xyz,
-    user_id: 123,
-    user_name: 123,
-    option_id: 123
-    user_avatar: http://,
-    created_at,
-    post_id
-    post_url
-}
-
-options: {
-    text: 'xya',
-    id: xyz,
-    votes: 123
-}
-'''
-
-
 def create(db, poll_id, poll_type, display_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
     timestamp = datetime.datetime.utcnow()
     new_poll = {
@@ -65,6 +26,8 @@ def create(db, poll_id, poll_type, display_type, question, options, user_name, u
 
         'post_id': post_id,
         'post_url': post_url,
+        'post_starred_by': [],
+        'post_reposted_by': [],
     }
 
     for option in options:
@@ -190,3 +153,17 @@ def build_options_object(options):
             'votes': option['votes'],
         }
     return options_object
+
+
+def add_to_set(db, poll_id, field, value):
+    '''add a value to a set'''
+    query = {
+        '_id': poll_id,
+    }
+    mutation = {
+        '$addToSet': {
+            field: value,
+        }
+    }
+    db.polls.update(query, mutation)
+
