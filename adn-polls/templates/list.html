@@ -59,7 +59,7 @@
                                 and voted on by 
                                 {% for vote in poll['votes'][:max] %}
                                     <a href="/users/{{vote['user_id']}}">
-                                        <img class="" src="{{vote['user_avatar']}}?h=32&amp;w=32" title="@{{vote['user_name']}}" width="16px" height="16px"/>
+                                        <img class="" src="{{vote['user_avatar']}}?h=32&amp;w=32" title="@{{vote['user_name']}}" width="16" height="16" alt="@{{vote['user_name']}}'s avatar"/>
                                     </a>
                                 {% end %}
 
