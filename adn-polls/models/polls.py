@@ -22,7 +22,7 @@ def create(db, poll_id, poll_type, display_type, question, options, user_name, u
         'created_at': timestamp,
         'updated_at': timestamp,
         'active_at': timestamp,
-        'views': 0,
+        'views': 1,
         'status': 'active',
 
         'post_id': post_id,

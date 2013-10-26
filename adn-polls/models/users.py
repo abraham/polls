@@ -20,7 +20,7 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_cover):
         'created_at': timestamp,
         'active_at': timestamp,
         'updated_at': timestamp,
-        'views': 0,
+        'views': 1,
     }
     db.users.insert(new_user)
     return new_user
