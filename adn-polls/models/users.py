@@ -60,3 +60,16 @@ def find_by_id(db, user_id):
         '_id': user_id,
     }
     return db.users.find_one(query)
+
+
+def inc_view(db, user_id):
+    '''Increment the views field for a user'''
+    query = {
+            '_id': user_id,
+        }
+    mutation = {
+        '$inc': {
+            'views': 1,
+        }
+    }
+    db.users.update(query, mutation)
