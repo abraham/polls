@@ -83,20 +83,20 @@
                         <a href="/activity">Activity</a>
                     </li>
                     <li>
-                        <a href="/create" style="color: #468847;"><strong>Create a poll for free</strong></a>
-                    </li>
-                    <li class="text-danger">
                         <a href="https://docs.google.com/forms/d/1E7OEZu2CU72lsY5qMFUeKSiGQD9Vg0ucuW0nme-nsyo/viewform" target='_blank'>Feedback <span class="glyphicon glyphicon-new-window"></span></a>
+                    </li>
+                    <li>
+                        <a href="/create" style="color: #468847;"><strong>Create a poll for free</strong></a>
                     </li>
                 </ul>
 
                 <ul class="nav navbar-nav pull-right">
-                    {% if globals().get('poll_id', False) %}
+                    {% if globals().get('poll', False) %}
                     <li>
-                        <a href="/polls/{{poll_id}}/prev">Prev</a>
+                        <a href="/polls/{{poll['_id']}}/prev">Prev</a>
                     </li>
                     <li>
-                        <a href="/polls/{{poll_id}}/next">Next</a>
+                        <a href="/polls/{{poll['_id']}}/next">Next</a>
                     </li>
                     {% end %}
                 </ul>
