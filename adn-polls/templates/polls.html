@@ -5,7 +5,7 @@
 {% block xsrf %}<meta name="_xsrf" content="{{xsrf_token}}">{% end %}
 
 
-{% block title %}{{title}}{% end %}
+{% block title %}{{poll['question']}}{% end %}
 
 
 {% block container %}
@@ -13,27 +13,27 @@
 
 
         <div class="page-header">
-            <h1>{{question}}</h1>
+            <h1>{{poll['question']}}</h1>
         </div>
 
 
         <div class="lead text-muted">
 
-            By <a href="/users/{{owner_id}}" title="Created by @{{owner_username}}">@{{owner_username}}</a>
-            <a href="{{post_url}}" target="_blank" title="View on ADN">
-                <span class='datetime' data-datetime="{{created_at}}">{{created_at_human}}</span></a>&nbsp;
-            <span>{{views}} views</span>&nbsp;
-            <a href="{{post_url}}" target="_blank" title="View on ADN">
+            By <a href="/users/{{poll['user_id']}}" title="Created by @{{poll['user_name']}}">@{{poll['user_name']}}</a>
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
+                <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
+            <span>{{poll['views']}} views</span>&nbsp;
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
                 <span class="glyphicon glyphicon-link"></span></a>&nbsp;
 
             {% if user_is_authed %}
-                <a class="adn-action-star adn-action-{{poll_id}} hover-pointer" data-poll-id="{{poll_id}}" title="Star on ADN">
+                <a class="adn-action-star adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Star on ADN">
                 {% if user_has_starred_post %}
                     <span class="glyphicon glyphicon-star adn-action-take"></span></a>&nbsp;
                 {% else %}
                     <span class="glyphicon glyphicon-star-empty"></span></a>&nbsp;
                 {% end %}
-                <a class="adn-action-repost adn-action-{{poll_id}} hover-pointer" data-poll-id="{{poll_id}}" title="Repost on ADN">
+                <a class="adn-action-repost adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Repost on ADN">
                     <span class="glyphicon glyphicon-retweet {% if user_has_reposted_post %}adn-action-take{% end %}"></span></a>
             {% end %}
 
@@ -44,17 +44,17 @@
 
 
             <div id="donutchart" style="height: 500px;" class="row">
-            {% if total_votes == 0 %}
+            {% if poll['total_votes'] == 0 %}
                 <p class="lead text-center" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
             {% end %}
             </div>
 
 
             <div class='row'>
-                <form role="form" id="vote" data-poll-id="{{poll_id}}" class="col-md-10 col-md-offset-1">
+                <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="col-md-10 col-md-offset-1">
                     {% raw xsrf_input %}
 
-                    {% for option in options %}
+                    {% for option in poll['options'] %}
                     <div class="radio">
                         <label>
                             <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
@@ -68,10 +68,10 @@
                     {% if user_has_voted %}
                     <p>
                         <strong>You already voted like a champ!</strong>
-                        Why not <a href="/polls/{{poll_id}}/next">try another poll?</a>
+                        Why not <a href="/polls/{{poll['_id']}}/next">try another poll?</a>
                     </p>
 
-                    {% elif user_is_authed and post_id %}
+                    {% elif user_is_authed and poll['post_id'] %}
                     <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
                         <span class="glyphicon glyphicon-check"></span>
                          Vote and post to ADN
@@ -95,13 +95,13 @@
             </div>
 
 
-            {% if total_votes > 3 %}
+            {% if poll['total_votes'] > 3 %}
                 <div class='row'>
                     <div class='col-md-10 col-md-offset-1'>
                         <br/>
-                        <h4>{{total_votes}} people with opinions</h4>
+                        <h4>{{poll['total_votes']}} people with opinions</h4>
                         <div>
-                            {% for vote in votes[:100] %}
+                            {% for vote in poll['votes'][:100] %}
                             <a href="/users/{{vote['user_id']}}">
                                 <img class="img-rounded" src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57" height="57" style="margin-bottom: 5px;" alt="@{{vote['user_name']}}'s avatar"/>
                             </a>
@@ -117,7 +117,7 @@
                 <div class='col-md-10 col-md-offset-1'>
                     <br/>
                     <h4>Will your friends agree with you?</h4>
-                    <form role="form" id="post" data-poll-id="{{poll_id}}" >
+                    <form role="form" id="post" data-poll-id="{{poll['_id']}}" >
                         {% raw xsrf_input %}
 
                         <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
@@ -150,10 +150,10 @@
     google.load("visualization", "1", {packages: ["corechart"]});
 
     var data, chart;
-    var pollId = "{{poll_id}}";
+    var pollId = "{{poll['_id']}}";
     var pollOptions = {% raw json_encode(options_object) %};
     var chartElem = document.getElementById('donutchart');
-    var votes = {{total_votes}};
+    var votes = {{poll['total_votes']}};
 
     if (votes > 0) {
         google.setOnLoadCallback(init);

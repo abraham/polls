@@ -614,6 +614,7 @@ class PollsIdHandler(BaseHandler):
         post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
         poll['votes'].reverse()
         random.shuffle(poll['options'])
+        poll['created_at_human'] = poll['created_at']
 
         context = {
             'xsrf_token': self.xsrf_token,
@@ -623,22 +624,9 @@ class PollsIdHandler(BaseHandler):
             'user_has_voted': user_has_voted,
             'user_has_starred_post': user_has_starred_post,
             'user_has_reposted_post': user_has_reposted_post,
-            'owner_username': poll['user_name'],
-            'owner_id': poll['user_id'],
-            'question': poll['question'],
+            'poll': poll,
             'options_object': polls.build_options_object(poll['options']),
-            'options': poll['options'],
-            'total_votes': poll['total_votes'],
-            'views': poll['views'],
-            'poll_id': poll['_id'],
-            'title': poll['question'],
             'post_text': post_text,
-            'votes': poll['votes'],
-            'post_id': poll['post_id'],
-            'post_url': poll['post_url'],
-            'created_at': poll['created_at'],
-            # 'created_at_human': momentpy.from_now(poll['created_at'], fromUTC=True),
-            'created_at_human': poll['created_at'],
         }
         self.render('templates/polls.html', **context)
 
