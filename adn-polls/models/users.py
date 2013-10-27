@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 import time
 
 
-def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default):
+def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
     '''Create a new user'''
     timestamp = datetime.datetime.utcnow()
     new_user = {
@@ -15,6 +15,8 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_defa
         'user_cover': user_cover,
         'user_cover_is_default': user_cover_is_default,
         'user_name': user_name,
+        'user_text': user_text,
+        'user_full_name': user_full_name,
 
         'polls_count': 0,
         'votes_count': 0,
@@ -28,7 +30,7 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_defa
     return new_user
 
 
-def update(db, user_id, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default):
+def update(db, user_id, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
     '''Update an existing users info'''
     timestamp = datetime.datetime.utcnow()
     query = {
@@ -42,6 +44,8 @@ def update(db, user_id, access_token, user_name, user_avatar, user_avatar_is_def
             'user_avatar_is_default': user_avatar_is_default,
             'user_cover': user_cover,
             'user_cover_is_default': user_cover_is_default,
+            'user_text': user_text,
+            'user_full_name': user_full_name,
 
             'active_at': timestamp,
             'updated_at': timestamp,

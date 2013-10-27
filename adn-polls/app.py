@@ -167,20 +167,23 @@ class AuthCallbackHandler(BaseHandler):
                 'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
+                'user_text': token['token']['user']['description']['text'],
+                'user_full_name': token['token']['user']['name'],
             }
             user = users.create(db=db, **new_user)
             existing_user = False
         else:
             update = {
-                'user_id': user['_id'],
                 'access_token': token['access_token'],
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],
                 'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
+                'user_text': token['token']['user']['description']['text'],
+                'user_full_name': token['token']['user']['name'],
             }
-            users.update(db=db, **update)
+            users.update(db=db, user_id=user['_id'], **update)
 
         self.set_json_cookie({'user_id': str(user['_id'])})
         self.redirect(redirect)
