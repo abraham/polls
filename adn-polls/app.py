@@ -170,7 +170,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_text': None,
                 'user_full_name': token['token']['user']['name'],
             }
-            if token.get('description', None) is not None:
+            if token['token']['user'].get('description', None) is not None:
                 new_user['user_text'] = token['token']['user']['description']['text']
             user = users.create(db=db, **new_user)
             existing_user = False
@@ -185,7 +185,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_text': None,
                 'user_full_name': token['token']['user']['name'],
             }
-            if token.get('description', None) is not None:
+            if token['token']['user'].get('description', None) is not None:
                 update['user_text'] = token['token']['user']['description']['text']
             users.update(db=db, user_id=user['_id'], **update)
 
