@@ -66,6 +66,14 @@ def find_by_id(db, user_id):
     return db.users.find_one(query)
 
 
+def find_all(db):
+    '''Find all users'''
+    all_users = []
+    for user in db.users.find():
+        all_users.append(user)
+    return all_users
+
+
 def inc_views(db, user_id):
     '''Increment the views field for a user'''
     query = {

@@ -274,6 +274,31 @@ class RecentHandler(BaseHandler):
         self.render('templates/list.html', **context)
 
 
+class UsersGridHandler(BaseHandler):
+
+    @require_auth
+    def get(self):
+        db = self.db
+        user = self.user
+        user_is_authed = True
+        
+        if user['user_name'] not in ('abraham', 'devbraham'):
+            self.write_error(404)
+            return
+
+        all_users = users.find_all(db=db)
+        # for poll in recent_polls:
+        #     poll['votes'].reverse()
+        #     poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+        context = {
+            'header_title': 'Users',
+            'header_subtitle': 'Little boxes on the hillside',
+            'user_is_authed': user_is_authed,
+            'users': all_users,
+        }
+        self.render('templates/grid.html', **context)
+
+
 class UsersIdHandler(BaseHandler):
 
     def get(self, user_id):
