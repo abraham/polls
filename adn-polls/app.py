@@ -496,7 +496,7 @@ class PollsIdPrevHandler(BaseHandler):
     def get(self, polls_id):
         db = self.db
         user = self.user
-        poll = polls.find_prev(db=db, current_id_str=polls_id)
+        poll = polls.find_prev(db=db, current_id=ObjectId(polls_id))
         if poll is None:
             self.write_error(404)
             return
@@ -509,7 +509,7 @@ class PollsIdNextHandler(BaseHandler):
     def get(self, polls_id):
         db = self.db
         user = self.user
-        poll = polls.find_next(db=db, current_id_str=polls_id)
+        poll = polls.find_next(db=db, current_id=ObjectId(polls_id))
         if poll is None:
             self.write_error(404)
             return
@@ -524,7 +524,8 @@ class PollsIdActionsHandler(BaseHandler):
         self.check_xsrf_cookie()
         db = self.db
         user = self.user
-        poll = polls.find_by_id(db=db, str_id=poll_id)
+        poll_id = ObjectId(poll_id)
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
         action_id = self.get_argument('actionId')
         if poll is None:
             self.write_error(404)
@@ -562,6 +563,8 @@ class PollsIdVotesHandler(BaseHandler):
         db = self.db
         user = self.user
         option_id = self.get_argument('option_id')
+        poll_id = ObjectId(poll_id)
+        option_id = ObjectId(option_id)
         # TODO: validate option_ids
         # TODO: validate user has not already voted
         args = {
@@ -573,7 +576,7 @@ class PollsIdVotesHandler(BaseHandler):
         }
         polls.vote(db=db, **args)
 
-        poll = polls.find_by_id(db=db, str_id=poll_id)
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
         if poll is not None:
             post_url = None
             option = ''
@@ -652,10 +655,12 @@ class PollsIdHandler(BaseHandler):
             user_is_authed = True
 
         try:
-            poll = polls.find_by_id(db=db, str_id=poll_id)
+            poll_id = ObjectId(poll_id)
         except pymongo.errors.InvalidId, e:
             self.send_error(404)
             return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
         if poll is None:
             self.send_error(404)
             return

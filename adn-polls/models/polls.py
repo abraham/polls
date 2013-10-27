@@ -45,9 +45,9 @@ def create(db, poll_id, poll_type, display_type, question, options, user_name, u
 def vote(db, poll_id, option_id, user_id, user_name, user_avatar, post_id=None, post_url=None):
     timestamp = datetime.datetime.utcnow()
     query = {
-        '_id': ObjectId(poll_id),
+        '_id': poll_id,
         'votes_user_ids': {'$ne': user_id},
-        'options._id': ObjectId(option_id),
+        'options._id': option_id,
     }
     mutation = {
         '$set': {
@@ -122,30 +122,30 @@ def find_top_viewed(db):
     return polls
 
 
-def find_by_id(db, str_id):
+def find_by_id(db, poll_id):
     query = {
-        '_id': ObjectId(str_id),
+        '_id': poll_id,
         'status': 'active',
     }
     return db.polls.find_one(query)
 
 
-def find_next(db, current_id_str):
+def find_next(db, current_id):
     '''Find the next poll not voted on'''
     query = {
         '_id': {
-            '$lt': ObjectId(current_id_str),
+            '$lt': current_id,
         },
         'status': 'active',
     }
     return db.polls.find_one(query, sort=[('_id', -1)])
 
 
-def find_prev(db, current_id_str):
+def find_prev(db, current_id):
     '''Find the next poll not voted on'''
     query = {
         '_id': {
-            '$gt': ObjectId(current_id_str),
+            '$gt': current_id,
         },
         'status': 'active',
     }
