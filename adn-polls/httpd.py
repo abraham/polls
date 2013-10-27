@@ -11,6 +11,7 @@ from app import (
     ActiveHandler,
     VintageHandler,
     TopHandler,
+    TopViewedHandler,
     CreateHandler,
     PollsIdHandler,
     PostsHandler,
@@ -55,6 +56,7 @@ application = tornado.web.Application([
     (r'/active', ActiveHandler, base_args),
     (r'/vintage', VintageHandler, base_args),
     (r'/top', TopHandler, base_args),
+    (r'/topviewed', TopViewedHandler, base_args),
 
     (r'/polls/([^/]+)', PollsIdHandler, base_args),
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),

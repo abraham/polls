@@ -36,6 +36,9 @@
                             <a href="/polls/{{poll['_id']}}">
                                 {{poll['question']}}
                             </a>
+                            {% if show_views %}
+                                <span class="text-muted">{{poll['views']}} views</span>
+                            {% end %}
                         </h4>
 
 
