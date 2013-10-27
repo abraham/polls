@@ -287,9 +287,6 @@ class UsersGridHandler(BaseHandler):
             return
 
         all_users = users.find_recent(db=db)
-        # for poll in recent_polls:
-        #     poll['votes'].reverse()
-        #     poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
         context = {
             'header_title': 'Users',
             'header_subtitle': 'Little boxes on the hillside',
