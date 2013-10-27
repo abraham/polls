@@ -167,9 +167,11 @@ class AuthCallbackHandler(BaseHandler):
                 'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
-                'user_text': token['token']['user']['description']['text'],
+                'user_text': None,
                 'user_full_name': token['token']['user']['name'],
             }
+            if token.get('description', None) is not None:
+                new_user['user_text'] = token['token']['user']['description']['text']
             user = users.create(db=db, **new_user)
             existing_user = False
         else:
@@ -180,9 +182,11 @@ class AuthCallbackHandler(BaseHandler):
                 'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
-                'user_text': token['token']['user']['description']['text'],
+                'user_text': None,
                 'user_full_name': token['token']['user']['name'],
             }
+            if token.get('description', None) is not None:
+                update['user_text'] = token['token']['user']['description']['text']
             users.update(db=db, user_id=user['_id'], **update)
 
         self.set_json_cookie({'user_id': str(user['_id'])})
