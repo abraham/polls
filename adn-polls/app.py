@@ -164,7 +164,9 @@ class AuthCallbackHandler(BaseHandler):
                 'adn_id': adn_id,
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],
+                'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
+                'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
             }
             user = users.create(db=db, **new_user)
             existing_user = False
@@ -174,7 +176,9 @@ class AuthCallbackHandler(BaseHandler):
                 'access_token': token['access_token'],
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],
+                'user_avatar_is_default': token['token']['user']['avatar_image']['is_default'],
                 'user_cover': token['token']['user']['cover_image']['url'],
+                'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
             }
             users.update(db=db, **update)
 
