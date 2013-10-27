@@ -56,10 +56,12 @@ class BaseHandler(tornado.web.RequestHandler):
             print 'Redirecting to SSL'
             url = 'https://{}{}'.format(self.request.host, self.request.path)
             self.redirect(url)
+            return
         if host is not None and not debug and host != 'polls.abrah.am':
             print 'Redirecting to polls.abrah.am'
             url = 'https://{}{}'.format('polls.abrah.am', self.request.path)
             self.redirect(url)
+            return
 
 
     def set_json_cookie(self, args):
