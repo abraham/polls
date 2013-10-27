@@ -281,12 +281,12 @@ class UsersGridHandler(BaseHandler):
         db = self.db
         user = self.user
         user_is_authed = True
-        
+
         if user['user_name'] not in ('abraham', 'devbraham'):
             self.write_error(404)
             return
 
-        all_users = users.find_all(db=db)
+        all_users = users.find_recent(db=db)
         # for poll in recent_polls:
         #     poll['votes'].reverse()
         #     poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
