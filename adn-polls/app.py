@@ -216,7 +216,7 @@ class IndexHandler(BaseHandler):
             random.shuffle(poll['options'])
             poll['options_object'] = polls.build_options_object(poll['options'])
             poll['redirect'] = '/polls/{}'.format(poll['_id'])
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'header_title': 'Polls for App.net',
@@ -241,7 +241,7 @@ class ActivityHandler(BaseHandler):
 
         recent_actions = actions.find_recent(db=db)
         for action in recent_actions:
-            action['created_at_human'] = momentpy.from_now(action['created_at'], fromUTC=True)
+            action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         context = {
             'header_title': 'Recent activity',
             'header_subtitle': '',
@@ -263,7 +263,7 @@ class RecentHandler(BaseHandler):
         recent_polls = polls.find_recent(db=db)
         for poll in recent_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'header_title': 'New polls',
             'header_subtitle': 'are the latest and (maybe) greatest',
@@ -316,7 +316,7 @@ class UsersIdHandler(BaseHandler):
 
         recent_actions = actions.find_recent_by_user_id(db=db, user_id=ObjectId(user_id))
         for action in recent_actions:
-            action['created_at_human'] = momentpy.from_now(action['created_at'], fromUTC=True)
+            action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         subtitle = u'<a href="https://alpha.app.net/{}" target="_blank"><span class="glyphicon glyphicon-link"></span></a> recent activity'
         context = {
             'header_title': u'@{}'.format(viewed_user['user_name']),
@@ -340,7 +340,7 @@ class ActiveHandler(BaseHandler):
         recent_polls = polls.find_active(db=db, limit=20, min_vote_count=2)
         for poll in recent_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'header_title': 'Trending polls',
             'header_subtitle': 'are movers and shakers',
@@ -363,7 +363,7 @@ class VintageHandler(BaseHandler):
         vintage_polls = polls.find_vintage(db=db)
         for poll in vintage_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'header_title': 'Vintage polls',
             'header_subtitle': 'have not been voted on in a while',
@@ -386,7 +386,7 @@ class TopHandler(BaseHandler):
         top_polls = polls.find_top(db=db)
         for poll in top_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'header_title': 'Top polls',
             'header_subtitle': 'have (almost) ALL THE VOTES',
@@ -409,7 +409,7 @@ class TopViewedHandler(BaseHandler):
         top_polls = polls.find_top_viewed(db=db)
         for poll in top_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'header_title': 'Most viewed polls',
             'header_subtitle': 'have (almost) ALL THE VIEWS',
@@ -668,7 +668,7 @@ class PollsIdHandler(BaseHandler):
         post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
         poll['votes'].reverse()
         random.shuffle(poll['options'])
-        poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
+        poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'xsrf_token': self.xsrf_token,
