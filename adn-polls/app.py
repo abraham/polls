@@ -210,7 +210,7 @@ class IndexHandler(BaseHandler):
             random.shuffle(poll['options'])
             poll['options_object'] = polls.build_options_object(poll['options'])
             poll['redirect'] = '/polls/{}'.format(poll['_id'])
-            poll['created_at_human'] =momentpy.from_now(poll['created_at'], fromUTC=True)
+            poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
 
         context = {
             'header_title': 'Polls for App.net',
@@ -235,7 +235,7 @@ class ActivityHandler(BaseHandler):
 
         recent_actions = actions.find_recent(db=db)
         for action in recent_actions:
-            action['created_at_human'] = action['created_at']
+            action['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
         context = {
             'header_title': 'Recent activity',
             'header_subtitle': '',
@@ -605,7 +605,6 @@ class PollsIdHandler(BaseHandler):
         if user_is_authed and user['_id'] in poll['post_reposted_by']:
             user_has_reposted_post = True
 
-
         url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll['_id']))
 
         voted_on = ''
@@ -614,7 +613,7 @@ class PollsIdHandler(BaseHandler):
         post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
         poll['votes'].reverse()
         random.shuffle(poll['options'])
-        poll['created_at_human'] = poll['created_at']
+        poll['created_at_human'] = momentpy.from_now(poll['created_at'], fromUTC=True)
 
         context = {
             'xsrf_token': self.xsrf_token,
