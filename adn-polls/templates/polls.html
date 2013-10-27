@@ -226,17 +226,33 @@
             type: "POST",
             url: "/polls/" + pollId + "/votes",
             data: { option_id: option_id, _xsrf: _xsrf },
-            success: function(data){
-                $('#post-vote').slideUp(function() {
-                    $('#vote').append('<p>Nice vote! I bet your momma would be proud.</p>');
-                });
-            },
+            success: voteSuccess,
             error: function(errMsg) {
                 console.log('ERROR', errMsg);
                 alert('Oooops...something went wrong.');
             }
         });
         event.preventDefault()
+    }
+
+    function voteSuccess(data) {
+        $('#post-vote').slideUp(function() {
+            var html = '<div class="alert alert-success">';
+            html += '<strong>Nice vote!</strong>';
+            html += ' Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a ';
+            html += '<a class="adn-action-star adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Star on ADN">';
+            {% if user_has_starred_post %}
+                html += '<span class="glyphicon glyphicon-star adn-action-take"></span></a>';
+            {% else %}
+                html += '<span class="glyphicon glyphicon-star-empty"></span></a>';
+            {% end %}
+            html += ' and &nbsp;'
+            html += '<a class="adn-action-repost adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Repost on ADN">';
+            html += '<span class="glyphicon glyphicon-retweet"></span></a>&nbsp;';
+            html += ' or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.';
+            html += '</div>';
+            $('#vote').append(html);
+        });
     }
 
 
