@@ -3,7 +3,7 @@
 from . import *
 
 forms = {
-    SECOND: ("a few seconds",),
+    SECOND: ("a few seconds", "seconds"),
     MINUTE: ("a minute", "minutes"),
     HOUR: ("an hour", "hours"),
     DAY: ("a day", "days"),
