@@ -340,12 +340,14 @@ class UsersIdHandler(BaseHandler):
         recent_actions = actions.find_recent_by_user_id(db=db, user_id=ObjectId(user_id))
         for action in recent_actions:
             action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
-        subtitle = u'<a href="https://alpha.app.net/{}" target="_blank"><span class="glyphicon glyphicon-link"></span></a> recent activity'
+        subtitle = u'<a href="https://alpha.app.net/{}" target="_blank" title="View on ADN"><span class="glyphicon glyphicon-link"></span></a> '.format(viewed_user['user_name'])
+        subtitle += u'<a href="https://omega.app.net/new-message?to={}" target="_blank" title="Message on Omega"><span class="glyphicon glyphicon-envelope"></span></a> '.format(viewed_user['adn_id'])
+        subtitle += u'recent activity'
 
         context = {
             'current_user': current_user,
             'header_title': u'@{}'.format(viewed_user['user_name']),
-            'header_subtitle': subtitle.format(viewed_user['user_name']),
+            'header_subtitle': subtitle,
             'recent_actions': recent_actions,
         }
         self.render('templates/actions.html', **context)
