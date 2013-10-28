@@ -312,13 +312,9 @@ class UsersGridHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
 
-        if current_user['user_name'] not in ('abraham', 'devbraham'):
-            self.write_error(404)
-            return
-
         all_users = users.find_recent(db=db)
         context = {
-            'current_user': 'current_user',
+            'current_user': current_user,
             'header_title': 'Users',
             'header_subtitle': 'Little boxes on the hillside',
             'users': all_users,

@@ -29,7 +29,7 @@
 
                     {% if action['type'] == 'new_poll' %}
                         <a class="pull-right" href="/users/{{action['user_id']}}">
-                            <img class="media-object img-rounded " src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
+                            <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
                         </a>
 
                         <div class="media-body">
@@ -52,7 +52,7 @@
 
                     {% elif action['type'] == 'new_user' %}
                         <a class="pull-right" href="/users/{{action['user_id']}}">
-                            <img class="media-object img-rounded " src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
+                            <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
                         </a>
 
                         <div class="media-body">
@@ -67,7 +67,7 @@
 
                     {% elif action['type'] == 'new_vote' %}
                         <a class="pull-left" href="/users/{{action['user_id']}}">
-                            <img class="media-object img-rounded " src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
+                            <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
                         </a>
                         <div class="media-body">
                             <div class='pull-left'>

@@ -85,7 +85,7 @@ application = tornado.web.Application([
 
     (r'/favicon.ico', tornado.web.RedirectHandler, {'url': 'https://abrah.am/favicon.ico'}),
     (r'/css/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/css'}),
-    (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': 'addv-polls/adn-polls/static/img'}),
+    (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/img'}),
     (r'/js/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/js'}),
     (r'/fonts/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/fonts'}),
 ], **settings)

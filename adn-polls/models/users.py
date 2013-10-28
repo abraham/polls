@@ -73,7 +73,7 @@ def find_by_id(db, user_id):
 def find_recent(db):
     '''Find all users'''
     all_users = []
-    for user in db.users.find().sort('active_at', -1).limit(48):
+    for user in db.users.find().sort('active_at', -1).limit(102):
         all_users.append(user)
     return all_users
 
