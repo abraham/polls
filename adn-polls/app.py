@@ -681,11 +681,10 @@ class PollsIdHandler(BaseHandler):
         user_has_voted = False
         user_has_starred_post = False
         user_has_reposted_post = False
+        poll_id = object_id(poll_id)
 
-        try:
-            poll_id = ObjectId(poll_id)
-        except pymongo.errors.InvalidId, e:
-            self.send_error(404)
+        if poll_id is None:
+            self.write_error(404)
             return
 
         poll = polls.find_by_id(db=db, poll_id=poll_id)
