@@ -26,14 +26,8 @@
                 <span class="glyphicon glyphicon-link"></span></a>&nbsp;
 
             {% if current_user is not None %}
-                <a class="adn-action-star adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Star on ADN">
-                {% if user_has_starred_post %}
-                    <span class="glyphicon glyphicon-star adn-action-take"></span></a>&nbsp;
-                {% else %}
-                    <span class="glyphicon glyphicon-star-empty"></span></a>&nbsp;
-                {% end %}
-                <a class="adn-action-repost adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Repost on ADN">
-                    <span class="glyphicon glyphicon-retweet {% if user_has_reposted_post %}adn-action-take{% end %}"></span></a>
+                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}&nbsp;
+                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
             {% end %}
 
         </div>
@@ -64,31 +58,37 @@
 
                     <br/>
 
-                    {% if user_has_voted %}
-                    <p>
-                        <strong>You already voted like a champ!</strong>
-                        Why not <a href="/polls/{{poll['_id']}}/next">try another poll?</a>
-                    </p>
-
-                    {% elif current_user is not None and poll['post_id'] %}
-                    <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
-                        <span class="glyphicon glyphicon-check"></span>
-                         Vote and post to ADN
-                    </button>
-
-                    {% elif current_user is not None %}
-                    <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right" disabled="disabled" tabindex=2>
-                        <span class="glyphicon glyphicon-check"></span>
-                         Vote
-                    </button>
+                    {% if current_user is None %}
+                        
+                        <div class='pull-right'>
+                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                        </div>
 
                     {% else %}
-                    <h3>
-                        <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in and be a voting hero</a>
-                    </h3>
+                        
+                        {% if user_has_voted %}
+                            <div class="alert alert-success has-not-voted">
+                        {% else %}
+                            <div class="alert alert-success has-voted hidden">
+                        {% end %}
+                                <strong>Nice vote!</strong>
+                                Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a
+                                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
+                                and&nbsp;
+                                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
+                                or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.
+                            </div>
+
+                        {% if not user_has_voted %}
+                            <div class="has-not-voted">
+                                <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
+                                    <span class="glyphicon glyphicon-check"></span>
+                                     Vote and post to ADN
+                                </button>
+                            </div>
+                        {% end %}
 
                     {% end %}
-
                 </form>
                 <br/>
             </div>
@@ -130,9 +130,9 @@
                         </button>
                         
                         {% else %}
-                        <h3>
-                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="">Sign in to share like a BOSS</a>
-                        </h3>
+                        <div class="pull-right">
+                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in to share like a BOSS</a>
+                        </div>
                         {% end %}
 
                     </form>
@@ -235,23 +235,8 @@
     }
 
     function voteSuccess(data) {
-        $('#post-vote').slideUp(function() {
-            var html = '<div class="alert alert-success">';
-            html += '<strong>Nice vote!</strong>';
-            html += ' Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a ';
-            html += '<a class="adn-action-star adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Star on ADN">';
-            {% if user_has_starred_post %}
-                html += '<span class="glyphicon glyphicon-star adn-action-take"></span></a>';
-            {% else %}
-                html += '<span class="glyphicon glyphicon-star-empty"></span></a>';
-            {% end %}
-            html += ' and &nbsp;'
-            html += '<a class="adn-action-repost adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Repost on ADN">';
-            html += '<span class="glyphicon glyphicon-retweet"></span></a>&nbsp;';
-            html += ' or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.';
-            html += '</div>';
-            $('#vote').append(html);
-        });
+        $('.has-not-voted').slideUp();
+        $('.has-voted').hide().removeClass('hidden').slideDown();
     }
 
 
