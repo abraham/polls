@@ -4,6 +4,9 @@ import tornado.web
 import pymongo
 
 
+import views
+
+
 from app import (
     IndexHandler,
     ActivityHandler,
@@ -41,6 +44,7 @@ settings = {
     'debug': os.environ.get('DEBUG') in ('True', 'true', True),
     'cookie_secret': os.environ.get('COOKIE_SECRET'),
     'gzip': True,
+    'ui_modules': views,
 }
 
 

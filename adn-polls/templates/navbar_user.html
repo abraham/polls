@@ -1,0 +1,25 @@
+<li class="dropdown">
+    <a href="/users/{{current_user['_id']}}" class="dropdown-toggle" data-toggle="dropdown">
+        @{{current_user['user_name']}} <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="/users/{{current_user['_id']}}">Profile</a>
+        </li>
+        <li>
+            <a href="https://alpha.app.net/{{current_user['user_name']}}" target='_blank'>
+                Profile on ADN
+                <span class="glyphicon glyphicon-new-window"></span>
+            </a>
+        </li>
+        <li>
+            <a href="https://docs.google.com/forms/d/1E7OEZu2CU72lsY5qMFUeKSiGQD9Vg0ucuW0nme-nsyo/viewform" target='_blank'>
+                Feedback
+                <span class="glyphicon glyphicon-new-window"></span>
+            </a>
+        </li>
+        <li>
+            <a href="/auth/logout">Logout</a>
+        </li>
+    </ul>
+</li>
