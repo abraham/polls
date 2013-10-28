@@ -80,6 +80,27 @@ class BaseHandler(tornado.web.RequestHandler):
             return json.loads(value)
 
 
+    def _handle_request_exception(self, exception):
+        import traceback
+        debug = self.application.settings['debug'] in ('True', 'true', True)
+        http_error = isinstance(exception, tornado.web.HTTPError)
+
+        if not http_error and not debug:
+            try:
+                print 'Mailing error email'
+                text = "Uncaught exception %s\n\n\n%r\n" % (self._request_summary(), self.request)
+
+                if self.request.method == 'POST':
+                    text += "\n\nPOST Request body: %s" % (self.request.body, )
+
+                trace_str = traceback.format_exc()
+                text += '\n\n' + trace_str
+                send_simple_message(to=['4braham@gmail.com'], subject='Polls uncaught exception', text=text)
+            except:
+                print "** Failing even to email exception **"
+        super(BaseHandler, self)._handle_request_exception(exception)
+
+
 class mdHandler(BaseHandler):
 
     def get(self):
@@ -696,3 +717,15 @@ class PollsIdHandler(BaseHandler):
         self.render('templates/polls.html', **context)
 
         polls.inc_views(db=db, poll_id=poll['_id'])
+
+
+def send_simple_message(to, subject, text):
+    url = "https://api.mailgun.net/v2/abrahamwilliams.mailgun.org/messages"
+    auth = ("api", os.environ.get('MAILGUN_API_KEY'))
+    data = {
+        "from": "Polls for App.net <polls@abrahamwilliams.mailgun.org>",
+        "to": to,
+        "subject": subject,
+        "text": text,
+    }
+    return requests.post(url, auth=auth, data=data)
