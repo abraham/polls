@@ -8,7 +8,7 @@ def require_auth(f):
 
     @wraps(f)
     def wrapper(self, *args, **kwargs):
-        if self.user is None:
+        if self.current_user is None:
             args = {
                 'redirect': self.request.path,
             }

@@ -26,7 +26,7 @@
             <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
                 <span class="glyphicon glyphicon-link"></span></a>&nbsp;
 
-            {% if user_is_authed %}
+            {% if current_user is not None %}
                 <a class="adn-action-star adn-action-{{poll['_id']}} hover-pointer" data-poll-id="{{poll['_id']}}" title="Star on ADN">
                 {% if user_has_starred_post %}
                     <span class="glyphicon glyphicon-star adn-action-take"></span></a>&nbsp;
@@ -71,13 +71,13 @@
                         Why not <a href="/polls/{{poll['_id']}}/next">try another poll?</a>
                     </p>
 
-                    {% elif user_is_authed and poll['post_id'] %}
+                    {% elif current_user is not None and poll['post_id'] %}
                     <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
                         <span class="glyphicon glyphicon-check"></span>
                          Vote and post to ADN
                     </button>
 
-                    {% elif user_is_authed %}
+                    {% elif current_user is not None %}
                     <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right" disabled="disabled" tabindex=2>
                         <span class="glyphicon glyphicon-check"></span>
                          Vote
@@ -124,7 +124,7 @@
                         
                         <br/>
                         
-                        {% if user_is_authed %}
+                        {% if current_user is not None %}
                         <button type="submit" id="post-post" class="btn btn-default btn-lg pull-right btn-danger" tabindex=4>
                             <span class="glyphicon glyphicon-share"></span>
                              Post to ADN

@@ -33,7 +33,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def initialize(self, db=None):
         self.db = db
-        self.user = None
+        self.current_user = None
         self.cookie = None
 
         cookie = self.get_json_cookie()
@@ -41,7 +41,7 @@ class BaseHandler(tornado.web.RequestHandler):
         user_id = cookie.get('user_id')
 
         if db is not None and user_id is not None:
-            self.user = users.find_by_id(db=db, user_id=ObjectId(user_id))
+            self.current_user = users.find_by_id(db=db, user_id=ObjectId(user_id))
 
 
     def prepare(self):
@@ -85,14 +85,20 @@ class mdHandler(BaseHandler):
     def get(self):
         '''Return the markdown files for terms and privacy policy'''
         import markdown2
+
+        db = self.db
+        current_user = self.current_user
         path = 'adn-polls/static/md{}.md'.format(self.request.path)
         html = markdown2.markdown_path(path)
         title = 'Polls for App.net'
+
         if self.request.path == '/terms':
             title = 'Polls Terms of Service'
         elif self.request.path == '/privacy':
             title = 'Polls Privacy Policy'
+        
         context = {
+            'current_user': current_user,
             'unsafe_html': html,
             'title': title,
         }
@@ -111,6 +117,9 @@ class AuthRedirectHandler(BaseHandler):
 
     def get(self):
         '''Redirect to ADN to authorize the user'''
+        db = self.db
+        current_user = self.current_user
+
         if self.get_argument('redirect', None) is not None:
             args = {
                 'redirect': self.get_argument('redirect', None),
@@ -132,6 +141,8 @@ class AuthCallbackHandler(BaseHandler):
     def get(self):
         '''The user has returned from ADN, hopefully after granting authorization'''
         db = self.db
+        current_user = None
+
         redirect = self.cookie.get('redirect', '/')
         code = self.get_argument('code', None)
         if code is None:
@@ -157,9 +168,9 @@ class AuthCallbackHandler(BaseHandler):
 
         token = response.json()
         adn_id = token['token']['user']['id']
-        user = users.find_by_adn_id(db=db, adn_id=adn_id)
+        current_user = users.find_by_adn_id(db=db, adn_id=adn_id)
         existing_user = True
-        if user is None:
+        if current_user is None:
             new_user = {
                 'access_token': token['access_token'],
                 'adn_id': adn_id,
@@ -173,7 +184,7 @@ class AuthCallbackHandler(BaseHandler):
             }
             if token['token']['user'].get('description', None) is not None:
                 new_user['user_text'] = token['token']['user']['description']['text']
-            user = users.create(db=db, **new_user)
+            current_user = users.create(db=db, **new_user)
             existing_user = False
         else:
             update = {
@@ -188,15 +199,15 @@ class AuthCallbackHandler(BaseHandler):
             }
             if token['token']['user'].get('description', None) is not None:
                 update['user_text'] = token['token']['user']['description']['text']
-            users.update(db=db, user_id=user['_id'], **update)
+            users.update(db=db, user_id=current_user['_id'], **update)
 
-        self.set_json_cookie({'user_id': str(user['_id'])})
+        self.set_json_cookie({'user_id': str(current_user['_id'])})
         self.redirect(redirect)
         if existing_user == False:
             action = {
-                'user_name': user['user_name'],
-                'user_avatar': user['user_avatar'],
-                'user_id': user['_id'],
+                'user_name': current_user['user_name'],
+                'user_avatar': current_user['user_avatar'],
+                'user_id': current_user['_id'],
             }
             actions.new_user(db=db, **action)
 
@@ -213,10 +224,7 @@ class IndexHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         active_polls = polls.find_active(db=db, limit=5, min_vote_count=3)
         for poll in active_polls:
@@ -227,9 +235,9 @@ class IndexHandler(BaseHandler):
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
+            'current_user': current_user,
             'header_title': 'Polls for App.net',
             'header_subtitle': 'clean, simple, beautiful',
-            'user_is_authed': user_is_authed,
             'active_polls': active_polls,
         }
         self.render('templates/index.html', **context)
@@ -242,18 +250,15 @@ class ActivityHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         recent_actions = actions.find_recent(db=db)
         for action in recent_actions:
             action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         context = {
+            'current_user': current_user,
             'header_title': 'Recent activity',
             'header_subtitle': '',
-            'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
         self.render('templates/actions.html', **context)
@@ -263,19 +268,16 @@ class RecentHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         recent_polls = polls.find_recent(db=db)
         for poll in recent_polls:
             poll['votes'].reverse()
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
+            'current_user': current_user,
             'header_title': 'New polls',
             'header_subtitle': 'are the latest and (maybe) greatest',
-            'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
             'show_views': False,
         }
@@ -287,18 +289,17 @@ class UsersGridHandler(BaseHandler):
     @require_auth
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = True
+        current_user = self.current_user
 
-        if user['user_name'] not in ('abraham', 'devbraham'):
+        if current_user['user_name'] not in ('abraham', 'devbraham'):
             self.write_error(404)
             return
 
         all_users = users.find_recent(db=db)
         context = {
+            'current_user': 'current_user',
             'header_title': 'Users',
             'header_subtitle': 'Little boxes on the hillside',
-            'user_is_authed': user_is_authed,
             'users': all_users,
         }
         self.render('templates/grid.html', **context)
@@ -308,10 +309,7 @@ class UsersIdHandler(BaseHandler):
 
     def get(self, user_id):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         try:
             viewed_user = users.find_by_id(db=db, user_id=ObjectId(user_id))
@@ -326,10 +324,11 @@ class UsersIdHandler(BaseHandler):
         for action in recent_actions:
             action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         subtitle = u'<a href="https://alpha.app.net/{}" target="_blank"><span class="glyphicon glyphicon-link"></span></a> recent activity'
+
         context = {
+            'current_user': current_user,
             'header_title': u'@{}'.format(viewed_user['user_name']),
             'header_subtitle': subtitle.format(viewed_user['user_name']),
-            'user_is_authed': user_is_authed,
             'recent_actions': recent_actions,
         }
         self.render('templates/actions.html', **context)
@@ -340,19 +339,16 @@ class ActiveHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         recent_polls = polls.find_active(db=db, limit=20, min_vote_count=2)
         for poll in recent_polls:
             poll['votes'].reverse()
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
+            'current_user': current_user,
             'header_title': 'Trending polls',
             'header_subtitle': 'are movers and shakers',
-            'user_is_authed': user_is_authed,
             'recent_polls': recent_polls,
             'show_views': False,
         }
@@ -363,19 +359,17 @@ class VintageHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         vintage_polls = polls.find_vintage(db=db)
         for poll in vintage_polls:
             poll['votes'].reverse()
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
+
         context = {
+            'current_user': current_user,
             'header_title': 'Vintage polls',
             'header_subtitle': 'have not been voted on in a while',
-            'user_is_authed': user_is_authed,
             'recent_polls': vintage_polls,
             'show_views': False,
         }
@@ -386,19 +380,17 @@ class TopHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         top_polls = polls.find_top(db=db)
         for poll in top_polls:
             poll['votes'].reverse()
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
+
         context = {
+            'current_user': current_user,
             'header_title': 'Top polls',
             'header_subtitle': 'have (almost) ALL THE VOTES',
-            'user_is_authed': user_is_authed,
             'recent_polls': top_polls,
             'show_views': False,
         }
@@ -409,19 +401,17 @@ class TopViewedHandler(BaseHandler):
 
     def get(self):
         db = self.db
-        user = self.user
-        user_is_authed = False
-        if user is not None:
-            user_is_authed = True
+        current_user = self.current_user
 
         top_polls = polls.find_top_viewed(db=db)
         for poll in top_polls:
             poll['votes'].reverse()
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
+
         context = {
+            'current_user': current_user,
             'header_title': 'Most viewed polls',
             'header_subtitle': 'have (almost) ALL THE VIEWS',
-            'user_is_authed': user_is_authed,
             'recent_polls': top_polls,
             'show_views': True,
         }
@@ -432,7 +422,11 @@ class CreateHandler(BaseHandler):
 
     @require_auth
     def get(self):
+        db = self.db
+        current_user = self.current_user
+
         context = {
+            'current_user': current_user,
             'xsrf_input': self.xsrf_form_html(),
         }
         self.render('templates/create.html', **context)
@@ -442,7 +436,7 @@ class CreateHandler(BaseHandler):
     def post(self):
         self.check_xsrf_cookie()
         db = self.db
-        user = self.user
+        current_user = self.current_user
 
         poll_id = ObjectId()
         poll_id_str = str(poll_id)
@@ -455,7 +449,7 @@ class CreateHandler(BaseHandler):
         text = u'Q: {}\n\nVote on @polls at {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
-            'Authorization': 'Bearer {}'.format(user['access_token']),
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
         }
         args = {
             'text': text,
@@ -472,19 +466,21 @@ class CreateHandler(BaseHandler):
             'display_type': 'donut',
             'question': question,
             'options': options,
-            'user_id': user['_id'],
-            'user_name': user['user_name'],
-            'user_avatar': user['user_avatar'],
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
             'post_id': post['data']['id'],
             'post_url': post['data']['canonical_url'],
 
         }
         poll = polls.create(db=self.db, **args)
+
         self.redirect('/polls/{}'.format(poll_id_str))
+
         action = {
-            'user_name': user['user_name'],
-            'user_avatar': user['user_avatar'],
-            'user_id': user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'user_id': current_user['_id'],
             'question': question,
             'poll_id': poll['_id'],
             'post_url': post['data']['canonical_url'],
@@ -496,11 +492,13 @@ class PollsIdPrevHandler(BaseHandler):
 
     def get(self, polls_id):
         db = self.db
-        user = self.user
+        current_user = self.current_user
+
         poll = polls.find_prev(db=db, current_id=ObjectId(polls_id))
         if poll is None:
             self.write_error(404)
             return
+
         url = '/polls/{}'.format(str(poll['_id']))
         self.redirect(url)
 
@@ -509,11 +507,13 @@ class PollsIdNextHandler(BaseHandler):
 
     def get(self, polls_id):
         db = self.db
-        user = self.user
+        current_user = self.current_user
+
         poll = polls.find_next(db=db, current_id=ObjectId(polls_id))
         if poll is None:
             self.write_error(404)
             return
+
         url = '/polls/{}'.format(str(poll['_id']))
         self.redirect(url)
 
@@ -524,7 +524,8 @@ class PollsIdActionsHandler(BaseHandler):
     def post(self, poll_id):
         self.check_xsrf_cookie()
         db = self.db
-        user = self.user
+        current_user = self.current_user
+
         poll_id = ObjectId(poll_id)
         poll = polls.find_by_id(db=db, poll_id=poll_id)
         action_id = self.get_argument('actionId')
@@ -534,7 +535,7 @@ class PollsIdActionsHandler(BaseHandler):
 
         url = 'https://alpha-api.app.net/stream/0/posts/{}/{}'.format(poll['post_id'], action_id)
         headers = {
-            'Authorization': 'Bearer {}'.format(user['access_token'])
+            'Authorization': 'Bearer {}'.format(current_user['access_token'])
         }
         result = requests.post(url, headers=headers)
         response = result.json()
@@ -542,9 +543,9 @@ class PollsIdActionsHandler(BaseHandler):
         if result.status_code == 200:
             self.write('success')
             if action_id == 'star':
-                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=user['_id'])
+                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=current_user['_id'])
             elif action_id == 'repost':
-                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=user['_id'])
+                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=current_user['_id'])
             return
         else:
             if result.status_code == 400:
@@ -562,7 +563,8 @@ class PollsIdVotesHandler(BaseHandler):
     def post(self, poll_id):
         self.check_xsrf_cookie()
         db = self.db
-        user = self.user
+        current_user = self.current_user
+
         option_id = self.get_argument('option_id')
         poll_id = ObjectId(poll_id)
         option_id = ObjectId(option_id)
@@ -571,9 +573,9 @@ class PollsIdVotesHandler(BaseHandler):
         args = {
             'poll_id': poll_id,
             'option_id': option_id,
-            'user_id': user['_id'],
-            'user_name': user['user_name'],
-            'user_avatar': user['user_avatar'],
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
         }
         polls.vote(db=db, **args)
 
@@ -590,7 +592,7 @@ class PollsIdVotesHandler(BaseHandler):
                 text = '@{} {}'.format(poll['user_name'], option,)
                 url = 'https://alpha-api.app.net/stream/0/posts'
                 headers = {
-                    'Authorization': 'Bearer {}'.format(user['access_token']),
+                    'Authorization': 'Bearer {}'.format(current_user['access_token']),
                 }
                 args = {
                     'text': text,
@@ -604,9 +606,9 @@ class PollsIdVotesHandler(BaseHandler):
                 post_url = post['data']['canonical_url']
 
             action = {
-                'user_name': user['user_name'],
-                'user_avatar': user['user_avatar'],
-                'user_id': user['_id'],
+                'user_name': current_user['user_name'],
+                'user_avatar': current_user['user_avatar'],
+                'user_id': current_user['_id'],
                 'question': poll['question'],
                 'poll_id': poll['_id'],
                 'option': option,
@@ -621,7 +623,7 @@ class PostsHandler(BaseHandler):
     def post(self):
         self.check_xsrf_cookie()
         db = self.db
-        user = self.user
+        current_user = self.current_user
         text = self.get_argument('text')
 
         if text in (u'', ''):
@@ -633,7 +635,7 @@ class PostsHandler(BaseHandler):
             'text': text,
         }
         headers = {
-            'Authorization': 'Bearer {}'.format(user['access_token']),
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
         }
         response = requests.post(url, data=args, headers=headers)
 
@@ -646,14 +648,10 @@ class PollsIdHandler(BaseHandler):
 
     def get(self, poll_id):
         db = self.db
-        user = self.user
-        user_is_authed = False
+        current_user = self.current_user
         user_has_voted = False
         user_has_starred_post = False
         user_has_reposted_post = False
-
-        if user is not None:
-            user_is_authed = True
 
         try:
             poll_id = ObjectId(poll_id)
@@ -666,11 +664,11 @@ class PollsIdHandler(BaseHandler):
             self.send_error(404)
             return
 
-        if user_is_authed and user['_id'] in poll['votes_user_ids']:
+        if current_user and current_user['_id'] in poll['votes_user_ids']:
             user_has_voted = True
-        if user_is_authed and user['_id'] in poll['post_starred_by']:
+        if current_user and current_user['_id'] in poll['post_starred_by']:
             user_has_starred_post = True
-        if user_is_authed and user['_id'] in poll['post_reposted_by']:
+        if current_user and current_user['_id'] in poll['post_reposted_by']:
             user_has_reposted_post = True
 
         url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll['_id']))
@@ -684,10 +682,10 @@ class PollsIdHandler(BaseHandler):
         poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
+            'current_user': current_user,
             'xsrf_token': self.xsrf_token,
             'xsrf_input': self.xsrf_form_html(),
             'redirect': '/polls/{}'.format(poll['_id']),
-            'user_is_authed': user_is_authed,
             'user_has_voted': user_has_voted,
             'user_has_starred_post': user_has_starred_post,
             'user_has_reposted_post': user_has_reposted_post,

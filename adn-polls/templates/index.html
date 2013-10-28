@@ -14,7 +14,7 @@
                 {{header_title}}
                 <small>
                     {% raw header_subtitle %}
-                    {% if not user_is_authed %}
+                    {% if current_user is None %}
                         / <a href="/auth/redirect">Sign in and be a hero</a>
                     {% end %}
                 </small>
@@ -74,13 +74,13 @@
                 <br>
                 <div class='row' style="padding-bottom: 50px;">
 
-                    {% if user_is_authed %}
+                    {% if current_user is not None %}
                         <a id="post-vote" class="btn btn-default btn-success btn-lg pull-right" href="/polls/{{poll['_id']}}" style="margin-right: 55px;">
                              Vote and be merry!
                         </a>
 
                     {% else %}
-                        <a href='/auth/redirect?redirect={{escape(poll["redirect"])}}' class="btn btn-default btn-lg pull-right">
+                        <a href='/auth/redirect?redirect={{url_escape(poll["redirect"])}}' class="btn btn-default btn-lg pull-right">
                             Sign in and be a voting hero
                         </a>
                     {% end %}

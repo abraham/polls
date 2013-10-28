@@ -14,7 +14,7 @@
                 {{header_title}}
                 <small>
                     {% raw header_subtitle %}
-                    {% if not user_is_authed %}
+                    {% if current_user is None %}
                         / <a href="/auth/redirect">Sign in and be a hero</a>
                     {% end %}
                 </small>
