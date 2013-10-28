@@ -10,8 +10,11 @@
         <h1>4040404040404040404040404404040404</h1>
     </div>
     <p class="lead text-muted">
-        ah, ya, that page doesn't exist and probably never will...
-        <a href="/">Go home</a>
+        {% if message is None %}
+            awwwww, that page doesn't exist and probably never will...<a href='/'>Go home</a>
+        {% else %}
+            {% raw message %}
+        {% end %}
     </p>
     <br>
 </div>

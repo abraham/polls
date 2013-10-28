@@ -16,11 +16,11 @@ from models import polls, users, actions
 from decorators import require_auth
 
 
-def write_error(self, status_code, **kwargs):
-    self.set_status(status_code)
-    if status_code == 404:
-        self.render('templates/404.html')
-    elif status_code in (500, 503):
+def write_error(self, code, message=None, **kwargs):
+    self.set_status(code)
+    if code == 404:
+        self.render('templates/404.html', message=message)
+    elif code in (500, 503):
         self.render('templates/500.html')
     else:
         self.render('templates/500.html')
@@ -521,7 +521,8 @@ class PollsIdPrevHandler(BaseHandler):
 
         poll = polls.find_prev(db=db, current_id=poll_id)
         if poll is None:
-            self.write_error(404)
+            message = "No more previous polls found, <a href='/'>go home</a>, you're drunk."
+            self.write_error(code=404, message=message)
             return
 
         url = '/polls/{}'.format(str(poll['_id']))
@@ -540,7 +541,8 @@ class PollsIdNextHandler(BaseHandler):
 
         poll = polls.find_next(db=db, current_id=poll_id)
         if poll is None:
-            self.write_error(404)
+            message = "Th-Th-Th-Th-Th-... That's all, folks. No more polls found, <a href='/'>go home</a>."
+            self.write_error(code=404, message=message)
             return
 
         url = '/polls/{}'.format(str(poll['_id']))
