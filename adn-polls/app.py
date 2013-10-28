@@ -103,6 +103,7 @@ class robotHandler(BaseHandler):
 
     def get(self):
         '''Return the markdown files for terms and privacy policy'''
+        self.set_header('Content-Type', 'text/plain')
         self.render('static/txt/robots.txt')
 
 
