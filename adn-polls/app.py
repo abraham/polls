@@ -511,11 +511,15 @@ class CreateHandler(BaseHandler):
 
 class PollsIdPrevHandler(BaseHandler):
 
-    def get(self, polls_id):
+    def get(self, poll_id):
         db = self.db
         current_user = self.current_user
+        poll_id = object_id(poll_id)
+        if poll_id is None:
+            self.write_error(404)
+            return
 
-        poll = polls.find_prev(db=db, current_id=ObjectId(polls_id))
+        poll = polls.find_prev(db=db, current_id=poll_id)
         if poll is None:
             self.write_error(404)
             return
@@ -526,11 +530,15 @@ class PollsIdPrevHandler(BaseHandler):
 
 class PollsIdNextHandler(BaseHandler):
 
-    def get(self, polls_id):
+    def get(self, poll_id):
         db = self.db
         current_user = self.current_user
+        poll_id = object_id(poll_id)
+        if poll_id is None:
+            self.write_error(404)
+            return
 
-        poll = polls.find_next(db=db, current_id=ObjectId(polls_id))
+        poll = polls.find_next(db=db, current_id=poll_id)
         if poll is None:
             self.write_error(404)
             return
@@ -720,6 +728,7 @@ class PollsIdHandler(BaseHandler):
 
 
 def send_simple_message(to, subject, text):
+    '''Send a text email'''
     url = "https://api.mailgun.net/v2/abrahamwilliams.mailgun.org/messages"
     auth = ("api", os.environ.get('MAILGUN_API_KEY'))
     data = {
@@ -729,3 +738,12 @@ def send_simple_message(to, subject, text):
         "text": text,
     }
     return requests.post(url, auth=auth, data=data)
+
+
+def object_id(id):
+    '''convert an id to an ObjectId or return None'''
+    try:
+        return ObjectId(id)
+    except pymongo.errors.InvalidId, e:
+        return None
+        return
