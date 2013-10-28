@@ -61,7 +61,7 @@
                     <div>
 
                         {% for vote in poll['votes'][:15] %}
-                            <a href="/users/{{vote['user_id']}}">
+                            <a href="/users/{{vote['user_id']}}" class="remove-decoration">
                                 <img class="img-rounded" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57" height="57" style="margin-bottom: 5px;" alt="@{{vote['user_name']}}'s avatar"/>
                             </a>
                         {% end %}
