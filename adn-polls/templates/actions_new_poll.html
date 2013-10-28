@@ -1,0 +1,23 @@
+<a class="pull-right" href="/users/{{action['user_id']}}">
+    <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
+</a>
+
+
+<div class="media-body">
+    <div class='pull-right'>
+        <h4 class="media-heading">
+            <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
+        </h4>
+        New poll by
+        <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
+
+        {% if action.get('post_url', False) %}
+            <a href="{{action['post_url']}}" target="_blank">
+        {% end %}
+            <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
+        {% if action.get('post_url', False) %}
+            </a>
+        {% end %}
+
+    </div>
+</div>
