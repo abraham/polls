@@ -21,11 +21,13 @@
 
         <div class='row'>
             {% for user in users %}
-                <div class="col-md-2" style='margin-bottom: 25px;'>
-                    <a href="/users/{{user['_id']}}" class="thumbnail" title="{{user['user_name']}}">
-                        <img src="/img/loading.gif" data-src="{{user['user_avatar']}}?h=254&amp;w=254" alt="{{user['user_name']}}'s avatar" width="127" height="127">
-                    </a>
-                </div>
+                {% if not user['user_avatar_is_default'] %}
+                    <div class="col-md-2" style='margin-bottom: 25px;'>
+                        <a href="/users/{{user['_id']}}" class="thumbnail" title="{{user['user_name']}}">
+                            <img src="/img/loading.gif" data-src="{{user['user_avatar']}}?h=254&amp;w=254" alt="{{user['user_name']}}'s avatar" width="127" height="127">
+                        </a>
+                    </div>
+                {% end %}
             {% end %}
         </div>
 
