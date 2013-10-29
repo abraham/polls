@@ -116,8 +116,6 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
-                    <br/>
-                    <h4>Replies</h4>
 
                     {% for reply in poll.get('post_replies', []) %}
                         {% module PollsReplies(reply=reply) %}
