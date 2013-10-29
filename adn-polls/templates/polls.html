@@ -146,8 +146,6 @@
 
 {% block scripts %}
 <script>
-    google.load("visualization", "1", {packages: ["corechart"]});
-
     var data, chart;
     var pollId = "{{poll['_id']}}";
     var pollOptions = {% raw json_encode(options_object) %};
