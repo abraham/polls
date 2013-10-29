@@ -76,6 +76,28 @@ def new_poll(db, user_name, user_avatar, user_id, question, poll_id, post_url):
     return action
 
 
+def new_reply(db, user_name, user_avatar, user_id, poll_id, question, post_text, post_url):
+    '''Create new_vote actions'''
+    timestamp = datetime.datetime.utcnow()
+    action = {
+        '_id': ObjectId(),
+        'type': 'new_reply',
+        'user_name': user_name,
+        'user_avatar': user_avatar,
+        'user_id': user_id,
+
+        'question': question,
+        'post_text': post_text,
+        'poll_id': poll_id,
+        'post_url': post_url,
+
+        'created_at': timestamp,
+    }
+
+    db.actions.insert(action)
+    return action
+
+
 def find_recent(db):
     '''Find recent actions'''
     results = db.actions.find().sort('created_at', -1).limit(100)

@@ -1,0 +1,21 @@
+<a class="pull-left" href="/users/{{action['user_id']}}">
+    <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{action['user_avatar']}}?h=114&amp;w=114" title="@{{action['user_name']}}" alt="action['user_name']'s avatar" width="57" height="57">
+</a>
+
+
+<div class="media-body">
+    <div class='pull-left'>
+        <h4 class="media-heading">
+            {{action['post_text']}}
+        </h4>
+        New reply to
+        <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
+        by
+        <a href="/users/{{action['user_id']}}">@{{action['user_name']}}</a>
+
+            <a href="{{action['post_url']}}" target="_blank">
+            <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
+            </a>
+
+    </div>
+</div>
