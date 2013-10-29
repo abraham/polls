@@ -36,9 +36,11 @@
         <div class="col-md-12">
 
 
-            <div id="donutchart" style="height: 500px;" class="row">
             {% if poll['total_votes'] == 0 %}
+            <div id="donutchart-{{poll['_id']}}" style="height: 500px;" class="row polls-empty">
                 <p class="lead text-center" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
+            {% else %}
+            <div id="donutchart-{{poll['_id']}}" style="height: 500px;" class="row">
             {% end %}
             </div>
 
@@ -146,84 +148,28 @@
 
 {% block scripts %}
 <script>
-    var data, chart;
-    var pollId = "{{poll['_id']}}";
-    var pollOptions = {% raw json_encode(options_object) %};
-    var chartElem = document.getElementById('donutchart');
-    var votes = {{poll['total_votes']}};
-
-    if (votes > 0) {
-        google.setOnLoadCallback(init);
-    }
-
-
-    function init() {
-        data = new google.visualization.DataTable();
-        data.addColumn('string', 'Option');
-        data.addColumn('number', 'Votes');
-        chart = new google.visualization.PieChart(chartElem);
-        setZeroPollOptions(data, pollOptions);
-        drawChart(chart, data);
-        setPollOptions(data, pollOptions);
-        drawChart(chart, data);
-
-    }
-
-
-    function setZeroPollOptions(data, options) {
-        var index = 0;
-        for (id in options) {
-            data.addRow([options[id]['text'], 0]);
-            options[id]['index'] = index;
-            index++;
-        }
-    }
-
-
-    function setPollOptions(data, options) {
-        for (id in options) {
-            data.setValue(options[id]['index'], 1, options[id]['votes']);
-        }
-    }
-
-
-    function incrementVote(chart, data, option_id) {
-        pollOptions[option_id]['votes'] += 1;
-        data.setValue(pollOptions[option_id]['index'], 1, pollOptions[option_id]['votes']);
-        drawChart(chart, data);
-    }
-
-
-    function drawChart(chart, data) {
-        var chart_options = {
-            pieHole: 0.3,
-            animation: {
-                duration: 200,
-                easing: 'out'
-            }
-        };
-        chart.draw(data, chart_options);
-    }
+    pollIds.push("{{poll['_id']}}");
+    pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
 
 
     function postVote(event) {
-        var option_id = $('#vote [name="option"]:checked').prop('value');
-        var _xsrf = $('#vote [name="_xsrf"]').prop('value');
-        if (votes == 0) {
-            init();
-        }
+        var $form = $(event.currentTarget).closest('form')
+        var pollId = $form.data('poll-id');
+        var optionId = $form.find('[name="option"]:checked').prop('value');
+        var _xsrf = $form.find('[name="_xsrf"]').prop('value');
 
-        if (!option_id) {
+        if (!optionId) {
             alert('You must select a value');
             return false;
         }
 
-        incrementVote(chart, data, option_id);
+        incrementVote(pollId, optionId);
+        initChart(pollId);
 
         $.ajax({
             type: "POST",
             url: "/polls/" + pollId + "/votes",
-            data: { option_id: option_id, _xsrf: _xsrf },
+            data: { optionId: optionId, _xsrf: _xsrf },
             success: voteSuccess,
             error: function(errMsg) {
                 console.log('ERROR', errMsg);

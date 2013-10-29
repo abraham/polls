@@ -264,7 +264,9 @@
         function init() {
             for (index in pollIds) {
                 var id = pollIds[index];
-                initChart(id);
+                if ($('#donutchart-' + id + '.polls-empty').length === 0) {
+                    initChart(id);
+                }
             }
         }
 
@@ -281,6 +283,11 @@
             setChartOptions(data, pollOptions[id]);
             drawChart(chart, data);
 
+        }
+
+
+        function incrementVote(pollId, optionId) {
+            pollOptions[pollId][optionId]['votes'] += 1;
         }
 
 

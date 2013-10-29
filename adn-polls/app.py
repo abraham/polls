@@ -594,7 +594,7 @@ class PollsIdVotesHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
 
-        option_id = self.get_argument('option_id')
+        option_id = self.get_argument('optionId')
         poll_id = ObjectId(poll_id)
         option_id = ObjectId(option_id)
         # TODO: validate option_ids
@@ -708,7 +708,7 @@ class PollsIdHandler(BaseHandler):
         poll['votes'].reverse()
         random.shuffle(poll['options'])
         poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
-
+        poll['options_object'] = polls.build_options_object(poll['options'])
         context = {
             'current_user': current_user,
             'xsrf_token': self.xsrf_token,
@@ -718,7 +718,6 @@ class PollsIdHandler(BaseHandler):
             'user_has_starred_post': user_has_starred_post,
             'user_has_reposted_post': user_has_reposted_post,
             'poll': poll,
-            'options_object': polls.build_options_object(poll['options']),
             'post_text': post_text,
         }
         self.render('templates/polls.html', **context)
