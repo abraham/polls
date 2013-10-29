@@ -127,6 +127,7 @@
                         <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} ">    @{{poll['user_name']}} </textarea>
 
                         {% if current_user is not None %}
+                        <span class='text-muted' style="position: relative; top: 15px;">Currently only replies posted through Polls are shown</span>
                         <button type="submit" class="btn btn-default btn-lg pull-right btn-danger post-replies" tabindex=4 data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..." data-toggle="button">
                             <span class="glyphicon glyphicon-share-alt"></span>
                              Reply on ADN
