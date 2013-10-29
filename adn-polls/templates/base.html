@@ -65,9 +65,15 @@
                 text-decoration: none;
             }
         </style>
+
+
+        <script>
+        var pollIds = [];
+        var pollOptions = {};
+        </script>
     </head>
 
-    <body> 
+    <body>
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
                 <ul class="nav navbar-nav">
@@ -174,6 +180,9 @@
         </script>
 
         <script>
+        google.setOnLoadCallback(init);
+
+
         $(function() {
             makeMoments();
             setInterval(makeMoments, 60 * 1000)
@@ -181,6 +190,7 @@
             $(document).on('click', '.adn-action-repost', repostPoll);
             $("img").unveil(200);
         });
+
 
         function makeMoments(){
             $('.datetime').each(function(index, elem) {
@@ -248,6 +258,58 @@
                 alert('Something went wrong.');
                 return;
             }
+        }
+
+
+        function init() {
+            for (index in pollIds) {
+                var id = pollIds[index];
+                initChart(id);
+            }
+        }
+
+
+        function initChart(id) {
+            var data, chart;
+            var chartElem = document.getElementById('donutchart-' + id);
+            data = new google.visualization.DataTable();
+            data.addColumn('string', 'Option');
+            data.addColumn('number', 'Votes');
+            chart = new google.visualization.PieChart(chartElem);
+            setZeroChartOptions(data, pollOptions[id]);
+            drawChart(chart, data);
+            setChartOptions(data, pollOptions[id]);
+            drawChart(chart, data);
+
+        }
+
+
+        function setZeroChartOptions(data, options) {
+            var index = 0;
+            for (id in options) {
+                data.addRow([options[id]['text'], 0]);
+                options[id]['index'] = index;
+                index++;
+            }
+        }
+
+
+        function setChartOptions(data, options) {
+            for (id in options) {
+                data.setValue(options[id]['index'], 1, options[id]['votes']);
+            }
+        }
+
+
+        function drawChart(chart, data) {
+            var chart_options = {
+                pieHole: 0.3,
+                animation: {
+                    duration: 200,
+                    easing: 'out'
+                }
+            };
+            chart.draw(data, chart_options);
         }
         </script>
 

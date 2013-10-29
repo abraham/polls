@@ -24,12 +24,6 @@
         <p class="lead">Polls is a clean and beautiful tool for surveying <a href="https://alpha.app.net" target="_blank">App.net</a> users so you can be more informed when making the decisions that matter. Creating and voting on polls is free, easy, and simple.</p>
 
 
-        <script>
-        var pollIds = [];
-        var pollOptions = {};
-        </script>
-
-
         <div class='col-md-12'>
             {% for poll in active_polls %}
                 <div class='row'>
@@ -91,63 +85,4 @@
             {% end %}
         </div>
     </div>
-{% end %}
-
-
-{% block scripts %}
-<script>
-    google.setOnLoadCallback(init);
-
-
-    function init() {
-        for (index in pollIds) {
-            var id = pollIds[index];
-            initChart(id);
-        }
-    }
-
-
-    function initChart(id) {
-        var data, chart;
-        var chartElem = document.getElementById('donutchart-' + id);
-        data = new google.visualization.DataTable();
-        data.addColumn('string', 'Option');
-        data.addColumn('number', 'Votes');
-        chart = new google.visualization.PieChart(chartElem);
-        setZeroChartOptions(data, pollOptions[id]);
-        drawChart(chart, data);
-        setChartOptions(data, pollOptions[id]);
-        drawChart(chart, data);
-
-    }
-
-
-    function setZeroChartOptions(data, options) {
-        var index = 0;
-        for (id in options) {
-            data.addRow([options[id]['text'], 0]);
-            options[id]['index'] = index;
-            index++;
-        }
-    }
-
-
-    function setChartOptions(data, options) {
-        for (id in options) {
-            data.setValue(options[id]['index'], 1, options[id]['votes']);
-        }
-    }
-
-
-    function drawChart(chart, data) {
-        var chart_options = {
-            pieHole: 0.3,
-            animation: {
-                duration: 200,
-                easing: 'out'
-            }
-        };
-        chart.draw(data, chart_options);
-    }
-</script>
 {% end %}
