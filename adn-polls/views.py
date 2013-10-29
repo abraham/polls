@@ -1,5 +1,6 @@
 from tornado.web import UIModule
 from tornado import template
+import momentpy
 
 
 class NavbarUser(UIModule):
@@ -46,3 +47,18 @@ class PollsRepost(UIModule):
             'is_reposted': user_id in reposted_by,
         }
         return self.render_string('templates/polls_repost.html', **context)
+
+
+class PollsReplies(UIModule):
+
+    def render(self, reply):
+        '''Render actions from with templates'''
+        context = {
+            'reply': reply,
+        }
+        path = 'templates/polls_replies.html'
+        return self.render_string(path, **context)
+
+
+def moment(self, date):
+    return momentpy.from_now(date, from_utc=True)

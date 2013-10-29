@@ -715,7 +715,7 @@ class PollsIdRepliesHandler(BaseHandler):
 
         response = result.json()
         post = response['data']
-        kwargs = {
+        reply = {
             'reply_type': 'polls_reply',
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
@@ -727,7 +727,10 @@ class PollsIdRepliesHandler(BaseHandler):
             'post_reply_to': post['reply_to'],
             'post_thread_id': post['thread_id'],
         }
-        polls.add_reply(db, poll_id, **kwargs)
+        reply = polls.add_reply(db, poll_id, **reply)
+        html = self.render_string('templates/polls_replies.html', **{ 'reply': reply})
+        self.set_header('Content-Type', 'text/html')
+        self.write(html)
 
 
 class PollsIdHandler(BaseHandler):

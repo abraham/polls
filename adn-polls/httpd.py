@@ -52,6 +52,7 @@ settings = {
     'cookie_secret': os.environ.get('COOKIE_SECRET'),
     'gzip': True,
     'ui_modules': views,
+    'ui_methods': views,
 }
 
 

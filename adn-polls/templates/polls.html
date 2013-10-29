@@ -117,23 +117,26 @@
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
                     <br/>
-                    <h4>Will your friends agree with you?</h4>
-                    <form role="form" id="post" data-poll-id="{{poll['_id']}}" >
+                    <h4>Replies</h4>
+
+                    {% for reply in poll.get('post_replies', []) %}
+                        {% module PollsReplies(reply=reply) %}
+                    {% end %}
+
+                    <form role="form" class="form-reply" data-poll-id="{{poll['_id']}}" style='margin-top: 30px;'>
                         {% raw xsrf_input %}
 
-                        <textarea class="form-control" rows="5" id="post-text" tabindex=3>{{post_text}}</textarea>
-                        
-                        <br/>
-                        
+                        <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} ">    @{{poll['user_name']}} </textarea>
+
                         {% if current_user is not None %}
-                        <button type="submit" id="post-post" class="btn btn-default btn-lg pull-right btn-danger" tabindex=4>
-                            <span class="glyphicon glyphicon-share"></span>
-                             Post to ADN
+                        <button type="submit" class="btn btn-default btn-lg pull-right btn-danger post-replies" tabindex=4 data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..." data-toggle="button">
+                            <span class="glyphicon glyphicon-share-alt"></span>
+                             Reply on ADN
                         </button>
-                        
+
                         {% else %}
                         <div class="pull-right">
-                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in to share like a BOSS</a>
+                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in to reply</a>
                         </div>
                         {% end %}
 
@@ -185,25 +188,34 @@
     }
 
 
-    function postPost(event) {
-        var text = $('#post textarea').prop('value');
-        var _xsrf = $('#post [name="_xsrf"]').prop('value');
+    function postReply(event) {
+        var $form = $(event.currentTarget).closest('form')
+        var pollId = $form.data('poll-id');
+        var text = $form.find('textarea').prop('value');
+        var _xsrf = $form.find('[name="_xsrf"]').prop('value');
 
         if (!text) {
-            alert('There must be some text to post...');
+            alert('There must be some text to reply with...');
             return false;
         }
+        $form.find('button').button('loading');
 
         $.ajax({
             type: "POST",
-            url: "/posts",
+            url: "/polls/" + pollId + '/replies',
             data: { text: text, _xsrf: _xsrf },
             success: function(data){
-                alert('Nobody posts like you, and I mean nobody!')
+                var $form = $('form.form-reply');
+                $form.before(data).prev().hide().slideDown();
+                $("img").unveil();
+                $form.find('textarea').prop('value', $form.find('textarea').data('value'));
+                $form.find('button').button('reset');
             },
             error: function(errMsg) {
                 console.log('ERROR', errMsg);
                 alert('Oooops...something went wrong.');
+                var $form = $('form.form-reply');
+                $form.find('button').button('reset');
             }
         });
         event.preventDefault()
@@ -218,8 +230,8 @@
     $(function() {
         $('#post-vote').on('click', postVote);
         $('#post-vote').on('submit', postVote);
-        $('#post-post').on('click', postPost);
-        $('#post-post').on('submit', postPost);
+        $('.post-replies').on('click', postReply);
+        $('.post-replies').on('submit', postReply);
         $('#vote input').on('focus', enableVoteBtn);
         $('#vote input').on('click', enableVoteBtn);
     });
