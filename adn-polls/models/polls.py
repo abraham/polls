@@ -188,3 +188,30 @@ def inc_views(db, poll_id):
         }
     }
     db.polls.update(query, mutation)
+
+
+def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, post_text, reply_type, post_client_id, post_reply_to, post_thread_id):
+    '''Increment the views field for a user'''
+    timestamp = datetime.datetime.utcnow()
+    query = {
+            '_id': poll_id,
+        }
+    mutation = {
+        '$addToSet': {
+            'post_replies': {
+                '_id': ObjectId(),
+                'reply_type': reply_type,
+                'user_id': user_id,
+                'user_name': user_name,
+                'user_avatar': user_avatar,
+                'created_at': timestamp,
+                'post_id': post_id,
+                'post_url': post_url,
+                'post_text': post_text,
+                'post_client_id': post_client_id,
+                'post_reply_to': post_reply_to,
+                'post_thread_id': post_thread_id,
+            },
+        },
+    }
+    db.polls.update(query, mutation)

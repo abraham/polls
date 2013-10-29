@@ -9,24 +9,31 @@ import views
 
 from app import (
     IndexHandler,
+
     ActivityHandler,
     RecentHandler,
     ActiveHandler,
     VintageHandler,
     TopHandler,
     TopViewedHandler,
+
     CreateHandler,
-    PollsIdHandler,
     PostsHandler,
+
+    PollsIdHandler,
     PollsIdVotesHandler,
     PollsIdPrevHandler,
     PollsIdNextHandler,
     PollsIdActionsHandler,
+    PollsIdRepliesHandler,
+
     UsersIdHandler,
     UsersGridHandler,
+
     AuthRedirectHandler,
     AuthLogoutHandler,
     AuthCallbackHandler,
+
     mdHandler,
     robotHandler,
 )
@@ -68,6 +75,7 @@ application = tornado.web.Application([
     (r'/polls/([^/]+)/prev', PollsIdPrevHandler, base_args),
     (r'/polls/([^/]+)/next', PollsIdNextHandler, base_args),
     (r'/polls/([^/]+)/actions', PollsIdActionsHandler, base_args),
+    (r'/polls/([^/]+)/replies', PollsIdRepliesHandler, base_args),
 
     (r'/users-grid', UsersGridHandler, base_args),
     (r'/users/([^/]+)', UsersIdHandler, base_args),

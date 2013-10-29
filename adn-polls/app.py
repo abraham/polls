@@ -673,6 +673,63 @@ class PostsHandler(BaseHandler):
             return
 
 
+class PollsIdRepliesHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+        text = self.get_argument('text')
+        poll_id = object_id(poll_id)
+
+        if poll_id is None:
+            self.write_error(404)
+            return
+        if text in (u'', ''):
+            self.write_error(400)
+            return
+        if len(text) > 256:
+            self.write_error(400)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.send_error(404)
+            return
+
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        args = {
+            'text': text,
+            'reply_to': poll['post_id'],
+        }
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
+        }
+        result = requests.post(url, data=args, headers=headers)
+
+        if result.status_code != 200:
+            self.write_error(500)
+            raise Exception(self.content)
+            return
+
+        response = result.json()
+        post = response['data']
+        kwargs = {
+            'reply_type': 'polls_reply',
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'post_id': post['id'],
+            'post_url': post['canonical_url'],
+            'post_text': post['text'],
+            'post_client_id': post['source']['client_id'],
+            'post_reply_to': post['reply_to'],
+            'post_thread_id': post['thread_id'],
+        }
+        polls.add_reply(db, poll_id, **kwargs)
+
+
 class PollsIdHandler(BaseHandler):
 
     def get(self, poll_id):
