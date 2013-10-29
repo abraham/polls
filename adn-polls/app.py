@@ -126,12 +126,12 @@ class mdHandler(BaseHandler):
         self.render('templates/md.html', **context)
 
 
-class robotHandler(BaseHandler):
+class txtHandler(BaseHandler):
 
     def get(self):
         '''Return the markdown files for terms and privacy policy'''
         self.set_header('Content-Type', 'text/plain')
-        self.render('static/txt/robots.txt')
+        self.render('static/txt{}'.format(self.request.path))
 
 
 class AuthRedirectHandler(BaseHandler):

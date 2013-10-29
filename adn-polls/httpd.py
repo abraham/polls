@@ -35,7 +35,7 @@ from app import (
     AuthCallbackHandler,
 
     mdHandler,
-    robotHandler,
+    txtHandler,
 )
 
 
@@ -90,7 +90,8 @@ application = tornado.web.Application([
 
     (r'/terms', mdHandler, base_args),
     (r'/privacy', mdHandler, base_args),
-    (r'/robots.txt', robotHandler, base_args),
+    (r'/robots.txt', txtHandler, base_args),
+    (r'/humans.txt', txtHandler, base_args),
 
     (r'/favicon.ico', tornado.web.RedirectHandler, {'url': 'https://abrah.am/favicon.ico'}),
     (r'/css/(.*)', tornado.web.StaticFileHandler, {'path': 'adn-polls/static/css'}),
