@@ -213,11 +213,12 @@
             init();
         }
 
-        incrementVote(chart, data, option_id);
         if (!option_id) {
             alert('You must select a value');
             return false;
         }
+
+        incrementVote(chart, data, option_id);
 
         $.ajax({
             type: "POST",
