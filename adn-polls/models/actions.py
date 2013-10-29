@@ -100,7 +100,7 @@ def new_reply(db, user_name, user_avatar, user_id, poll_id, question, post_text,
 
 def find_recent(db):
     '''Find recent actions'''
-    results = db.actions.find().sort('created_at', -1).limit(100)
+    results = db.actions.find().sort('_id', -1).limit(100)
     actions = []
     for action in results:
         actions.append(action)
@@ -112,7 +112,7 @@ def find_recent_by_user_id(db, user_id):
     query = {
         'user_id': user_id,
     }
-    results = db.actions.find(query).sort('created_at', -1).limit(100)
+    results = db.actions.find(query).sort('_id', -1).limit(100)
     actions = []
     for action in results:
         actions.append(action)
