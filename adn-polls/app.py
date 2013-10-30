@@ -655,19 +655,23 @@ class PollsIdVotesHandler(BaseHandler):
         post_id = post['id']
 
         if custom_reply:
-            reply = {
-                'reply_type': 'polls_vote_custom',
-                'user_id': current_user['_id'],
-                'user_name': current_user['user_name'],
-                'user_avatar': current_user['user_avatar'],
-                'post_id': post['id'],
-                'post_url': post['canonical_url'],
-                'post_text': post['text'],
-                'post_client_id': post['source']['client_id'],
-                'post_reply_to': post['reply_to'],
-                'post_thread_id': post['thread_id'],
-            }
-            reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
+            reply_type = 'polls_vote_custom'
+        else:
+            reply_type = 'polls_vote'
+
+        reply = {
+            'reply_type': reply_type,
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'post_id': post['id'],
+            'post_url': post['canonical_url'],
+            'post_text': post['text'],
+            'post_client_id': post['source']['client_id'],
+            'post_reply_to': post['reply_to'],
+            'post_thread_id': post['thread_id'],
+        }
+        reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
 
         action = {
             'user_name': current_user['user_name'],
