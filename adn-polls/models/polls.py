@@ -1,5 +1,8 @@
 import datetime
 from bson.objectid import ObjectId
+import os
+import requests
+import json
 
 
 def create(db, poll_id, poll_type, display_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
@@ -218,3 +221,38 @@ def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, p
     db.polls.update(query, mutation)
     return reply
 
+
+def send_alert(question, poll_url):
+    '''Send a new alert to ADN'''
+    if os.environ.get('ADN_CHANNEL_ENABLED') not in ('True', 'true', True):
+        print 'posting to channel disabled'
+        print 'question', question, 'poll_url', poll_url
+        return None
+
+    channel_id = os.environ.get('ADN_CHANNEL_ID')
+    access_token = os.environ.get('ADN_CHANNEL_ACCESS_TOKEN')
+    url = 'https://alpha-api.app.net/stream/0/channels/{}/messages'.format(channel_id)
+    data = {
+        'machine_only': True,
+        'annotations': [
+            {
+                "type": "net.app.core.broadcast.message.metadata",
+                "value": {
+                    "subject": question,
+                },
+            },
+            {
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                }
+            },
+        ],
+    }
+    headers = {
+        'Authorization': 'Bearer {}'.format(access_token),
+        'Content-type': 'application/json',
+    }
+    result = requests.post(url, data=json.dumps(data), headers=headers)
+    if result.status_code != 200:
+        raise Exception(result.content)

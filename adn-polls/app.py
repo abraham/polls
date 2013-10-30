@@ -465,7 +465,8 @@ class CreateHandler(BaseHandler):
             if option != '':
                 options.append(option[:100])
 
-        text = u'Q: {}\n\nVote on @polls at {}/polls/{}'.format(question, os.environ['BASE_WEB_URL'], poll_id_str)
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
+        text = u'Q: {}\n\nVote on @polls at {}'.format(question, poll_url)
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -505,6 +506,8 @@ class CreateHandler(BaseHandler):
             'post_url': post['data']['canonical_url'],
         }
         actions.new_poll(db=db, **action)
+
+        polls.send_alert(question=question, poll_url=poll_url)
 
 
 class PollsIdPrevHandler(BaseHandler):
