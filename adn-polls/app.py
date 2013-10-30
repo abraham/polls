@@ -833,4 +833,3 @@ def object_id(id):
         return ObjectId(id)
     except pymongo.errors.InvalidId, e:
         return None
-        return
