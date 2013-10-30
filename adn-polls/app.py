@@ -597,6 +597,7 @@ class PollsIdVotesHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
         current_option = None
+        custom_reply = False
 
         text = self.get_argument('text', None)
         option_id = object_id(self.get_argument('optionId'))
@@ -633,6 +634,8 @@ class PollsIdVotesHandler(BaseHandler):
 
         if text is None or text in (u'', ''):
             text = '@{} {}'.format(poll['user_name'], option['display_text'])
+        else:
+            custom_reply = True
 
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
@@ -647,9 +650,24 @@ class PollsIdVotesHandler(BaseHandler):
             print 'create error', response.content
             raise Exception(response.content)
 
-        post = response.json()
-        post_url = post['data']['canonical_url']
-        post_id = post['data']['id']
+        post = response.json()['data']
+        post_url = post['canonical_url']
+        post_id = post['id']
+
+        if custom_reply:
+            reply = {
+                'reply_type': 'polls_vote_custom',
+                'user_id': current_user['_id'],
+                'user_name': current_user['user_name'],
+                'user_avatar': current_user['user_avatar'],
+                'post_id': post['id'],
+                'post_url': post['canonical_url'],
+                'post_text': post['text'],
+                'post_client_id': post['source']['client_id'],
+                'post_reply_to': post['reply_to'],
+                'post_thread_id': post['thread_id'],
+            }
+            reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
 
         action = {
             'user_name': current_user['user_name'],
@@ -657,7 +675,7 @@ class PollsIdVotesHandler(BaseHandler):
             'user_id': current_user['_id'],
             'question': poll['question'],
             'poll_id': poll['_id'],
-            'option': option['display_text'],
+            'option': text,
             'post_url': post_url,
             'post_id': post_id,
         }
