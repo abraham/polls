@@ -1,5 +1,5 @@
 pymongo==2.5
-tornado==3.1
+tornado==3.1.1
 requests==1.2.3
 markdown2==2.1.0
 momentpy==0.6
