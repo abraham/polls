@@ -116,12 +116,20 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
+                    {% if len(poll.get('post_replies', [])) > 10 %}
+                        <p>
+                            <a href="#poll-reply-form">
+                                <span class="glyphicon glyphicon-arrow-down"></span>
+                                Jump to leave a reply
+                            </a>
+                        </p>
+                    {% end %}
 
                     {% for reply in poll.get('post_replies', []) %}
                         {% module PollsReplies(reply=reply) %}
                     {% end %}
 
-                    <form role="form" class="form-reply" data-poll-id="{{poll['_id']}}" style='margin-top: 30px;'>
+                    <form role="form" id='poll-reply-form' class="form-reply" data-poll-id="{{poll['_id']}}" style='margin-top: 30px;'>
                         {% raw xsrf_input %}
 
                         <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} ">    @{{poll['user_name']}} </textarea>
