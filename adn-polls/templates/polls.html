@@ -86,7 +86,7 @@
 
                                 <div class='col-md-8'>
                                     <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
-                                    <input type="text" id="text" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}">
+                                    <input type="text" id="text" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
                                 </div>
                                 <div class="col-md-4">
                                     <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex=2>
@@ -258,8 +258,7 @@
     }
 
     $(function() {
-        $('#post-vote').on('click', postVote);
-        $('#post-vote').on('submit', postVote);
+        $('#vote').on('submit', postVote);
         $('.post-replies').on('click', postReply);
         $('.post-replies').on('submit', postReply);
         $('#vote input').on('focus', enableVoteBtn);
