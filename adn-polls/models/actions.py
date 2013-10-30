@@ -33,7 +33,7 @@ def new_user(db, user_name, user_avatar, user_id):
     return action
 
 
-def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option, post_url):
+def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option, post_url, post_id):
     '''Create new_vote actions'''
     timestamp = datetime.datetime.utcnow()
     action = {
@@ -47,6 +47,7 @@ def new_vote(db, user_name, user_avatar, user_id, poll_id, question, option, pos
         'option': option,
         'poll_id': poll_id,
         'post_url': post_url,
+        'post_id': post_id,
 
         'created_at': timestamp,
     }

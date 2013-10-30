@@ -593,57 +593,74 @@ class PollsIdVotesHandler(BaseHandler):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
+        current_option = None
 
-        option_id = self.get_argument('optionId')
-        poll_id = ObjectId(poll_id)
-        option_id = ObjectId(option_id)
-        # TODO: validate option_ids
-        # TODO: validate user has not already voted
+        text = self.get_argument('text', None)
+        option_id = object_id(self.get_argument('optionId'))
+        poll_id = object_id(poll_id)
+        if option_id is None or poll_id is None:
+            self.write_error(404)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.write_error(404)
+            return
+
+        if current_user['_id'] in poll['votes_user_ids']:
+            self.write_error(400)
+            return
+
+        for option in poll['options']:
+            if option_id == option['_id']:
+                current_option = option
+                continue
+
+        if current_option is None:
+            self.write_error(400)
+            return
+
         args = {
-            'poll_id': poll_id,
             'option_id': option_id,
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],
         }
-        polls.vote(db=db, **args)
+        polls.vote(db=db, poll_id=poll_id, **args)
 
-        poll = polls.find_by_id(db=db, poll_id=poll_id)
-        if poll is not None:
-            post_url = None
-            option = ''
-            for o in poll['options']:
-                if ObjectId(option_id) == o['_id']:
-                    option = o['display_text']
-                    continue
+        if text is None or text in (u'', ''):
+            text = '@{} {}'.format(poll['user_name'], option['display_text'])
 
-            if poll['post_id'] is not None:
-                text = '@{} {}'.format(poll['user_name'], option,)
-                url = 'https://alpha-api.app.net/stream/0/posts'
-                headers = {
-                    'Authorization': 'Bearer {}'.format(current_user['access_token']),
-                }
-                args = {
-                    'text': text,
-                    'reply_to': poll['post_id'],
-                }
-                response = requests.post(url, data=args, headers=headers)
-                if response.status_code != 200:
-                    print 'create error', response.content
-                    raise Exception(response.content)
-                post = response.json()
-                post_url = post['data']['canonical_url']
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
+        }
+        args = {
+            'text': text,
+            'reply_to': poll['post_id'],
+        }
+        response = requests.post(url, data=args, headers=headers)
+        if response.status_code != 200:
+            print 'create error', response.content
+            raise Exception(response.content)
 
-            action = {
-                'user_name': current_user['user_name'],
-                'user_avatar': current_user['user_avatar'],
-                'user_id': current_user['_id'],
-                'question': poll['question'],
-                'poll_id': poll['_id'],
-                'option': option,
-                'post_url': post_url,
-            }
-            actions.new_vote(db=db, **action)
+        post = response.json()
+        post_url = post['data']['canonical_url']
+        post_id = post['data']['id']
+
+        action = {
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'user_id': current_user['_id'],
+            'question': poll['question'],
+            'poll_id': poll['_id'],
+            'option': option['display_text'],
+            'post_url': post_url,
+            'post_id': post_id,
+        }
+        actions.new_vote(db=db, **action)
+        # TODO: update existing vote with post details
+        # TODO: add post details to replies
 
 
 class PostsHandler(BaseHandler):
