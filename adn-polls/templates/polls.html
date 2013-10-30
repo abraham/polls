@@ -52,7 +52,7 @@
                     {% for option in poll['options'] %}
                     <div class="radio">
                         <label>
-                            <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1>
+                            <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1 data-text="{{option['display_text']}}">
                             {{option['display_text']}}
                         </label>
                     </div>
@@ -82,11 +82,18 @@
                             </div>
 
                         {% if not user_has_voted %}
-                            <div class="has-not-voted">
-                                <button type="submit" id="post-vote" class="btn btn-default btn-lg pull-right btn-danger" disabled="disabled" tabindex=2>
-                                    <span class="glyphicon glyphicon-check"></span>
-                                     Vote and post to ADN
-                                </button>
+                            <div class="has-not-voted row">
+
+                                <div class='col-md-8'>
+                                    <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
+                                    <input type="text" id="text" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex=2>
+                                        <span class="glyphicon glyphicon-check"></span>
+                                         Vote and post to ADN
+                                    </button>
+                                </div>
                             </div>
                         {% end %}
 
@@ -175,11 +182,16 @@
 
         incrementVote(pollId, optionId);
         initChart(pollId);
-
+        var data = { optionId: optionId, _xsrf: _xsrf };
+        var text = $('#text:not(.hidden)').val();
+        if (text) {
+            data['text'] = text;
+        }
+        
         $.ajax({
             type: "POST",
             url: "/polls/" + pollId + "/votes",
-            data: { optionId: optionId, _xsrf: _xsrf },
+            data: data,
             success: voteSuccess,
             error: function(errMsg) {
                 console.log('ERROR', errMsg);
@@ -231,8 +243,19 @@
 
     function enableVoteBtn() {
         $('#post-vote').removeAttr('disabled');
+        $('.post-vote-custom.hidden').hide().removeClass('hidden').slideDown();
     }
 
+
+    function enableCustomVote(event) {
+        var $form = $(event.currentTarget).closest('form')
+        var optionText = $form.find('[name="option"]:checked').data('text');
+        $('.post-vote-custom').slideUp();
+        var $text = $('#text');
+        var val = $text.data('default-value') + ' ' + optionText + ' because ';
+        $text.hide().removeClass('hidden').slideDown().focus().val(val);
+        event.preventDefault()
+    }
 
     $(function() {
         $('#post-vote').on('click', postVote);
@@ -241,6 +264,7 @@
         $('.post-replies').on('submit', postReply);
         $('#vote input').on('focus', enableVoteBtn);
         $('#vote input').on('click', enableVoteBtn);
+        $('.post-vote-custom').on('click', enableCustomVote);
     });
 
 </script>
