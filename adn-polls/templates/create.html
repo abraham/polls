@@ -21,6 +21,8 @@
     <div class="col-md-8 col-md-offset-2">
         <form role="form" method="post" action="/create" class='row'>
 
+           {% raw xsrf_input %}
+
             <div class="form-group">
                 <label for="question">Question</label>
                 <textarea class="form-control" id="question" name="question" rows="3" maxlength="150" placeholder="How awesome is @abraham for making this amazing tool?" required autocomplete="off"></textarea>
@@ -40,7 +42,6 @@
                 <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="He was dead the whole time" autocomplete="off">
             </div>
 
-          {% raw xsrf_input %}
 
           <button type="submit" class="btn btn-default btn-lg pull-right btn-danger"><span class="glyphicon glyphicon-heart-empty"></span> Create and post to ADN</button>
         </form>
