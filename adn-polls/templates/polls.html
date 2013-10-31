@@ -205,6 +205,7 @@
         event.preventDefault()
     }
 
+
     function voteSuccess(data) {
         $('.has-not-voted').slideUp();
         $('.has-voted').hide().removeClass('hidden').slideDown();
@@ -254,6 +255,17 @@
     function enableVoteBtn() {
         $('#post-vote').removeAttr('disabled');
         $('.post-vote-custom.hidden').hide().removeClass('hidden').slideDown();
+        setCustomVoteValue();
+    }
+
+
+    function setCustomVoteValue() {
+        var $form = $(event.currentTarget).closest('form')
+        var optionText = $form.find('[name="option"]:checked').data('text');
+        var $text = $('#text');
+        var val = $text.data('default-value') + ' ' + optionText + ' because ';
+        $text.val(val);
+
     }
 
 
@@ -269,6 +281,7 @@
         event.preventDefault()
     }
 
+
     function discardCustomVote(event) {
         var $form = $(event.currentTarget).closest('form')
         var optionText = $form.find('[name="option"]:checked').data('text');
@@ -283,6 +296,7 @@
         });
         event.preventDefault()
     }
+
 
     $(function() {
         $('#vote').on('submit', postVote);
