@@ -507,7 +507,9 @@ class CreateHandler(BaseHandler):
         }
         actions.new_poll(db=db, **action)
 
-        polls.send_alert(question=question, poll_url=poll_url)
+        subject = u'{} by @{}'.format(question, current_user['user_name'])
+        channel_id = os.environ.get('ADN_CHANNEL_ID')
+        polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
 
 class PollsIdPrevHandler(BaseHandler):
@@ -687,6 +689,11 @@ class PollsIdVotesHandler(BaseHandler):
         # TODO: update existing vote with post details
         # TODO: add post details to replies
 
+        if poll['total_votes'] == 4: # Current vote is not yet tallied
+            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id)
+            subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
+            channel_id = os.environ.get('ADN_CHANNEL_ID_2')
+            polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
 class PostsHandler(BaseHandler):
 

@@ -222,14 +222,13 @@ def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, p
     return reply
 
 
-def send_alert(question, poll_url):
+def send_alert(channel_id, subject, poll_url):
     '''Send a new alert to ADN'''
     if os.environ.get('ADN_CHANNEL_ENABLED') not in ('True', 'true', True):
         print 'posting to channel disabled'
-        print 'question', question, 'poll_url', poll_url
+        print 'channel_id', channel_id, 'subject', subject, 'poll_url', poll_url
         return None
 
-    channel_id = os.environ.get('ADN_CHANNEL_ID')
     access_token = os.environ.get('ADN_CHANNEL_ACCESS_TOKEN')
     url = 'https://alpha-api.app.net/stream/0/channels/{}/messages'.format(channel_id)
     data = {
