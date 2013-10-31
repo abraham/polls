@@ -237,7 +237,7 @@ def send_alert(channel_id, subject, poll_url):
             {
                 "type": "net.app.core.broadcast.message.metadata",
                 "value": {
-                    "subject": question,
+                    "subject": subject,
                 },
             },
             {
