@@ -53,7 +53,7 @@
                         {% for option in poll['options'] %}
                         <div class="radio">
                             <label>
-                                <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1 data-text="{{option['display_text']}}">
+                                <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex="1" data-text="{{option['display_text']}}">
                                 {{option['display_text']}}
                             </label>
                         </div>
@@ -85,7 +85,7 @@
                             {% if not user_has_voted %}
                                 <div class="has-not-voted">
 
-                                    <textarea class="form-control hidden" id="text" rows="5" tabindex=2 style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
+                                    <textarea class="form-control hidden" id="text" rows="5" tabindex="2" style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
 
                                     <div class='col-md-8'>
                                         <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
@@ -93,7 +93,7 @@
                                         <input type="text" id="textx" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex=2>
+                                        <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex="3">
                                             <span class="glyphicon glyphicon-check"></span>
                                              Vote and post to ADN
                                         </button>
@@ -143,11 +143,11 @@
                     <form role="form" id='poll-reply-form' class="form-reply" data-poll-id="{{poll['_id']}}" style='margin-top: 30px;'>
                         {% raw xsrf_input %}
 
-                        <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} " maxlength="256" required>@{{poll['user_name']}} </textarea>
+                        <textarea class="form-control" rows="5" tabindex="4" style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} " maxlength="256" required>@{{poll['user_name']}} </textarea>
 
                         {% if current_user is not None %}
                         <span class='text-muted' style="position: relative; top: 15px;">Currently only replies posted through Polls are shown</span>
-                        <button type="submit" class="btn btn-default btn-lg pull-right btn-danger post-replies" tabindex=4 data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..." data-toggle="button">
+                        <button type="submit" class="btn btn-default btn-lg pull-right btn-danger post-replies" tabindex="5" data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..." data-toggle="button">
                             <span class="glyphicon glyphicon-share-alt"></span>
                              Reply on ADN
                         </button>
