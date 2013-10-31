@@ -8,67 +8,19 @@
         <meta name="description" content="Polls is a clean and beautiful tool for surveying App.net users so you can be more informed when making the decisions that matter.">
         <meta name="author" content="Abraham Williams">
 
+
         {% block xsrf %}{% end %}
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+
 
         <meta property="og:title" content="{% block title %}Polls for App.net{% end %}" />
         <meta property="og:image" content="https://polls.abrah.am/img/polls-logo.png" />
         <meta property="og:type" content="website" />
         <meat property="og:description" content="Polls is a clean and beautiful tool for surveying App.net users so you can be more informed when making the decisions that matter.">
 
+
         <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        <style>
-            .container {
-                width: 970px;
-            }
-
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                padding-top: 70px;
-            }
-
-            #wrap {
-                min-height: 100%;
-                height: auto !important;
-                height: 100%;
-                margin: 0 auto -60px;
-                padding: 0 0 60px;
-            }
-
-            #footer {
-                margin-top: 50px;
-                height: 80px;
-                background-color: #f5f5f5;
-            }
-
-            .container .credit {
-                margin: 20px 0;
-            }
-
-            .list-avatar {
-                margin-top: 20px;
-            }
-
-            input#options {
-                margin-bottom: 20px
-            }
-
-            .hover-pointer {
-                cursor: pointer;
-                cursor: hand;
-            }
-
-            .adn-action-take {
-                color: #999;
-            }
-
-            .remove-decoration, .remove-decoration:hover {
-                text-decoration: none;
-            }
-        </style>
+        <link href="/css/style.css" rel="stylesheet" media="screen">
 
 
         <script>
@@ -76,6 +28,7 @@
         var pollOptions = {};
         </script>
     </head>
+
 
     <body>
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -100,7 +53,7 @@
                         <a href="/activity">Activity</a>
                     </li>
                     <li>
-                        <a href="/create" style="color: #468847;"><strong>Create a poll for free</strong></a>
+                        <a href="/create"><strong class='success'>Create a poll for free</strong></a>
                     </li>
                 </ul>
 
@@ -138,14 +91,14 @@
         <div id="footer">
           <div class="container">
             <p class="text-muted credit">
-                Built with <span class="glyphicon glyphicon-heart-empty" style="color: #d9534f;"></span> by <a href="https://abrah.am" target="_blank">Abraham Williams</a> for use with <a href="https://app.net" target="_blank">App.net</a>
+                Built with <span class="glyphicon glyphicon-heart-empty danger"></span> by <a href="https://abrah.am" target="_blank">Abraham Williams</a> for use with <a href="https://app.net" target="_blank">App.net</a>
                 <br>
                 Follow <a href='https://alpha.app.net/polls' target="_blank" rel='me'>@polls</a> /
                 <a href="/terms">Terms of Service</a> /
                 <a href="/privacy">Privacy Policy</a> /
                 <a href="https://docs.google.com/forms/d/1E7OEZu2CU72lsY5qMFUeKSiGQD9Vg0ucuW0nme-nsyo/viewform" target='_blank'>Feedback</a> /
                 <a href="https://directory.app.net/app/291/polls/" target='_blank'>Recommend Polls</a> /
-                <a href="/create" style="color: #468847;"><strong>Create a poll for free</strong></a>
+                <a href="/create"><strong class='success'>Create a poll for free</strong></a>
             </p>
           </div>
         </div>

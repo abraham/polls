@@ -37,10 +37,10 @@
 
 
             {% if poll['total_votes'] == 0 %}
-            <div id="donutchart-{{poll['_id']}}" style="height: 500px;" class="row polls-empty">
-                <p class="lead text-center" style="padding-top: 200px;">No one has cast a vote yet, be the first and make history!</p>
+            <div id="donutchart-{{poll['_id']}}" class="row polls-empty donut-graph">
+                <p class="lead text-center">No one has cast a vote yet, be the first and make history!</p>
             {% else %}
-            <div id="donutchart-{{poll['_id']}}" style="height: 500px;" class="row">
+            <div id="donutchart-{{poll['_id']}}" class="row donut-graph">
             {% end %}
             </div>
 

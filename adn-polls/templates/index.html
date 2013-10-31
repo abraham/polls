@@ -26,7 +26,7 @@
 
         <div class='col-md-12'>
             {% for poll in active_polls %}
-                <div class='row'>
+                <div class='row index-graph'>
                     <div class="">
 
                         <div class="page-header">
@@ -44,7 +44,7 @@
                 </div>
 
 
-                <div id="donutchart-{{poll['_id']}}" class='row' style="height: 500px;"></div>
+                <div id="donutchart-{{poll['_id']}}" class='row donut-graph'></div>
 
 
                 <script>
@@ -59,7 +59,7 @@
 
                         {% for vote in poll['votes'][:15] %}
                             <a href="/users/{{vote['user_id']}}" class="remove-decoration">
-                                <img class="img-rounded" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57" height="57" style="margin-bottom: 5px;" alt="@{{vote['user_name']}}'s avatar"/>
+                                <img class="img-rounded user-img" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=114&amp;w=114" title="@{{vote['user_name']}}" width="57" height="57" alt="@{{vote['user_name']}}'s avatar"/>
                             </a>
                         {% end %}
 
@@ -68,10 +68,10 @@
 
 
                 <br>
-                <div class='row' style="padding-bottom: 50px;">
+                <div class='row'>
 
                     {% if current_user is not None %}
-                        <a id="post-vote" class="btn btn-default btn-success btn-lg pull-right" href="/polls/{{poll['_id']}}" style="margin-right: 55px;">
+                        <a id="post-vote" class="btn btn-default btn-success btn-lg pull-right" href="/polls/{{poll['_id']}}">
                              Vote and be merry!
                         </a>
 
