@@ -47,62 +47,62 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
-                <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="">
-                    {% raw xsrf_input %}
+                    <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="">
+                        {% raw xsrf_input %}
 
-                    {% for option in poll['options'] %}
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1 data-text="{{option['display_text']}}">
-                            {{option['display_text']}}
-                        </label>
-                    </div>
-                    {% end %}
-
-                    <br/>
-
-                    {% if current_user is None %}
-                        
-                        <div class='pull-right'>
-                            <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                        {% for option in poll['options'] %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex=1 data-text="{{option['display_text']}}">
+                                {{option['display_text']}}
+                            </label>
                         </div>
+                        {% end %}
 
-                    {% else %}
-                        
-                        {% if user_has_voted %}
-                            <div class="alert alert-success has-not-voted">
+                        <br/>
+
+                        {% if current_user is None %}
+                            
+                            <div class='pull-right'>
+                                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                            </div>
+
                         {% else %}
-                            <div class="alert alert-success has-voted hidden">
-                        {% end %}
-                                <strong>Nice vote!</strong>
-                                Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a
-                                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
-                                and&nbsp;
-                                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
-                                or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.
-                            </div>
-
-                        {% if not user_has_voted %}
-                            <div class="has-not-voted">
-
-                                <textarea class="form-control hidden" id="text" rows="5" tabindex=2 style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
-
-                                <div class='col-md-8'>
-                                    <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
-                                    <a href="#" class="pull-right hidden post-vote-custom-discard" style="margin-top: 15px;">Discard</a>
-                                    <input type="text" id="textx" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
+                            
+                            {% if user_has_voted %}
+                                <div class="alert alert-success has-not-voted">
+                            {% else %}
+                                <div class="alert alert-success has-voted hidden">
+                            {% end %}
+                                    <strong>Nice vote!</strong>
+                                    Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a
+                                    {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
+                                    and&nbsp;
+                                    {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
+                                    or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.
                                 </div>
-                                <div class="col-md-4">
-                                    <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex=2>
-                                        <span class="glyphicon glyphicon-check"></span>
-                                         Vote and post to ADN
-                                    </button>
-                                </div>
-                            </div>
-                        {% end %}
 
-                    {% end %}
-                </form>
+                            {% if not user_has_voted %}
+                                <div class="has-not-voted">
+
+                                    <textarea class="form-control hidden" id="text" rows="5" tabindex=2 style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
+
+                                    <div class='col-md-8'>
+                                        <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
+                                        <a href="#" class="pull-right hidden post-vote-custom-discard" style="margin-top: 15px;">Discard</a>
+                                        <input type="text" id="textx" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex=2>
+                                            <span class="glyphicon glyphicon-check"></span>
+                                             Vote and post to ADN
+                                        </button>
+                                    </div>
+                                </div>
+                            {% end %}
+
+                        {% end %}
+                    </form>
                 </div>
             </div>
 
