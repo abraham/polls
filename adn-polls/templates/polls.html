@@ -139,7 +139,7 @@
                     <form role="form" id='poll-reply-form' class="form-reply" data-poll-id="{{poll['_id']}}" style='margin-top: 30px;'>
                         {% raw xsrf_input %}
 
-                        <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} ">    @{{poll['user_name']}} </textarea>
+                        <textarea class="form-control" rows="5" tabindex=3 style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} " maxlength="256">@{{poll['user_name']}} </textarea>
 
                         {% if current_user is not None %}
                         <span class='text-muted' style="position: relative; top: 15px;">Currently only replies posted through Polls are shown</span>
@@ -217,6 +217,12 @@
             alert('There must be some text to reply with...');
             return false;
         }
+
+        if (text.length > 256) {
+            alert('Replies must be 256 characters or shorter.');
+            return false;
+        }
+
         $form.find('button').button('loading');
 
         $.ajax({
