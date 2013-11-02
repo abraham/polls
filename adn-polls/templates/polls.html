@@ -51,13 +51,13 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
-                    <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="">
+                    <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="js-polls-{{poll['_id']}}">
                         {% raw xsrf_input %}
 
                         {% for option in poll['options'] %}
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="option" id="option" value="{{option['_id']}}" tabindex="1" data-text="{{option['display_text']}}">
+                                    <input type="radio" class="js-polls-options" name="option" id="option" value="{{option['_id']}}" tabindex="1" data-option-text="{{option['display_text']}}" data-option-id="{{option['_id']}}">
                                     {{option['display_text']}}
                                 </label>
                             </div>
@@ -89,15 +89,15 @@
                             {% if not user_has_voted %}
                                 <div class="has-not-voted">
 
-                                    <textarea class="form-control hidden" id="text" rows="5" tabindex="2" style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
+                                    <textarea class="form-control hidden js-votes-{{poll['_id']}}-custom-input" id="text" rows="5" tabindex="2" style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
 
                                     <div class='col-md-8'>
-                                        <a href="#" class="pull-right hidden post-vote-custom" style="margin-top: 15px;">Customize post</a>
-                                        <a href="#" class="pull-right hidden post-vote-custom-discard" style="margin-top: 15px;">Discard</a>
+                                        <a href="#" class="pull-right hidden js-post-votes-custom js-votes-{{poll['_id']}}-custom" style="margin-top: 15px;" data-poll-id="{{poll['_id']}}">Customize post</a>
+                                        <a href="#" class="pull-right hidden js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard" style="margin-top: 15px;" data-poll-id="{{poll['_id']}}">Discard</a>
                                         <input type="text" id="textx" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right" disabled="disabled" tabindex="3">
+                                        <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right js-votes-{{poll['_id']}}" disabled="disabled" tabindex="3">
                                             <span class="glyphicon glyphicon-check"></span>
                                              Vote and post to ADN
                                         </button>
@@ -256,60 +256,10 @@
     }
 
 
-    function enableVoteBtn() {
-        $('#post-vote').removeAttr('disabled');
-        $('.post-vote-custom.hidden').hide().removeClass('hidden').slideDown();
-        setCustomVoteValue();
-    }
-
-
-    function setCustomVoteValue() {
-        var $form = $(event.currentTarget).closest('form')
-        var optionText = $form.find('[name="option"]:checked').data('text');
-        var $text = $('#text');
-        var val = $text.data('default-value') + ' ' + optionText + ' because ';
-        $text.val(val);
-
-    }
-
-
-    function enableCustomVote(event) {
-        var $form = $(event.currentTarget).closest('form')
-        var optionText = $form.find('[name="option"]:checked').data('text');
-        var $text = $('#text');
-        var val = $text.data('default-value') + ' ' + optionText + ' because ';
-        $text.hide().removeClass('hidden').slideDown().focus().val(val);
-        $('.post-vote-custom').slideUp(function() {
-            $('.post-vote-custom-discard').hide().removeClass('hidden').slideDown();
-        });
-        event.preventDefault()
-    }
-
-
-    function discardCustomVote(event) {
-        var $form = $(event.currentTarget).closest('form')
-        var optionText = $form.find('[name="option"]:checked').data('text');
-        var $text = $('#text');
-        $text.slideUp(function() {
-            $text.addClass('hidden');
-        });
-
-        $('.post-vote-custom-discard').slideUp(function() {
-            $('.post-vote-custom-discard').addClass('hidden');
-            $('.post-vote-custom').removeClass('hidden').slideDown();
-        });
-        event.preventDefault()
-    }
-
-
     $(function() {
         $('#vote').on('submit', postVote);
         $('.post-replies').on('click', postReply);
         $('.post-replies').on('submit', postReply);
-        $('#vote input').on('focus', enableVoteBtn);
-        $('#vote input').on('click', enableVoteBtn);
-        $('.post-vote-custom').on('click', enableCustomVote);
-        $('.post-vote-custom-discard').on('click', discardCustomVote);
     });
 
 </script>

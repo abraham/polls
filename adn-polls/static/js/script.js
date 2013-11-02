@@ -65,10 +65,12 @@ $(function() {
     $("img").unveil(200);
 
 
-    //$(document).on('click', '.adn-action-star', starPoll);
+    $(document).on('click', '.js-unhide-next', unhideNextOption);
     $(document).on('click', '.js-polls-stars', triggerPollsStars);
     $(document).on('click', '.js-polls-reposts', triggerPollsReposts);
-    $(document).on('focus', '.js-unhide-next', unhideNextOption);
+    $(document).on('click', '.js-polls-options', triggerPollsIdVotes);
+    $(document).on('click', 'a.js-post-votes-custom', triggerCustomVotes);
+    $(document).on('click', 'a.js-post-votes-custom-discard', triggerCustomVotesDiscard);
 });
 
 
@@ -207,6 +209,134 @@ function deletePollsIdRepostsUI(options) {
         .addClass('glyphicon-star-empty')
         .removeClass('adn-action-take')
         .removeClass('glyphicon-star');
+}
+
+
+/**
+ * Votes
+ */
+signals.on('post-polls-id-options-id', enableVotes);
+signals.on('set-custom-votes-value', setCustomVotesValue);
+signals.on('show-custom-votes-link', showCustomVotesLink);
+
+signals.on('show-custom-votes-input', showCustomVotesInput);
+signals.on('hide-custom-votes-link', hideCustomVotesLink);
+signals.on('show-custom-votes-discard-link', showCustomVotesDiscardLink);
+
+signals.on('hide-custom-votes-input', hideCustomVotesInput);
+signals.on('hide-custom-votes-discard-link', hideCustomVotesDiscardLink);
+
+
+function triggerPollsIdVotes(event) {
+    // set custom value
+    // enable vote button
+    // show custom link
+    var $input = $(event.currentTarget);
+    var $form = $input.closest('form');
+    var options = {
+        pollId: $form.data('poll-id'),
+        optionId: $input.data('option-id'),
+        optionText: $input.data('option-text')
+    }
+    signals.emit('set-custom-votes-value', options);
+    signals.emit('post-polls-id-options-id', options);
+    if ($('.js-votes-' + options.pollId + '-custom-discard.hidden').length > 0) {
+        signals.emit('show-custom-votes-link', options);
+    }
+}
+
+
+function triggerCustomVotes(event) {
+    // show custom input
+    // hide custom link
+    // show discard link
+    var $link = $(event.currentTarget);
+    var pollId = $link.data('poll-id');
+    var options = {
+        pollId: pollId,
+    }
+    signals.emit('show-custom-votes-input', options);
+    signals.emit('hide-custom-votes-link', options, 'show-custom-votes-discard-link');
+    event.preventDefault();
+}
+
+
+function triggerCustomVotesDiscard(event) {
+    // hide custom input
+    // hide discard link
+    // show custom link
+    var $link = $(event.currentTarget);
+    var pollId = $link.data('poll-id');
+    var options = {
+        pollId: pollId
+    }
+    signals.emit('hide-custom-votes-input', options);
+    signals.emit('hide-custom-votes-discard-link', options, 'show-custom-votes-link');
+    event.preventDefault()
+}
+
+
+function enableVotes(options) {
+    $('.js-votes-' + options.pollId).removeAttr('disabled');
+}
+
+
+function setCustomVotesValue(options) {
+    var $form = $('.js-polls-' + options.pollId);
+    var $text = $('.js-votes-' + options.pollId + '-custom-input');
+    var val = $text.data('default-value') + ' ' + options.optionText + ' because ';
+    $text.val(val);
+}
+
+
+function hideCustomVotesLink(options, next) {
+    $('a.js-votes-' + options.pollId + '-custom').slideUp(function() {
+        console.log(next)
+        if (next) {
+            signals.emit(next, options);
+        }
+    }).addClass('hidden');
+}
+
+
+function hideCustomVotesDiscardLink(options, next) {
+    $('.js-votes-' + options.pollId + '-custom-discard').slideUp(function() {
+        if (next) {
+            signals.emit(next, options);
+        }
+    }).addClass('hidden');
+}
+
+
+function showCustomVotesLink(options, next) {
+    $('.js-votes-' + options.pollId + '-custom.hidden')
+        .hide().removeClass('hidden').slideDown(function() {
+            if (next) {
+                signals.emit(next, options);
+            }
+    });
+
+}
+
+
+function showCustomVotesDiscardLink(options) {
+    var $link = $('.js-votes-' + options.pollId + '-custom-discard');
+    $link.hide().removeClass('hidden').slideDown();
+}
+
+
+function showCustomVotesInput(options) {
+    $('.js-votes-' + options.pollId + '-custom-input.hidden')
+        .hide().removeClass('hidden')
+        .slideDown().focus();//.val(val);
+}
+
+
+function hideCustomVotesInput(options) {
+    var $textarea = $('.js-votes-' + options.pollId + '-custom-input:not(.hidden)');
+        $textarea.slideUp(function() {
+            $textarea.addClass('hidden');
+        });
 }
 
 
