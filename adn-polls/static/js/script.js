@@ -42,13 +42,6 @@ smokesignals={convert:function(c,e){e={};c.on=function(d,a){(e[d]=e[d]||[]).push
  */
 "use strict";
 
-/*
-forms
-    form-polls-create
-
-events
-    js-unhide-next
-*/
 
 var signals = {};
 smokesignals.convert(signals);
@@ -59,19 +52,11 @@ var pollIds = pollIds || [];
 $(function() {
     signals.emit('ready');
 
-    // $(document).on('click', '.js-trigger-click-signal', triggerSignals);
     $(document).on('focus click', '.js-trigger-signals', triggerSignals);
 
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
     $("img").unveil(200);
-
-    // $(document).on('click', '.js-unhide-next', unhideNextOption);
-    // $(document).on('click', '.js-polls-stars', triggerPollsStars);
-    // $(document).on('click', '.js-polls-reposts', triggerPollsReposts);
-    // $(document).on('click', '.js-polls-options', triggerPollsIdVotes);
-    // $(document).on('click', 'a.js-post-votes-custom', triggerCustomVotes);
-    // $(document).on('click', 'a.js-post-votes-custom-discard', triggerCustomVotesDiscard);
 });
 
 
@@ -169,16 +154,9 @@ function deletePollsIdStarsUI(options) {
 /**
  * Reposts
  */
-signals.on('post-polls-id-reposts', postPollsIdRepostsAPI);
-signals.on('post-polls-id-reposts', postPollsIdRepostsUI);
-signals.on('delete-polls-id-reposts', deletePollsIdRepostsUI);
-
-
-function triggerPollsReposts(event) {
-    var $a = $(event.currentTarget);
-    var pollId = $a.data('poll-id');
-    signals.emit('post-polls-id-reposts', {pollId: pollId});
-}
+signals.on('repost-poll', postPollsIdRepostsAPI);
+signals.on('repost-poll', postPollsIdRepostsUI);
+signals.on('unrepost-poll', deletePollsIdRepostsUI);
 
 
 function postPollsIdRepostsAPI(options) {
@@ -191,7 +169,7 @@ function postPollsIdRepostsAPI(options) {
 
 
 function postPollsIdRepostsAPIFail(options, data, textStatus, jqXHR) {
-    signals.emit('delete-polls-id-reposts', options);
+    signals.emit('unrepost-poll', options);
 
     if (data.status == 400) {
         alert(data.responseText);
