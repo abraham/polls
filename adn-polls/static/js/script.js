@@ -59,17 +59,11 @@ var pollIds = pollIds || [];
 $(function() {
     signals.emit('ready');
 
-    signals.on('post-polls-id-stars', postPollsIdStarsAPI);
-    signals.on('post-polls-id-stars', postPollsIdStarsUI);
-    signals.on('delete-polls-id-stars', deletePollsIdStarsUI);
-
-    signals.on('post-polls-id-reposts', postPollsIdRepostsAPI);
-    signals.on('post-polls-id-reposts', postPollsIdRepostsUI);
-    signals.on('delete-polls-id-reposts', deletePollsIdRepostsUI);
 
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
     $("img").unveil(200);
+
 
     //$(document).on('click', '.adn-action-star', starPoll);
     $(document).on('click', '.js-polls-stars', triggerPollsStars);
@@ -113,6 +107,11 @@ function makeMoments(){
 /**
  * Stars
  */
+signals.on('post-polls-id-stars', postPollsIdStarsAPI);
+signals.on('post-polls-id-stars', postPollsIdStarsUI);
+signals.on('delete-polls-id-stars', deletePollsIdStarsUI);
+
+
 function triggerPollsStars(event) {
     var $a = $(event.currentTarget);
     var pollId = $a.data('poll-id');
@@ -161,7 +160,12 @@ function deletePollsIdStarsUI(options) {
 /**
  * Reposts
  */
- function triggerPollsReposts(event) {
+signals.on('post-polls-id-reposts', postPollsIdRepostsAPI);
+signals.on('post-polls-id-reposts', postPollsIdRepostsUI);
+signals.on('delete-polls-id-reposts', deletePollsIdRepostsUI);
+
+
+function triggerPollsReposts(event) {
     var $a = $(event.currentTarget);
     var pollId = $a.data('poll-id');
     signals.emit('post-polls-id-reposts', {pollId: pollId});
