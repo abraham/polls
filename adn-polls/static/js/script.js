@@ -59,22 +59,48 @@ var pollIds = pollIds || [];
 $(function() {
     signals.emit('ready');
 
+    signals.on('post-polls-id-stars', postPollsIdStarsAPI);
+    signals.on('post-polls-id-stars', postPollsIdStarsUI);
+    signals.on('delete-polls-id-stars', deletePollsIdStarsUI);
+
+    signals.on('post-polls-id-reposts', postPollsIdRepostsAPI);
+    signals.on('post-polls-id-reposts', postPollsIdRepostsUI);
+    signals.on('delete-polls-id-reposts', deletePollsIdRepostsUI);
+
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
     $("img").unveil(200);
 
-    $(document).on('click', '.adn-action-star', starPoll);
-    $(document).on('click', '.adn-action-repost', repostPoll);
+    //$(document).on('click', '.adn-action-star', starPoll);
+    $(document).on('click', '.js-polls-stars', triggerPollsStars);
+    $(document).on('click', '.js-polls-reposts', triggerPollsReposts);
     $(document).on('focus', '.js-unhide-next', unhideNextOption);
 });
 
 
+/* Thanks MDN */
+function partial(fn /*, args...*/) {
+    var aps = Array.prototype.slice,
+        args = aps.call(arguments, 1);
+
+    return function() {
+        return fn.apply(this, args.concat(aps.call(arguments)));
+    };
+}
+
+
+/**
+ * Create polls
+ */
 function unhideNextOption() {
     $('.js-unhide-next.hidden:first').hide().removeClass('hidden').slideDown();
     $('.js-unhide-next:first').removeClass('js-unhide-next');
 }
 
 
+/**
+ * Utils
+ */
 function makeMoments(){
     $('.datetime').each(function(index, elem) {
         var $elem = $(elem);
@@ -84,18 +110,119 @@ function makeMoments(){
 }
 
 
-
-
-
-function starPoll(event) {
+/**
+ * Stars
+ */
+function triggerPollsStars(event) {
     var $a = $(event.currentTarget);
     var pollId = $a.data('poll-id');
-    $a.find('span')
-        .addClass('glyphicon-star')
-        .removeClass('glyphicon-star-empty')
-        .addClass('adn-action-take');
-    postAdnAction(pollId, 'star');
+    signals.emit('post-polls-id-stars', { pollId: pollId});
 }
+
+
+function postPollsIdStarsAPI(options) {
+    console.log(options)
+    var done = function(){};
+    var fail = partial(postPollsIdStarsAPIFail, options);
+    var path = '/polls/' + options.pollId + '/stars'
+    postAPI(path, {}, done, fail);
+}
+
+
+function postPollsIdStarsAPIFail(options, data, textStatus, jqXHR) {
+    signals.emit('delete-polls-id-stars', options);
+
+    if (data.status == 400) {
+        alert(data.responseText);
+        return;
+    }
+
+    alert('Something went wrong.');
+    return;
+}
+
+
+function postPollsIdStarsUI(options) {
+    $('.js-polls-stars-' + options.pollId + ' span')
+        .addClass('glyphicon-star')
+        .addClass('adn-action-take')
+        .removeClass('glyphicon-star-empty');
+}
+
+
+function deletePollsIdStarsUI(options) {
+    $('.js-polls-stars-' + options.pollId + ' span')
+        .addClass('glyphicon-star-empty')
+        .removeClass('adn-action-take')
+        .removeClass('glyphicon-star');
+}
+
+
+/**
+ * Reposts
+ */
+ function triggerPollsReposts(event) {
+    var $a = $(event.currentTarget);
+    var pollId = $a.data('poll-id');
+    signals.emit('post-polls-id-reposts', {pollId: pollId});
+}
+
+
+function postPollsIdRepostsAPI(options) {
+    console.log(options)
+    var done = function(){};
+    var fail = partial(postPollsIdRepostsAPIFail, options);
+    var path = '/polls/' + options.pollId + '/reposts'
+    postAPI(path, {}, done, fail);
+}
+
+
+function postPollsIdRepostsAPIFail(options, data, textStatus, jqXHR) {
+    signals.emit('delete-polls-id-reposts', options);
+
+    if (data.status == 400) {
+        alert(data.responseText);
+        return;
+    }
+
+    alert('Something went wrong.');
+    return;
+}
+
+
+function postPollsIdRepostsUI(options) {
+    $('.js-polls-reposts-' + options.pollId + ' span')
+        .addClass('glyphicon-star')
+        .addClass('adn-action-take')
+        .removeClass('glyphicon-star-empty');
+}
+
+
+function deletePollsIdRepostsUI(options) {
+    $('.js-polls-reposts-' + options.pollId + ' span')
+        .addClass('glyphicon-star-empty')
+        .removeClass('adn-action-take')
+        .removeClass('glyphicon-star');
+}
+
+
+/**
+ * API
+ */
+function noOp() {
+    // everything worked!
+}
+
+
+function postAPI(path, data, done, fail) {
+    data['_xsrf'] = $('meta[name=_xsrf]').prop('content');
+    console.log(data)
+    $.post(path, data).done(done).fail(fail);
+}
+
+
+
+
 
 
 function repostPoll(event) {

@@ -552,7 +552,7 @@ class PollsIdNextHandler(BaseHandler):
         self.redirect(url)
 
 
-class PollsIdActionsHandler(BaseHandler):
+class PollsIdRepostsHandler(BaseHandler):
 
     @require_auth
     def post(self, poll_id):
@@ -560,14 +560,17 @@ class PollsIdActionsHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
 
-        poll_id = ObjectId(poll_id)
+        poll_id = object_id(poll_id)
+        if poll_id is None:
+            self.write_error(404)
+            return
+
         poll = polls.find_by_id(db=db, poll_id=poll_id)
-        action_id = self.get_argument('actionId')
         if poll is None:
             self.write_error(404)
             return
 
-        url = 'https://alpha-api.app.net/stream/0/posts/{}/{}'.format(poll['post_id'], action_id)
+        url = 'https://alpha-api.app.net/stream/0/posts/{}/repost'.format(poll['post_id'])
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token'])
         }
@@ -576,10 +579,7 @@ class PollsIdActionsHandler(BaseHandler):
 
         if result.status_code == 200:
             self.write('success')
-            if action_id == 'star':
-                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=current_user['_id'])
-            elif action_id == 'repost':
-                polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=current_user['_id'])
+            polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=current_user['_id'])
             return
         else:
             if result.status_code == 400:
@@ -587,6 +587,46 @@ class PollsIdActionsHandler(BaseHandler):
                 self.write(response['meta']['error_message'])
                 return
 
+            print 'error taking action', result.content
+            raise Exception(result.content)
+
+
+class PollsIdStarsHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+
+        poll_id = object_id(poll_id)
+        if poll_id is None:
+            self.write_error(404)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.write_error(404)
+            return
+
+        url = 'https://alpha-api.app.net/stream/0/posts/{}/star'.format(poll['post_id'])
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token'])
+        }
+        result = requests.post(url, headers=headers)
+        response = result.json()
+
+        if result.status_code == 200:
+            self.write('success')
+            polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=current_user['_id'])
+            return
+        else:
+            if result.status_code == 400:
+                self.set_status(400)
+                self.write(response['meta']['error_message'])
+                return
+
+            self.set_status(500)
             print 'error taking action', result.content
             raise Exception(result.content)
 
