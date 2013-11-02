@@ -19,7 +19,7 @@
 
 
     <div class="col-md-8 col-md-offset-2">
-        <form role="form" method="post" action="/create" class='row'>
+        <form role="form" method="post" action="/create" class='row form-polls-create'>
 
            {% raw xsrf_input %}
 
@@ -28,18 +28,19 @@
                 <textarea class="form-control" id="question" name="question" rows="3" maxlength="150" placeholder="How awesome is @abraham for making this amazing tool?" required autocomplete="off"></textarea>
             </div>
 
+
             <div class="form-group">
                 <label for="options">Options</label>
-                <input type="text" class="form-control" id="options" name="options" maxlength="100" placeholder="So awesome!" required autocomplete="off">
-                <input type="text" class="form-control" id="options" name="options" maxlength="100" placeholder="Beyond awesome!" required autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="The most epic!" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="!!!" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="Need moar cowbell!" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="This is lame!" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="One seriously bearded dude!" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="The cake is a lie" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="My spoon is too big" autocomplete="off">
-                <input type="text" class="form-control hidden" id="options" name="options" maxlength="100" placeholder="He was dead the whole time" autocomplete="off">
+                <input type="text" class="form-control" id="options" name="options" maxlength="100" autocomplete="off" placeholder="So awesome!" required>
+                <input type="text" class="form-control js-unhide-next" id="options" name="options" maxlength="100" autocomplete="off" placeholder="Beyond awesome!" required>
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="The most epic!">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="!!!">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="Need moar cowbell!">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="This is lame!">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="One seriously bearded dude!">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="The cake is a lie">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="My spoon is too big">
+                <input type="text" class="form-control js-unhide-next hidden" id="options" name="options" maxlength="100" autocomplete="off" placeholder="He was dead the whole time">
             </div>
 
 
@@ -47,12 +48,4 @@
         </form>
     </div>
 </div>
-{% end %}
-
-{% block scripts %}
-    <script>
-        $('input').on('focus', function() {
-            $(this).next('.hidden').hide().removeClass('hidden').slideDown();
-        });
-    </script>
 {% end %}

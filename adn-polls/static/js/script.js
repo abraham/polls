@@ -42,6 +42,13 @@ smokesignals={convert:function(c,e){e={};c.on=function(d,a){(e[d]=e[d]||[]).push
  */
 "use strict";
 
+/*
+forms
+    form-polls-create
+
+events
+    js-unhide-next
+*/
 
 var signals = {};
 smokesignals.convert(signals);
@@ -51,16 +58,21 @@ var pollIds = pollIds || [];
 
 $(function() {
     signals.emit('ready');
+
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
-    $(document).on('click', '.adn-action-star', starPoll);
-    $(document).on('click', '.adn-action-repost', repostPoll);
     $("img").unveil(200);
 
-    $('input').on('focus', function() {
-        $(this).next('.hidden').hide().removeClass('hidden').slideDown();
-    });
+    $(document).on('click', '.adn-action-star', starPoll);
+    $(document).on('click', '.adn-action-repost', repostPoll);
+    $(document).on('focus', '.js-unhide-next', unhideNextOption);
 });
+
+
+function unhideNextOption() {
+    $('.js-unhide-next.hidden:first').hide().removeClass('hidden').slideDown();
+    $('.js-unhide-next:first').removeClass('js-unhide-next');
+}
 
 
 function makeMoments(){
@@ -70,6 +82,9 @@ function makeMoments(){
         $elem.text(fromNow);
     });
 }
+
+
+
 
 
 function starPoll(event) {
