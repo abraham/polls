@@ -123,16 +123,9 @@ function makeMoments(){
 /**
  * Stars
  */
-signals.on('post-polls-id-stars', postPollsIdStarsAPI);
-signals.on('post-polls-id-stars', postPollsIdStarsUI);
-signals.on('delete-polls-id-stars', deletePollsIdStarsUI);
-
-
-function triggerPollsStars(event) {
-    var $a = $(event.currentTarget);
-    var pollId = $a.data('poll-id');
-    signals.emit('post-polls-id-stars', { pollId: pollId});
-}
+signals.on('star-poll', postPollsIdStarsAPI);
+signals.on('star-poll', postPollsIdStarsUI);
+signals.on('unstar-poll', deletePollsIdStarsUI);
 
 
 function postPollsIdStarsAPI(options) {
@@ -145,7 +138,7 @@ function postPollsIdStarsAPI(options) {
 
 
 function postPollsIdStarsAPIFail(options, data, textStatus, jqXHR) {
-    signals.emit('delete-polls-id-stars', options);
+    signals.emit('unstar-poll', options);
 
     if (data.status == 400) {
         alert(data.responseText);
