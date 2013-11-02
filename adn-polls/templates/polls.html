@@ -57,7 +57,7 @@
                         {% for option in poll['options'] %}
                             <div class="radio">
                                 <label>
-                                    <input type="radio" class="js-polls-options" name="option" id="option" value="{{option['_id']}}" tabindex="1" data-option-text="{{option['display_text']}}" data-option-id="{{option['_id']}}">
+                                    <input type="radio" class="js-trigger-signals" data-signal-name="click-polls-options" name="option" id="option" value="{{option['_id']}}" tabindex="1" data-option-text="{{option['display_text']}}" data-option-id="{{option['_id']}}" data-poll-id="{{poll['_id']}}">
                                     {{option['display_text']}}
                                 </label>
                             </div>
@@ -92,9 +92,23 @@
                                     <textarea class="form-control hidden js-votes-{{poll['_id']}}-custom-input" id="text" rows="5" tabindex="2" style='margin-bottom: 30px;' data-default-value="@{{poll['user_name']}}" required maxlength="256">@{{poll['user_name']}} </textarea>
 
                                     <div class='col-md-8'>
-                                        <a href="#" class="pull-right hidden js-post-votes-custom js-votes-{{poll['_id']}}-custom" style="margin-top: 15px;" data-poll-id="{{poll['_id']}}">Customize post</a>
-                                        <a href="#" class="pull-right hidden js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard" style="margin-top: 15px;" data-poll-id="{{poll['_id']}}">Discard</a>
-                                        <input type="text" id="textx" class="form-control hidden" value="@{{poll['user_name']}}" style="margin-top: 7px;" data-default-value="@{{poll['user_name']}}" required>
+                                        <a  href="#" 
+                                            class="pull-right hidden js-trigger-signals js-votes-{{poll['_id']}}-custom"
+                                            style="margin-top: 15px;"
+                                            data-poll-id="{{poll['_id']}}"
+                                            data-signal-name="enable-custom-votes">Customize post</a>
+                                        <a  href="#" 
+                                            class="pull-right hidden js-trigger-signals js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard" 
+                                            style="margin-top: 15px;"
+                                            data-poll-id="{{poll['_id']}}"
+                                            data-signal-name="disable-custom-votes">Discard</a>
+                                        <input type="text" 
+                                            id="textx"
+                                            class="form-control hidden"
+                                            value="@{{poll['user_name']}}"
+                                            style="margin-top: 7px;"
+                                            data-default-value="@{{poll['user_name']}}"
+                                            required>
                                     </div>
                                     <div class="col-md-4">
                                         <button type="submit" id="post-vote" class="btn btn-default btn-lg btn-danger pull-right js-votes-{{poll['_id']}}" disabled="disabled" tabindex="3">

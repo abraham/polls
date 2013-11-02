@@ -59,18 +59,19 @@ var pollIds = pollIds || [];
 $(function() {
     signals.emit('ready');
 
+    // $(document).on('click', '.js-trigger-click-signal', triggerSignals);
+    $(document).on('focus click', '.js-trigger-signals', triggerSignals);
 
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
     $("img").unveil(200);
 
-
-    $(document).on('click', '.js-unhide-next', unhideNextOption);
-    $(document).on('click', '.js-polls-stars', triggerPollsStars);
-    $(document).on('click', '.js-polls-reposts', triggerPollsReposts);
-    $(document).on('click', '.js-polls-options', triggerPollsIdVotes);
-    $(document).on('click', 'a.js-post-votes-custom', triggerCustomVotes);
-    $(document).on('click', 'a.js-post-votes-custom-discard', triggerCustomVotesDiscard);
+    // $(document).on('click', '.js-unhide-next', unhideNextOption);
+    // $(document).on('click', '.js-polls-stars', triggerPollsStars);
+    // $(document).on('click', '.js-polls-reposts', triggerPollsReposts);
+    // $(document).on('click', '.js-polls-options', triggerPollsIdVotes);
+    // $(document).on('click', 'a.js-post-votes-custom', triggerCustomVotes);
+    // $(document).on('click', 'a.js-post-votes-custom-discard', triggerCustomVotesDiscard);
 });
 
 
@@ -85,12 +86,25 @@ function partial(fn /*, args...*/) {
 }
 
 
+function triggerSignals(event) {
+    var $target = $(event.currentTarget);
+    var data = $target.data();
+    signals.emit(data['signalName'], data);
+    if (event.type == 'click' && event.currentTarget.localName == 'a') {
+        event.preventDefault();
+    }
+}
+
+
 /**
  * Create polls
  */
+signals.on('create-unhide-next-input', unhideNextOption)
+
+
 function unhideNextOption() {
-    $('.js-unhide-next.hidden:first').hide().removeClass('hidden').slideDown();
-    $('.js-unhide-next:first').removeClass('js-unhide-next');
+    $('.form-polls-create input.js-trigger-focus-signal:first').removeClass('js-trigger-focus-signal')
+    $('.form-polls-create input.hidden:first').hide().removeClass('hidden').slideDown();
 }
 
 
@@ -215,65 +229,17 @@ function deletePollsIdRepostsUI(options) {
 /**
  * Votes
  */
-signals.on('post-polls-id-options-id', enableVotes);
-signals.on('set-custom-votes-value', setCustomVotesValue);
-signals.on('show-custom-votes-link', showCustomVotesLink);
+signals.on('click-polls-options', enableVotes);
+signals.on('click-polls-options', setCustomVotesValue);
+signals.on('click-polls-options', showCustomVotesLink);
 
-signals.on('show-custom-votes-input', showCustomVotesInput);
-signals.on('hide-custom-votes-link', hideCustomVotesLink);
-signals.on('show-custom-votes-discard-link', showCustomVotesDiscardLink);
+signals.on('enable-custom-votes', showCustomVotesInput);
+signals.on('enable-custom-votes', hideCustomVotesLink);
+signals.on('enable-custom-votes', showCustomVotesDiscardLink);
 
-signals.on('hide-custom-votes-input', hideCustomVotesInput);
-signals.on('hide-custom-votes-discard-link', hideCustomVotesDiscardLink);
-
-
-function triggerPollsIdVotes(event) {
-    // set custom value
-    // enable vote button
-    // show custom link
-    var $input = $(event.currentTarget);
-    var $form = $input.closest('form');
-    var options = {
-        pollId: $form.data('poll-id'),
-        optionId: $input.data('option-id'),
-        optionText: $input.data('option-text')
-    }
-    signals.emit('set-custom-votes-value', options);
-    signals.emit('post-polls-id-options-id', options);
-    if ($('.js-votes-' + options.pollId + '-custom-discard.hidden').length > 0) {
-        signals.emit('show-custom-votes-link', options);
-    }
-}
-
-
-function triggerCustomVotes(event) {
-    // show custom input
-    // hide custom link
-    // show discard link
-    var $link = $(event.currentTarget);
-    var pollId = $link.data('poll-id');
-    var options = {
-        pollId: pollId,
-    }
-    signals.emit('show-custom-votes-input', options);
-    signals.emit('hide-custom-votes-link', options, 'show-custom-votes-discard-link');
-    event.preventDefault();
-}
-
-
-function triggerCustomVotesDiscard(event) {
-    // hide custom input
-    // hide discard link
-    // show custom link
-    var $link = $(event.currentTarget);
-    var pollId = $link.data('poll-id');
-    var options = {
-        pollId: pollId
-    }
-    signals.emit('hide-custom-votes-input', options);
-    signals.emit('hide-custom-votes-discard-link', options, 'show-custom-votes-link');
-    event.preventDefault()
-}
+signals.on('disable-custom-votes', hideCustomVotesInput);
+signals.on('disable-custom-votes', hideCustomVotesDiscardLink);
+signals.on('disable-custom-votes', showCustomVotesLink);
 
 
 function enableVotes(options) {
@@ -309,6 +275,9 @@ function hideCustomVotesDiscardLink(options, next) {
 
 
 function showCustomVotesLink(options, next) {
+    if ($('.js-votes-' + options.pollId + '-custom-discard.hidden').length == 0) {
+        return;
+    }
     $('.js-votes-' + options.pollId + '-custom.hidden')
         .hide().removeClass('hidden').slideDown(function() {
             if (next) {
