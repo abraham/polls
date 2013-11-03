@@ -79,7 +79,13 @@ function partial(fn /*, args...*/) {
 function triggerSignals(event) {
     var $target = $(event.currentTarget);
     var data = $target.data();
-    signals.emit(data['signalName'], data);
+    signals.emit(data['signalsName'], data);
+    if (data['signalsOnce']) {
+        $target
+            .removeClass('js-signals-focus')
+            .removeClass('js-signals-click')
+            .removeClass('js-signals-submit');
+    }
     if (event.type == 'click' && event.currentTarget.localName == 'a') {
         event.preventDefault();
     }
