@@ -354,7 +354,7 @@ function postReply(options) {
     }
 
     $button.button('loading');
-    var path = '/polls/' + pollId + '/repliesx';
+    var path = '/polls/' + pollId + '/replies';
     var data = {
         text: text
     }

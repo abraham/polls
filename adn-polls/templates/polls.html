@@ -116,13 +116,13 @@
 
                                     <div class='col-md-8'>
                                         <a  href="#" 
-                                            class="pull-right hidden js-trigger-signals js-votes-{{poll['_id']}}-custom"
+                                            class="pull-right hidden js-signals-click js-votes-{{poll['_id']}}-custom"
                                             style="margin-top: 15px;"
                                             data-poll-id="{{poll['_id']}}"
                                             data-signals-name="enable-custom-votes">Customize post</a>
 
                                         <a  href="#" 
-                                            class="pull-right hidden js-trigger-signals js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard" 
+                                            class="pull-right hidden js-signals-click js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard" 
                                             style="margin-top: 15px;"
                                             data-poll-id="{{poll['_id']}}"
                                             data-signals-name="disable-custom-votes">Discard</a>
@@ -210,7 +210,7 @@
                         <textarea
                             class="form-control post-reply-{{poll['post_id']}}"
                             rows="5"
-                            tabindex="4"
+                            tabindex="50"
                             style='margin-bottom: 30px;'
                             data-value="@{{poll['user_name']}} "
                             maxlength="256"
@@ -226,7 +226,7 @@
                                 data-signals-name="post-reply"
                                 data-poll-id="{{poll['_id']}}"
                                 data-post-id="{{poll['post_id']}}"
-                                tabindex="5"
+                                tabindex="51"
                                 data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..."
                                 data-toggle="button">
                                 <span class="glyphicon glyphicon-share-alt"></span>
