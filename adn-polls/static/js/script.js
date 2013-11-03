@@ -57,7 +57,9 @@ var pollIds = pollIds || [];
 $(function() {
     signals.emit('ready');
 
-    $(document).on('focus click', '.js-trigger-signals', triggerSignals);
+    $(document).on('focus', '.js-signals-focus', triggerSignals);
+    $(document).on('click', '.js-signals-click', triggerSignals);
+    $(document).on('submit', '.js-signals-submit', triggerSignals);
 
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
@@ -99,7 +101,6 @@ signals.on('create-unhide-next-input', unhideNextOption)
 
 
 function unhideNextOption() {
-    $('.form-polls-create input.js-trigger-focus-signal:first').removeClass('js-trigger-focus-signal')
     $('.form-polls-create input.hidden:first').hide().removeClass('hidden').slideDown();
 }
 
