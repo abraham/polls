@@ -51,7 +51,11 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
-                    <form role="form" id="vote" data-poll-id="{{poll['_id']}}" class="js-polls-{{poll['_id']}}">
+                    <form
+                        role="form"
+                        id="vote"
+                        data-poll-id="{{poll['_id']}}"
+                        class="js-polls-{{poll['_id']}}">
                         {% raw xsrf_input %}
 
                         {% for option in poll['options'] %}
@@ -195,12 +199,12 @@
 
                     <form
                         role="form"
-                        id='poll-reply-form'
-                        class="js-polls-reply js-trigger-signals"
+                        class="js-post-reply js-signals-submit"
                         data-signals-name="post-reply"
                         data-poll-id="{{poll['_id']}}"
                         data-post-id="{{poll['post_id']}}"
                         style='margin-top: 30px;'>
+
                         {% raw xsrf_input %}
 
                         <textarea class="form-control" rows="5" tabindex="4" style='margin-bottom: 30px;' data-value="@{{poll['user_name']}} " maxlength="256" required>@{{poll['user_name']}} </textarea>
