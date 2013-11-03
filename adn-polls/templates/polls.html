@@ -53,9 +53,9 @@
                 <div class='col-md-10 col-md-offset-1'>
                     <form
                         role="form"
-                        id="vote"
+                        class="js-polls-vote-{{poll['_id']}} js-signals-submit"
                         data-poll-id="{{poll['_id']}}"
-                        class="js-polls-{{poll['_id']}}">
+                        data-signals-name="vote-on-poll">
                         {% raw xsrf_input %}
 
                         {% for option in poll['options'] %}
@@ -63,7 +63,7 @@
                                 <label>
                                     <input
                                         type="radio"
-                                        class="js-trigger-signals"
+                                        class="js-signals-click"
                                         data-signals-name="click-polls-options"
                                         name="option"
                                         id="option"
@@ -89,9 +89,9 @@
                         {% else %}
                             
                             {% if user_has_voted %}
-                                <div class="alert alert-success has-not-voted">
+                                <div class="alert alert-success js-has-not-voted-{{poll['_id']}}">
                             {% else %}
-                                <div class="alert alert-success has-voted hidden">
+                                <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
                             {% end %}
                                     <strong>Nice vote!</strong>
                                     Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a
@@ -102,7 +102,7 @@
                                 </div>
 
                             {% if not user_has_voted %}
-                                <div class="has-not-voted">
+                                <div class="js-has-not-voted-{{poll['_id']}}">
 
                                     <textarea
                                         class="form-control hidden js-votes-{{poll['_id']}}-custom-input"
@@ -197,6 +197,8 @@
                             {% module PollsReplies(reply=reply) %}
                         {% end %}
                     </div>
+
+
                     <form
                         role="form"
                         class="js-post-reply post-reply-{{poll['post_id']}}"
@@ -253,46 +255,5 @@
 <script>
     pollIds.push("{{poll['_id']}}");
     pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
-
-
-    function postVote(event) {
-        var $form = $(event.currentTarget).closest('form')
-        var pollId = $form.data('poll-id');
-        var optionId = $form.find('[name="option"]:checked').prop('value');
-        var _xsrf = $form.find('[name="_xsrf"]').prop('value');
-
-        if (!optionId) {
-            alert('You must select a value');
-            return false;
-        }
-
-        incrementVote(pollId, optionId);
-        initChart(pollId);
-        var data = { optionId: optionId, _xsrf: _xsrf };
-        var text = $('#text:not(.hidden)').val();
-        if (text) {
-            data['text'] = text;
-        }
-        
-        $.ajax({
-            type: "POST",
-            url: "/polls/" + pollId + "/votes",
-            data: data,
-            success: voteSuccess,
-            error: function(errMsg) {
-                console.log('ERROR', errMsg);
-                alert('Oooops...something went wrong.');
-            }
-        });
-        event.preventDefault()
-    }
-
-
-    function voteSuccess(data) {
-        $('.has-not-voted').slideUp();
-        $('.has-voted').hide().removeClass('hidden').slideDown();
-    }
-
-
 </script>
 {% end %}

@@ -88,7 +88,8 @@ function triggerSignals(event) {
             .removeClass('js-signals-click')
             .removeClass('js-signals-submit');
     }
-    if (event.type == 'click' && event.currentTarget.localName == 'a') {
+
+    if (event.type == 'submit' || (event.type == 'click' && event.currentTarget.localName == 'a')) {
         event.preventDefault();
     }
 }
@@ -210,6 +211,8 @@ function deletePollsIdRepostsUI(options) {
 /**
  * Votes
  */
+signals.on('vote-on-poll', postVote);
+
 signals.on('click-polls-options', enableVotes);
 signals.on('click-polls-options', setCustomVotesValue);
 signals.on('click-polls-options', showCustomVotesLink);
@@ -286,6 +289,43 @@ function hideCustomVotesInput(options) {
         $textarea.slideUp(function() {
             $textarea.addClass('hidden');
         });
+}
+
+
+function postVote(options) {
+    var $form = $('form.js-polls-vote-' + options.pollId);
+    var optionId = $form.find('[name="option"]:checked').prop('value');
+
+    if (!optionId) {
+        alert('You must select a value');
+        return false;
+    }
+
+    // TODO: rewrite
+    incrementVote(options.pollId, optionId);
+    initChart(options.pollId);
+
+    var path = "/polls/" + options.pollId + "/votes";
+    var data = { optionId: optionId };
+    var text = $('textarea.js-votes-' + options.pollId + '-custom-input').val();
+    if (text) {
+        data['text'] = text;
+    }
+
+    postAPI(path, data, partial(postVoteDone, options), partial(postVoteFail, options));
+}
+
+
+function postVoteDone(options, data) {
+    $('.js-has-not-voted-' + options.pollId).slideUp();
+    $('.js-has-voted-' + options.pollId).hide().removeClass('hidden').slideDown();
+    // TODO: add response to ui
+}
+
+
+function postVoteFail(options, data, textStatus, jqXHR) {
+    console.log('ERROR', data);
+    alert('Oooops...something went wrong.');
 }
 
 
