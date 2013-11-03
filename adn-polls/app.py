@@ -715,6 +715,10 @@ class PollsIdVotesHandler(BaseHandler):
         }
         reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
 
+        html = self.render_string('templates/polls_replies.html', **{ 'reply': reply})
+        self.set_header('Content-Type', 'text/html')
+        self.write(html)
+
         action = {
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],

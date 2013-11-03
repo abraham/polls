@@ -319,7 +319,7 @@ function postVote(options) {
 function postVoteDone(options, data) {
     $('.js-has-not-voted-' + options.pollId).slideUp();
     $('.js-has-voted-' + options.pollId).hide().removeClass('hidden').slideDown();
-    // TODO: add response to ui
+    signals.emit('new-reply', options, data);
 }
 
 
@@ -333,6 +333,7 @@ function postVoteFail(options, data, textStatus, jqXHR) {
  * Replies
  */
 signals.on('post-reply', postReply);
+signals.on('new-reply', renderReply);
 
 
 function postReply(options) {
@@ -362,14 +363,18 @@ function postReply(options) {
     postAPI(path, data, partial(postReplyDone, options), partial(postReplyFail, options));
 }
 
+function renderReply(options, html) {
+    var $list = $('.poll-replies-list-' + options.pollId);
+    $list.append(html).find('.post-reply:last-child').hide().slideDown();
+    $("img").unveil();
+}
+
 
 function postReplyDone(options, data) {
-    var $list = $('.poll-replies-list-' + options.pollId);
     var $textarea = $('textarea.post-reply-' + options.postId);
     $('button.post-reply-' + options.postId).button('reset');
-    $list.append(data).find('.post-reply:last-child').hide().slideDown();
-    $("img").unveil();
     $textarea.prop('value', $textarea.data('value'));
+    signals.emit('new-reply', options, data);
 }
 
 
