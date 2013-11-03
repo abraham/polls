@@ -307,7 +307,7 @@ function postVote(options) {
 
     var path = "/polls/" + options.pollId + "/votes";
     var data = { optionId: optionId };
-    var text = $('textarea.js-votes-' + options.pollId + '-custom-input').val();
+    var text = $('textarea.js-votes-' + options.pollId + '-custom-input:not(.hidden)').val();
     if (text) {
         data['text'] = text;
     }
