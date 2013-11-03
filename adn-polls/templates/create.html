@@ -21,30 +21,85 @@
     <div class="col-md-8 col-md-offset-2">
         <form role="form" method="post" action="/create" class='row form-polls-create'>
 
+
            {% raw xsrf_input %}
+
 
             <div class="form-group">
                 <label for="question">Question</label>
-                <textarea class="form-control" id="question" name="question" rows="3" maxlength="150" placeholder="How awesome is @abraham for making this amazing tool?" required autocomplete="off"></textarea>
+                <textarea
+                class="form-control"
+                id="question"
+                name="question"
+                rows="3"
+                maxlength="150"
+                placeholder="How awesome is @abraham for making this swank tool?"
+                required
+                autocomplete="off"></textarea>
             </div>
 
 
             <div class="form-group">
                 <label for="options">Options</label>
-                <input type="text" class="form-control" id="options" name="options" maxlength="100" autocomplete="off" placeholder="So awesome!" required>
-                <input type="text" class="form-control js-trigger-focus-signal" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="Beyond awesome!" required>
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="The most epic!">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="!!!">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="Need moar cowbell!">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="This is lame!">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="One seriously bearded dude!">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="The cake is a lie">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="My spoon is too big">
-                <input type="text" class="form-control js-trigger-focus-signal hidden" data-signals-name="create-unhide-next-input" id="options" name="options" maxlength="100" autocomplete="off" placeholder="He was dead the whole time">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="options"
+                    name="options"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="So awesome!"
+                    required>
+
+
+                <input
+                    type="text"
+                    class="form-control js-signals-focus"
+                    data-signals-name="create-unhide-next-input"
+                    data-signals-once="true"
+                    id="options"
+                    name="options"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Beyond awesome!"
+                    required>
+
+
+                {% set placeholders = [
+                    u'The most epic!',
+                    u'!!!',
+                    u'Need moar cowbell!',
+                    u'This is lame!',
+                    u'One seriously bearded dude!',
+                    u'The cake is a lie',
+                    u'My spoon is too big',
+                    u'He was dead the whole time',
+                ] %}
+
+
+                {% for placeholder in placeholders %}
+                    <input
+                        type="text"
+                        class="form-control js-signals-focus hidden"
+                        data-signals-name="create-unhide-next-input"
+                        data-signals-once="true"
+                        id="options"
+                        name="options"
+                        maxlength="100"
+                        autocomplete="off"
+                        placeholder="{{placeholder}}">
+                {% end %}
             </div>
 
 
-          <button type="submit" class="btn btn-default btn-lg pull-right btn-danger"><span class="glyphicon glyphicon-heart-empty"></span> Create and post to ADN</button>
+            <button
+                type="submit"
+                class="btn btn-default btn-lg pull-right btn-danger">
+                <span class="glyphicon glyphicon-heart-empty"></span>
+                Create and post to ADN
+            </button>
+
+
         </form>
     </div>
 </div>
