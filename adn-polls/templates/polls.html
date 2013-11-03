@@ -192,21 +192,21 @@
                             </a>
                         </p>
                     {% end %}
-
-                    {% for reply in poll.get('post_replies', []) %}
-                        {% module PollsReplies(reply=reply) %}
-                    {% end %}
-
+                    <div class="poll-replies-list-{{poll['_id']}}">
+                        {% for reply in poll.get('post_replies', []) %}
+                            {% module PollsReplies(reply=reply) %}
+                        {% end %}
+                    </div>
                     <form
                         role="form"
-                        class="js-post-reply js-signals-submit form-repy-{{poll['post_id']}}"
+                        class="js-post-reply post-reply-{{poll['post_id']}}"
                         data-signals-name="post-reply"
                         data-poll-id="{{poll['_id']}}"
                         data-post-id="{{poll['post_id']}}"
                         style='margin-top: 30px;'>
 
                         <textarea
-                            class="form-control"
+                            class="form-control post-reply-{{poll['post_id']}}"
                             rows="5"
                             tabindex="4"
                             style='margin-bottom: 30px;'
@@ -220,7 +220,10 @@
                             </span>
                             <button
                                 type="submit"
-                                class="btn btn-default btn-lg pull-right btn-danger post-replies"
+                                class="btn btn-default btn-lg pull-right btn-danger js-signals-click post-reply-{{poll['post_id']}}"
+                                data-signals-name="post-reply"
+                                data-poll-id="{{poll['_id']}}"
+                                data-post-id="{{poll['post_id']}}"
                                 tabindex="5"
                                 data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..."
                                 data-toggle="button">

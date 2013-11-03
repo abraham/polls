@@ -290,6 +290,57 @@ function hideCustomVotesInput(options) {
 
 
 /**
+ * Replies
+ */
+signals.on('post-reply', postReply);
+
+
+function postReply(options) {
+    console.log('postReply', options);
+    var $form = $('form.post-reply-' + options.postId);
+    var $textarea = $('textarea.post-reply-' + options.postId);
+    var $button = $('button.post-reply-' + options.postId);
+    var pollId = $form.data('poll-id');
+    var text = $textarea.prop('value');
+
+    if (!text) {
+        alert('There must be some text to reply with...');
+        return false;
+    }
+
+    if (text.length > 256) {
+        alert('Replies must be 256 characters or shorter.');
+        return false;
+    }
+
+    $button.button('loading');
+    var path = '/polls/' + pollId + '/repliesx';
+    var data = {
+        text: text
+    }
+
+    postAPI(path, data, partial(postReplyDone, options), partial(postReplyFail, options));
+}
+
+
+function postReplyDone(options, data) {
+    var $list = $('.poll-replies-list-' + options.pollId);
+    var $textarea = $('textarea.post-reply-' + options.postId);
+    $('button.post-reply-' + options.postId).button('reset');
+    $list.append(data).find('.post-reply:last-child').hide().slideDown();
+    $("img").unveil();
+    $textarea.prop('value', $textarea.data('value'));
+}
+
+
+function postReplyFail(options, data, textStatus, jqXHR) {
+    console.log('ERROR', data);
+    alert('Oooops...something went wrong.');
+    $('button.post-reply-' + options.postId).button('reset');
+}
+
+
+/**
  * API
  */
 function noOp() {
