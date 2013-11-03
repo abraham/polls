@@ -43,6 +43,11 @@ smokesignals={convert:function(c,e){e={};c.on=function(d,a){(e[d]=e[d]||[]).push
 "use strict";
 
 
+if (typeof console == "undefined") {
+    window.console = { log: function () {} };
+}
+
+
 var signals = {};
 smokesignals.convert(signals);
 google.setOnLoadCallback(init);
@@ -114,7 +119,6 @@ signals.on('unstar-poll', deletePollsIdStarsUI);
 
 
 function postPollsIdStarsAPI(options) {
-    console.log(options)
     var done = function(){};
     var fail = partial(postPollsIdStarsAPIFail, options);
     var path = '/polls/' + options.pollId + '/stars'
@@ -160,10 +164,9 @@ signals.on('unrepost-poll', deletePollsIdRepostsUI);
 
 
 function postPollsIdRepostsAPI(options) {
-    console.log(options)
     var done = function(){};
     var fail = partial(postPollsIdRepostsAPIFail, options);
-    var path = '/polls/' + options.pollId + '/reposts'
+    var path = '/polls/' + options.pollId + '/reposts';
     postAPI(path, {}, done, fail);
 }
 
@@ -228,7 +231,6 @@ function setCustomVotesValue(options) {
 
 function hideCustomVotesLink(options, next) {
     $('a.js-votes-' + options.pollId + '-custom').slideUp(function() {
-        console.log(next)
         if (next) {
             signals.emit(next, options);
         }
@@ -290,7 +292,7 @@ function noOp() {
 
 function postAPI(path, data, done, fail) {
     data['_xsrf'] = $('meta[name=_xsrf]').prop('content');
-    console.log(data)
+    console.log('postAPI', data)
     $.post(path, data).done(done).fail(fail);
 }
 
@@ -298,54 +300,6 @@ function postAPI(path, data, done, fail) {
 
 
 
-
-function repostPoll(event) {
-    var $a = $(event.currentTarget);
-    var pollId = $a.data('poll-id');
-    $a.find('span').addClass('adn-action-take');
-    postAdnAction(pollId, 'repost');
-}
-
-
-function postAdnAction(pollId, actionId) {
-    var data = {
-        actionId: actionId,
-        _xsrf: $('meta[name=_xsrf]').prop('content')
-    }
-    var params = {
-        pollId: pollId,
-        actionId: actionId
-    }
-    $.post('/polls/' + pollId + '/actions', data)
-        .done(postAdnActionDone)
-        .fail(postAdnActionFail(params));
-}
-
-
-function postAdnActionDone(data) {
-    // success
-}
-
-
-var postAdnActionFail = function(params) {
-    return function(data, textStatus, jqXHR) {
-        var $span = $('.adn-action-' + params.actionId + '.adn-action-' + params.pollId + ' span');
-        $span.removeClass('adn-action-take');
-        if ($span.hasClass('glyphicon-star')) {
-            $span.find('span')
-                .addClass('glyphicon-star-empty')
-                .removeClass('glyphicon-star');
-        }
-
-        if (data.status == 400) {
-            alert(data.responseText);
-            return;
-        }
-
-        alert('Something went wrong.');
-        return;
-    }
-}
 
 
 function init() {
