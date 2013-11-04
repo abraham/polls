@@ -18,7 +18,7 @@
 
         <div class="lead text-muted">
 
-            By <a href="/users/{{poll['user_id']}}" title="Created by @{{poll['user_name']}}">@{{poll['user_name']}}</a>
+            By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}">{{poll['user_name']}}</a>
             <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
                 <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
             <span>{{poll['views']}} views</span>&nbsp;
@@ -99,7 +99,7 @@
                                 <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
                             {% end %}
                                     <strong>Nice vote!</strong>
-                                    Help out <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a> and give their poll a
+                                    Help out <a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a> and give their poll a
                                     {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
                                     and&nbsp;
                                     {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
@@ -114,7 +114,7 @@
                                         id="text"
                                         rows="5"
                                         tabindex="2"
-                                        data-default-value="@{{poll['user_name']}}"
+                                        data-default-value="@{{poll['user_name']}} "
                                         required
                                         maxlength="256">@{{poll['user_name']}} </textarea>
 
@@ -128,14 +128,6 @@
                                             class="pull-right hidden js-signals-click js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard top-15"
                                             data-poll-id="{{poll['_id']}}"
                                             data-signals-name="disable-custom-votes">Discard</a>
-
-                                        <input
-                                            type="text" 
-                                            id="text"
-                                            class="form-control hidden"
-                                            value="@{{poll['user_name']}}"
-                                            data-default-value="@{{poll['user_name']}}"
-                                            required>
 
                                     </div>
                                     <div class="col-md-4">
@@ -169,10 +161,10 @@
                                 <img
                                     class="img-rounded vote-grid"
                                     src="{{vote['user_avatar']}}?h=114&amp;w=114"
-                                    title="@{{vote['user_name']}}"
+                                    title="{{vote['user_name']}}"
                                     width="57"
                                     height="57"
-                                    alt="@{{vote['user_name']}}'s avatar"/>
+                                    alt="{{vote['user_name']}}'s avatar"/>
                             </a>
                             {% end %}
                         </div>

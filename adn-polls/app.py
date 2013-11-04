@@ -358,7 +358,7 @@ class UsersIdHandler(BaseHandler):
 
         context = {
             'current_user': current_user,
-            'header_title': u'@{}'.format(viewed_user['user_name']),
+            'header_title': u'{}'.format(viewed_user['user_name']),
             'header_subtitle': subtitle,
             'recent_actions': recent_actions,
         }

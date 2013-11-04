@@ -24,7 +24,7 @@
 
 
                     <a class="pull-left" href="/users/{{poll['user_id']}}">
-                        <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{poll['user_avatar']}}?h=114&amp;w=114" title="@{{poll['user_name']}}" width="57" height="57" alt="@{{poll['user_name']}}'s avatar">
+                        <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{poll['user_avatar']}}?h=114&amp;w=114" title="{{poll['user_name']}}" width="57" height="57" alt="{{poll['user_name']}}'s avatar">
                     </a>
 
 
@@ -42,7 +42,7 @@
 
 
                         <p class="">
-                            Asked by <a href="/users/{{poll['user_id']}}">@{{poll['user_name']}}</a>
+                            Asked by <a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a>
                             <a href="{{poll['post_url']}}" target="_blank">
                                 <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span>
                             </a>
@@ -61,7 +61,7 @@
                                 and voted on by 
                                 {% for vote in poll['votes'][:max] %}
                                     <a href="/users/{{vote['user_id']}}" class="remove-decoration">
-                                        <img class="" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=32&amp;w=32" title="@{{vote['user_name']}}" width="16" height="16" alt="@{{vote['user_name']}}'s avatar"/>
+                                        <img class="" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=32&amp;w=32" title="{{vote['user_name']}}" width="16" height="16" alt="{{vote['user_name']}}'s avatar"/>
                                     </a>
                                 {% end %}
 
