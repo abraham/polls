@@ -94,3 +94,35 @@ textarea {
 .vote-grid {
     margin-bottom: 5px;
 }
+
+.callout-left {
+    margin: 20px 0;
+    padding: 20px;
+    border-left: 3px solid #eee;
+}
+
+.callout-right {
+    margin: 20px 0;
+    padding: 20px;
+    border-right: 3px solid #eee;
+}
+
+.callout-danger {
+    /*background-color: #fdf7f7;*/
+    border-color: #d9534f;
+}
+
+.callout-info {
+    /*background-color: #f4f8fa;*/
+    border-color: #5bc0de;
+}
+
+.callout-warning {
+    /*background-color: #faf8f0;*/
+    border-color: #f0ad4e;
+}
+
+.callout-success {
+    /*background-color: #dff0d8;*/
+    border-color: #5cb85c;
+}
