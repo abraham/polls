@@ -920,7 +920,8 @@ class PollsIdHandler(BaseHandler):
         poll['votes'].reverse()
         random.shuffle(poll['options'])
         poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
-        poll['options_object'] = polls.build_options_object(poll['options'])
+        poll['options_object'] = json.dumps(polls.build_options_object(poll['options'])).replace("'", "&#39;")
+
         context = {
             'current_user': current_user,
             'xsrf_token': self.xsrf_token,
