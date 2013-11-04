@@ -576,6 +576,7 @@ class PollsIdRepostsHandler(BaseHandler):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
+        new_action = True
 
         poll_id = object_id(poll_id)
         if poll_id is None:
@@ -587,6 +588,9 @@ class PollsIdRepostsHandler(BaseHandler):
             self.write_error(404)
             return
 
+        if current_user['_id'] in poll['post_reposted_by']:
+            new_action = False
+
         url = 'https://alpha-api.app.net/stream/0/posts/{}/repost'.format(poll['post_id'])
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token'])
@@ -597,6 +601,17 @@ class PollsIdRepostsHandler(BaseHandler):
         if result.status_code == 200:
             self.write('success')
             polls.add_to_set(db=db, poll_id=poll['_id'], field='post_reposted_by', value=current_user['_id'])
+            if new_action:
+                action = {
+                    'user_name': current_user['user_name'],
+                    'user_avatar': current_user['user_avatar'],
+                    'user_id': current_user['_id'],
+                    'poll_id': poll['_id'],
+                    'question': poll['question'],
+                    'post_url': poll['post_url'],
+                    'post_id': poll['post_id'],
+                }
+                actions.new_poll_repost(db=db, **action)
             return
         else:
             if result.status_code == 400:
@@ -615,6 +630,7 @@ class PollsIdStarsHandler(BaseHandler):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
+        new_action = True
 
         poll_id = object_id(poll_id)
         if poll_id is None:
@@ -626,6 +642,9 @@ class PollsIdStarsHandler(BaseHandler):
             self.write_error(404)
             return
 
+        if current_user['_id'] in poll.get('post_starred_by', []):
+            new_action = False
+
         url = 'https://alpha-api.app.net/stream/0/posts/{}/star'.format(poll['post_id'])
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token'])
@@ -636,6 +655,17 @@ class PollsIdStarsHandler(BaseHandler):
         if result.status_code == 200:
             self.write('success')
             polls.add_to_set(db=db, poll_id=poll['_id'], field='post_starred_by', value=current_user['_id'])
+            if new_action:
+                action = {
+                    'user_name': current_user['user_name'],
+                    'user_avatar': current_user['user_avatar'],
+                    'user_id': current_user['_id'],
+                    'poll_id': poll['_id'],
+                    'question': poll['question'],
+                    'post_url': poll['post_url'],
+                    'post_id': poll['post_id'],
+                }
+                actions.new_poll_star(db=db, **action)
             return
         else:
             if result.status_code == 400:
