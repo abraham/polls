@@ -41,6 +41,7 @@
                 id="donutchart-{{poll['_id']}}"
                 class='row donut-graph donutchart-{{poll['_id']}} polls-empty'
                 data-poll-id="{{poll['_id']}}"
+                data-poll-options='{% raw json_encode(poll['options_object']) %}'
             >
                 <p class="lead text-center">No one has cast a vote yet, be the first and make history!</p>
             {% else %}
@@ -114,9 +115,9 @@
                                         id="text"
                                         rows="5"
                                         tabindex="2"
-                                        data-default-value="@{{poll['user_name']}} "
+                                        data-default-value="@{{poll['user_name']}}"
                                         required
-                                        maxlength="256">@{{poll['user_name']}} </textarea>
+                                        maxlength="256">@{{poll['user_name']}}</textarea>
 
                                     <div class='col-md-8'>
                                         <a  href="#" 
