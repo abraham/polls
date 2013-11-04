@@ -338,7 +338,6 @@ signals.on('new-reply', renderReply);
 
 
 function postReply(options) {
-    console.log('postReply', options);
     var $form = $('form.post-reply-' + options.postId);
     var $textarea = $('textarea.post-reply-' + options.postId);
     var $button = $('button.post-reply-' + options.postId);
@@ -396,7 +395,6 @@ function noOp() {
 
 function postAPI(path, data, done, fail) {
     data['_xsrf'] = $('meta[name=_xsrf]').prop('content');
-    console.log('postAPI', data)
     $.post(path, data).done(done).fail(fail);
 }
 
