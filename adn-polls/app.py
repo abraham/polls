@@ -182,7 +182,12 @@ class AuthCallbackHandler(BaseHandler):
         redirect = self.cookie.get('redirect', '/')
         code = self.get_argument('code', None)
         if code is None:
-            self.render('templates/500.html', message="Missing code.")
+            context = {
+                'title': 'Access DENIED!?!',
+                'header': 'Access DENIED!?!',
+                'message': "Polls can't do much if don't authorize access. We promise not to post without your permission.",
+            }
+            self.render('templates/error.html', **context)
             return
         url = 'https://account.app.net/oauth/access_token'
         args = {
@@ -195,12 +200,9 @@ class AuthCallbackHandler(BaseHandler):
         response = requests.post(url, data=args)
 
         if response.status_code != 200:
-            error = response.json()
-            message = 'Unable to get access_token from ADN.'
-            if error.get('error', None) is not None:
-                message = error['error']
-            self.render('templates/500.html', message=message)
-            return
+            self.set_status(500)
+            self.render('templates/500.html')
+            raise Exception(response.content)
 
         token = response.json()
         adn_id = token['token']['user']['id']
