@@ -10,10 +10,6 @@
 {% block container %}
     <div class="row">
 
-        <script>
-        var pollIds = [];
-        var pollOptions = {};
-        </script>
 
         <div class="page-header">
             <h1>{{poll['question']}}</h1>
@@ -41,10 +37,19 @@
 
 
             {% if poll['total_votes'] == 0 %}
-            <div id="donutchart-{{poll['_id']}}" class="row polls-empty donut-graph">
+            <div
+                id="donutchart-{{poll['_id']}}"
+                class='row donut-graph donutchart-{{poll['_id']}} polls-empty'
+                data-poll-id="{{poll['_id']}}"
+            >
                 <p class="lead text-center">No one has cast a vote yet, be the first and make history!</p>
             {% else %}
-            <div id="donutchart-{{poll['_id']}}" class="row donut-graph">
+            <div
+                id="donutchart-{{poll['_id']}}"
+                class='row donut-graph donutchart-{{poll['_id']}}'
+                data-poll-id="{{poll['_id']}}"
+                data-poll-options='{% raw json_encode(poll['options_object']) %}'
+            >
             {% end %}
             </div>
 
@@ -248,12 +253,4 @@
             </div>
         </div>
     </div>
-{% end %}
-
-
-{% block scripts %}
-<script>
-    pollIds.push("{{poll['_id']}}");
-    pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
-</script>
 {% end %}

@@ -48,10 +48,11 @@ if (typeof console == "undefined") {
 }
 
 
+var pollIds = [];
+var pollOptions = {};
 var signals = {};
 smokesignals.convert(signals);
-google.setOnLoadCallback(init);
-var pollIds = pollIds || [];
+google.setOnLoadCallback(initGraphs);
 
 
 $(function() {
@@ -400,12 +401,16 @@ function postAPI(path, data, done, fail) {
 }
 
 
+/**
+ * Graphs
+ */
+function initGraphs() {
+    $('.donut-graph').each(function(index, element){
+        var data = $(element).data();
+        pollIds.push(data['pollId'])
+        pollOptions[data['pollId']] = data['pollOptions'];
+    });
 
-
-
-
-
-function init() {
     for (index in pollIds) {
         var id = pollIds[index];
         if ($('#donutchart-' + id + '.polls-empty').length === 0) {
@@ -470,7 +475,7 @@ function drawChart(chart, data) {
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-45007157-1', 'adn-polls.herokuapp.com');
 ga('send', 'pageview');

@@ -7,10 +7,6 @@
 {% block container %}
     <div class="row">
 
-        <script>
-        var pollIds = [];
-        var pollOptions = {};
-        </script>
 
         <div class="page-header">
             <h1>
@@ -48,13 +44,12 @@
                 </div>
 
 
-                <div id="donutchart-{{poll['_id']}}" class='row donut-graph'></div>
-
-
-                <script>
-                    pollIds.push("{{poll['_id']}}");
-                    pollOptions["{{poll['_id']}}"] = {% raw json_encode(poll['options_object']) %};
-                </script>
+                <div
+                    id="donutchart-{{poll['_id']}}"
+                    class='row donut-graph donutchart-{{poll['_id']}}'
+                    data-poll-id="{{poll['_id']}}"
+                    data-poll-options='{% raw json_encode(poll['options_object']) %}'
+                ></div>
 
 
                 <div class='row'>
