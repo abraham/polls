@@ -48,7 +48,7 @@
                     id="donutchart-{{poll['_id']}}"
                     class='row donut-graph donutchart-{{poll['_id']}}'
                     data-poll-id="{{poll['_id']}}"
-                    data-poll-options='{% raw json_encode(poll['options_object']) %}'
+                    data-poll-options='{% raw poll['options_object'] %}'
                 ></div>
 
 

@@ -268,7 +268,7 @@ class IndexHandler(BaseHandler):
         for poll in active_polls:
             poll['votes'].reverse()
             random.shuffle(poll['options'])
-            poll['options_object'] = polls.build_options_object(poll['options'])
+            poll['options_object'] = json.dumps(polls.build_options_object(poll['options'])).replace("'", "&#39;")
             poll['redirect'] = '/polls/{}'.format(poll['_id'])
             poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
