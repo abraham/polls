@@ -61,6 +61,9 @@ class BaseHandler(tornado.web.RequestHandler):
             "style-src 'self' https://ajax.googleapis.com/",
         ]
         self.set_header('Content-Security-Policy', '; '.join(directives))
+        self.set_header('X-XSS-Protection', '1; mode=block')
+        self.set_header('X-Content-Type-Options', 'nosniff')
+        self.set_header('X-Frame-Options', 'DENY')
 
         if proto.lower() == 'https' :
             self.set_header('Strict-Transport-Security', 'max-age="31536000"; includeSubDomains')
