@@ -107,6 +107,12 @@ textarea {
     border-right: 3px solid #eee;
 }
 
+.callout-bottom {
+    margin: 20px 0;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
 .callout-danger {
     /*background-color: #fdf7f7;*/
     border-color: #d9534f;

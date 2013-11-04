@@ -81,11 +81,47 @@ def find_recent(db):
 def inc_views(db, user_id):
     '''Increment the views field for a user'''
     query = {
-            '_id': user_id,
-        }
+        '_id': user_id,
+    }
     mutation = {
         '$inc': {
             'views': 1,
+        }
+    }
+    db.users.update(query, mutation)
+
+
+def inc_votes_count(db, user_id):
+    '''Increment the votes_count field for a user'''
+    timestamp = datetime.datetime.utcnow()
+    query = {
+        '_id': user_id,
+    }
+    mutation = {
+        '$set': {
+            'active_at': timestamp,
+            'updated_at': timestamp,
+        },
+        '$inc': {
+            'votes_count': 1,
+        }
+    }
+    db.users.update(query, mutation)
+
+
+def inc_polls_count(db, user_id):
+    '''Increment the polls_count field for a user'''
+    timestamp = datetime.datetime.utcnow()
+    query = {
+        '_id': user_id,
+    }
+    mutation = {
+        '$set': {
+            'active_at': timestamp,
+            'updated_at': timestamp,
+        },
+        '$inc': {
+            'polls_count': 1,
         }
     }
     db.users.update(query, mutation)

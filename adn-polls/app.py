@@ -528,6 +528,8 @@ class CreateHandler(BaseHandler):
         channel_id = os.environ.get('ADN_CHANNEL_ID')
         polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
+        users.inc_polls_count(db=db, user_id=current_user['_id'])
+
 
 class PollsIdPrevHandler(BaseHandler):
 
@@ -785,6 +787,9 @@ class PollsIdVotesHandler(BaseHandler):
             subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
             channel_id = os.environ.get('ADN_CHANNEL_ID_2')
             polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
+
+        users.inc_votes_count(db=db, user_id=current_user['_id'])
+
 
 class PostsHandler(BaseHandler):
 
