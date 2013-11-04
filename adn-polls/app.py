@@ -50,6 +50,18 @@ class BaseHandler(tornado.web.RequestHandler):
         host = self.request.headers.get('Host', None)
         debug = os.environ.get('DEBUG') in ('True', 'true', True)
 
+        directives = [
+            "default-src 'none'",
+            "connect-src 'self'",
+            "font-src 'self",
+            "frame-src 'none'",
+            "img-src 'self' https:",
+            "media-src 'none'",
+            "script-src 'self' https://www.google.com/ https://ajax.googleapis.com/ https://www.google-analytics.com/ 'unsafe-eval'",
+            "style-src 'self' https://ajax.googleapis.com/",
+        ]
+        self.set_header('Content-Security-Policy', '; '.join(directives))
+
         if proto.lower() == 'https' :
             self.set_header('Strict-Transport-Security', 'max-age="31536000"; includeSubDomains')
         if proto == 'http' and not debug:
