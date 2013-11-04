@@ -76,3 +76,21 @@ input#options {
 .polls-empty p {
     padding-top: 200px;
 }
+
+.reply-help {
+    position: relative;
+    top: 15px;
+}
+
+textarea {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.top-15 {
+    margin-top: 15px;
+}
+
+.vote-grid {
+    margin-bottom: 5px;
+}
