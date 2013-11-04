@@ -71,12 +71,12 @@
 
                     {% if current_user is not None %}
                         <a id="post-vote" class="btn btn-default btn-success btn-lg pull-right" href="/polls/{{poll['_id']}}">
-                             Vote and be merry!
+                             Vote and be merry
                         </a>
 
                     {% else %}
                         <a href='/auth/redirect?redirect={{url_escape(poll["redirect"])}}' class="btn btn-default btn-lg pull-right">
-                            Sign in and be a voting hero
+                            Make your voice heard
                         </a>
                     {% end %}
 
