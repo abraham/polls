@@ -359,7 +359,9 @@ class UsersIdHandler(BaseHandler):
             action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         subtitle = u'<a href="https://alpha.app.net/{}" target="_blank" title="View on ADN"><span class="glyphicon glyphicon-link"></span></a> '.format(viewed_user['user_name'])
         subtitle += u'<a href="https://omega.app.net/new-message?to={}" target="_blank" title="Message on Omega"><span class="glyphicon glyphicon-envelope"></span></a> '.format(viewed_user['adn_id'])
-        subtitle += u'recent activity'
+        subtitle += u'{} polls &middot; '.format(viewed_user['polls_count'])
+        subtitle += u'{} votes &middot; '.format(viewed_user['votes_count'])
+        subtitle += u'{} views'.format(viewed_user['views'])
 
         context = {
             'current_user': current_user,
