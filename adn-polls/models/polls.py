@@ -229,6 +229,9 @@ def send_alert(channel_id, subject, poll_url):
         print 'channel_id', channel_id, 'subject', subject, 'poll_url', poll_url
         return None
 
+    if len(subject) > 128:
+        subject = subject[:125] + u'...'
+
     access_token = os.environ.get('ADN_CHANNEL_ACCESS_TOKEN')
     url = 'https://alpha-api.app.net/stream/0/channels/{}/messages'.format(channel_id)
     data = {
