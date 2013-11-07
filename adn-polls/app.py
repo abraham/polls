@@ -14,6 +14,7 @@ import momentpy
 
 from models import polls, users, actions
 from decorators import require_auth
+import sync
 
 
 def write_error(self, code, message=None, **kwargs):
@@ -178,6 +179,7 @@ class AuthCallbackHandler(BaseHandler):
         '''The user has returned from ADN, hopefully after granting authorization'''
         db = self.db
         current_user = None
+        existing_user = True
 
         redirect = self.cookie.get('redirect', '/')
         code = self.get_argument('code', None)
@@ -207,7 +209,6 @@ class AuthCallbackHandler(BaseHandler):
         token = response.json()
         adn_id = token['token']['user']['id']
         current_user = users.find_by_adn_id(db=db, adn_id=adn_id)
-        existing_user = True
         if current_user is None:
             new_user = {
                 'access_token': token['access_token'],
@@ -226,6 +227,9 @@ class AuthCallbackHandler(BaseHandler):
             current_user = users.create(db=db, **new_user)
             existing_user = False
         else:
+            if current_user['user_type'] == 'profile':
+                existing_user = False
+
             update = {
                 'user_type': 'user',
                 'access_token': token['access_token'],
@@ -243,6 +247,7 @@ class AuthCallbackHandler(BaseHandler):
 
         self.set_json_cookie({'user_id': str(current_user['_id'])})
         self.redirect(redirect)
+
         if existing_user == False:
             action = {
                 'user_name': current_user['user_name'],
@@ -970,6 +975,9 @@ class PollsIdHandler(BaseHandler):
         self.render('templates/polls.html', **context)
 
         polls.inc_views(db=db, poll_id=poll['_id'])
+
+        if current_user is not None: # TODO and sync time is older than 15 min
+            sync.thread(db=db, poll=poll, user=current_user)
 
 
 def send_simple_message(to, subject, text):
