@@ -854,6 +854,7 @@ class PollsIdRepliesHandler(BaseHandler):
             self.send_error(404)
             return
 
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -869,7 +870,7 @@ class PollsIdRepliesHandler(BaseHandler):
                 },
             }],
         }
-        result = requests.post(url, data=args, headers=headers)
+        result = requests.post(url, data=json.dumps(args), headers=headers)
 
         if result.status_code != 200:
             self.write_error(500)
