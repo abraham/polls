@@ -211,6 +211,7 @@ class AuthCallbackHandler(BaseHandler):
         if current_user is None:
             new_user = {
                 'access_token': token['access_token'],
+                'user_type': 'user',
                 'adn_id': adn_id,
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],
@@ -226,6 +227,7 @@ class AuthCallbackHandler(BaseHandler):
             existing_user = False
         else:
             update = {
+                'user_type': 'user',
                 'access_token': token['access_token'],
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],

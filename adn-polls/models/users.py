@@ -3,11 +3,12 @@ from bson.objectid import ObjectId
 import time
 
 
-def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
+def create(db, user_type, access_token, adn_id, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
     '''Create a new user'''
     timestamp = datetime.datetime.utcnow()
     new_user = {
         '_id': ObjectId(),
+        'user_type': user_type, # user or profile
         'access_token': access_token,
         'adn_id': adn_id,
         'user_avatar': user_avatar,
@@ -30,7 +31,7 @@ def create(db, access_token, adn_id, user_name, user_avatar, user_avatar_is_defa
     return new_user
 
 
-def update(db, user_id, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
+def update(db, user_id, user_type, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
     '''Update an existing users info'''
     timestamp = datetime.datetime.utcnow()
     query = {
@@ -39,6 +40,7 @@ def update(db, user_id, access_token, user_name, user_avatar, user_avatar_is_def
     mutation = {
         '$set': {
             'access_token': access_token,
+            'user_type': user_type,
             'user_name': user_name,
             'user_avatar': user_avatar,
             'user_avatar_is_default': user_avatar_is_default,
