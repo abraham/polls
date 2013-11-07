@@ -64,6 +64,24 @@ def find_by_adn_id(db, adn_id):
     return db.users.find_one(query)
 
 
+def find_by_adn_ids(db, adn_ids):
+    '''Find an existing user by their ADN id'''
+    users = {
+        '_ids': [],
+        'adn_ids': [],
+    }
+    query = {
+        'adn_id': {
+            '$in': adn_ids,
+        },
+    }
+    for user in db.users.find(query):
+        users['_ids'].append(user['_id'])
+        users['adn_ids'].append(user['adn_id'])
+        users[user['adn_id']] = user
+    return users
+
+
 def find_by_id(db, user_id):
     '''Find an existing user by their id'''
     query = {
