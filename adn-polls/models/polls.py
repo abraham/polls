@@ -25,6 +25,7 @@ def create(db, poll_id, poll_type, display_type, question, options, user_name, u
         'created_at': timestamp,
         'updated_at': timestamp,
         'active_at': timestamp,
+        'synced_at': timestamp,
         'views': 1,
         'status': 'active',
 
@@ -56,6 +57,7 @@ def vote(db, poll_id, option_id, user_id, user_name, user_avatar, post_id=None, 
     mutation = {
         '$set': {
             'active_at': timestamp,
+            'updated_at': timestamp,
         },
         '$inc' : {
             'total_votes' : 1,
@@ -176,6 +178,21 @@ def add_to_set(db, poll_id, field, value):
     mutation = {
         '$addToSet': {
             field: value,
+        }
+    }
+    db.polls.update(query, mutation)
+
+
+def set(db, poll_id, field, value):
+    '''add a value to a set'''
+    timestamp = datetime.datetime.utcnow()
+    query = {
+        '_id': poll_id,
+    }
+    mutation = {
+        '$set': {
+            field: value,
+            'updated_at': timestamp,
         }
     }
     db.polls.update(query, mutation)
