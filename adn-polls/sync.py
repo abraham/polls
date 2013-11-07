@@ -80,7 +80,6 @@ def thread(db, poll, user):
             if adn.get('description', None) is not None:
                 new_user['user_text'] = adn['description']['text']
             saved_user = users.create(db=db, **new_user)
-            print 'new user', saved_user['_id'], saved_user['adn_id']
             existing_users[saved_user['adn_id']] = saved_user
 
     for post_id in new_replies['adn_ids']:
