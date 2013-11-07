@@ -32,6 +32,7 @@ def create(db, poll_id, poll_type, display_type, question, options, user_name, u
         'post_url': post_url,
         'post_starred_by': [],
         'post_reposted_by': [],
+        'post_replies': [],
     }
 
     for option in options:
