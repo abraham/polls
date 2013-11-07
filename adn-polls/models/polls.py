@@ -194,7 +194,7 @@ def inc_views(db, poll_id):
     db.polls.update(query, mutation)
 
 
-def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, post_text, reply_type, post_client_id, post_reply_to, post_thread_id):
+def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, post_text, reply_type, post_client_id, post_reply_to, post_thread_id, created_at=None):
     '''Increment the views field for a user'''
     timestamp = datetime.datetime.utcnow()
     reply = {
@@ -203,7 +203,7 @@ def add_reply(db, poll_id, post_id, user_id, user_name, user_avatar, post_url, p
         'user_id': user_id,
         'user_name': user_name,
         'user_avatar': user_avatar,
-        'created_at': timestamp,
+        'created_at': created_at or timestamp,
         'post_id': post_id,
         'post_url': post_url,
         'post_text': post_text,
