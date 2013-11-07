@@ -209,7 +209,7 @@
 
                         {% if current_user is not None %}
                             <span class='text-muted reply-help'>
-                                Replies from other apps are not realtime
+                                Last synced replies <span class='datetime' data-datetime="{{poll['synced_at']}}">{{ moment(poll['synced_at'])}}</span>
                             </span>
                             <button
                                 type="submit"
