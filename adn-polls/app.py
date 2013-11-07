@@ -495,8 +495,7 @@ class CreateHandler(BaseHandler):
         }
         response = requests.post(url, data=args, headers=headers)
         if response.status_code != 200:
-            print 'create error', response.body
-            raise Exception
+            raise Exception(response.content)
         post = response.json()
 
         args = {
@@ -623,7 +622,6 @@ class PollsIdRepostsHandler(BaseHandler):
                 self.write(response['meta']['error_message'])
                 return
 
-            print 'error taking action', result.content
             raise Exception(result.content)
 
 
@@ -678,7 +676,6 @@ class PollsIdStarsHandler(BaseHandler):
                 return
 
             self.set_status(500)
-            print 'error taking action', result.content
             raise Exception(result.content)
 
 
@@ -740,7 +737,6 @@ class PollsIdVotesHandler(BaseHandler):
         }
         response = requests.post(url, data=args, headers=headers)
         if response.status_code != 200:
-            print 'create error', response.content
             raise Exception(response.content)
 
         post = response.json()['data']
@@ -857,8 +853,7 @@ class PollsIdRepliesHandler(BaseHandler):
 
         if result.status_code != 200:
             self.write_error(500)
-            raise Exception(self.content)
-            return
+            raise Exception(result.content)
 
         response = result.json()
         post = response['data']
