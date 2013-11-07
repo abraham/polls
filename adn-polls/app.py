@@ -489,11 +489,24 @@ class CreateHandler(BaseHandler):
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
+            'Content-type': 'application/json',
         }
         args = {
             'text': text,
+            'annotations': [{
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                },
+            },
+            {
+                "type": "net.app.core.fallback_url",
+                "value": {
+                    "url": poll_url,
+                },
+            }],
         }
-        response = requests.post(url, data=args, headers=headers)
+        response = requests.post(url, data=json.dumps(args), headers=headers)
         if response.status_code != 200:
             raise Exception(response.content)
         post = response.json()
