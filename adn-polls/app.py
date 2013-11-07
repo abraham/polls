@@ -740,15 +740,23 @@ class PollsIdVotesHandler(BaseHandler):
         else:
             custom_reply = True
 
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
+            'Content-type': 'application/json',
         }
         args = {
             'text': text,
             'reply_to': poll['post_id'],
+            'annotations': [{
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                },
+            }],
         }
-        response = requests.post(url, data=args, headers=headers)
+        response = requests.post(url, data=json.dumps(args), headers=headers)
         if response.status_code != 200:
             raise Exception(response.content)
 
