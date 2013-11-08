@@ -64,7 +64,10 @@ def thread(db, poll, user):
     new_ids = set(replies_adn_users['adn_ids']).difference(existing_users['adn_ids'])
     for adn_id in new_ids:
         if adn_id not in existing_users['adn_ids']:
-            adn = replies_adn_users[adn_id]
+            adn = replies_adn_users.get(adn_id, None)
+            if adn is None:
+                continue
+
             new_user = {
                 'access_token': None,
                 'user_type': 'profile',
@@ -84,6 +87,8 @@ def thread(db, poll, user):
 
     for post_id in new_replies['adn_ids']:
         post = new_replies[post_id]
+        if post.get('user', None) is None:
+            continue
         user = existing_users[post['user']['id']]
 
         if post.get('is_deleted', False) == True:
@@ -128,6 +133,8 @@ def replies_adn_user_ids_obj(posts):
         'adn_ids': []
     }
     for post_id in posts['adn_ids']:
+        if posts[post_id].get('user', None) is None:
+            continue
         adn_users[posts[post_id]['user']['id']] = posts[post_id]['user']
         adn_users['adn_ids'].append(posts[post_id]['user']['id'])
     adn_users['adn_ids'] = list(set(adn_users['adn_ids']))
