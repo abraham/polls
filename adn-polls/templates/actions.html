@@ -22,8 +22,13 @@
 
 
         <div class='col-md-offset-1 col-md-10'>
-            {% for action in recent_actions %}
-                    {% module Actions(action) %}
+            {% if recent_actions %}
+                {% for action in recent_actions %}
+                        {% module Actions(action) %}
+                {% end %}
+            {% else %}
+                <br>
+                <p class="lead">No recent activity to see here...</p>
             {% end %}
         </div>
 
