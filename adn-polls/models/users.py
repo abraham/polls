@@ -22,9 +22,11 @@ def create(db, user_type, access_token, adn_id, user_name, user_avatar, user_ava
         'polls_count': 0,
         'votes_count': 0,
 
+        'status': 'active',
         'created_at': timestamp,
         'active_at': timestamp,
         'updated_at': timestamp,
+        'synced_at': timestamp,
         'views': 1,
     }
     db.users.insert(new_user)
