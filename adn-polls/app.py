@@ -256,7 +256,10 @@ class AuthCallbackHandler(BaseHandler):
             users.update(db=db, user_id=current_user['_id'], **update)
 
         self.set_json_cookie({'user_id': str(current_user['_id'])})
-        self.redirect(redirect)
+        if '/auth/callback' not in redirect:
+            self.redirect(redirect)
+        else:
+            self.redirect('/')
 
         if existing_user == False:
             action = {
