@@ -985,6 +985,7 @@ class PollsIdHandler(BaseHandler):
             'user_has_starred_post': user_has_starred_post,
             'user_has_reposted_post': user_has_reposted_post,
             'poll': poll,
+            'poll_url': url,
             'post_text': post_text,
         }
         self.render('templates/polls.html', **context)
