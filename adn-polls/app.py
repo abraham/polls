@@ -314,6 +314,7 @@ class ActivityHandler(BaseHandler):
         for action in recent_actions:
             action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         context = {
+            'title': 'Recent activity on Polls',
             'current_user': current_user,
             'header_title': 'Recent activity',
             'header_subtitle': '',
@@ -384,6 +385,7 @@ class UsersIdHandler(BaseHandler):
         subtitle += u'{} views'.format(viewed_user['views'])
 
         context = {
+            'title': u'{} on Polls for App.net'.format(viewed_user['user_name']),
             'current_user': current_user,
             'header_title': u'{}'.format(viewed_user['user_name']),
             'header_subtitle': subtitle,
