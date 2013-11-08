@@ -43,6 +43,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
         if db is not None and user_id is not None:
             self.current_user = users.find_by_id(db=db, user_id=ObjectId(user_id))
+            if self.current_user['status'] == 'disabled':
+                self.current_user = None
 
 
     def prepare(self):
