@@ -204,6 +204,14 @@ class AuthCallbackHandler(BaseHandler):
         response = requests.post(url, data=args)
 
         if response.status_code != 200:
+            if 'code-used' in response.content:
+                context = {
+                    'title': 'Double Rainbow!!',
+                    'header': 'Double Rainbow!!',
+                    'message': 'That code was already used, try signing in again.',
+                }
+                self.render('templates/error.html', **context)
+                return
             self.set_status(500)
             self.render('templates/500.html')
             raise Exception(response.content)
