@@ -40,8 +40,18 @@ def thread(db, poll, user):
         'Authorization': 'Bearer {}'.format(user['access_token']),
     }
     request = requests.get(url, data=args, headers=headers)
+
     if request.status_code != 200:
+        if request.status_code == 401:
+            response = request.json()
+
+            if response['meta']['error_slug'] in (u'requires-reauth', u'not-authorized'):
+                print 'WARNING: user requires reauth', user['_id']
+                users.require_requth(db=db, user_id=user['_id'])
+                return
+
         raise Exception(request.content)
+
     response = request.json()
 
     if len(response['data']) <= 1:

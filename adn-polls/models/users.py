@@ -33,7 +33,7 @@ def create(db, user_type, access_token, adn_id, user_name, user_avatar, user_ava
     return new_user
 
 
-def update(db, user_id, user_type, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
+def update(db, user_id, user_type, status, access_token, user_name, user_avatar, user_avatar_is_default, user_cover, user_cover_is_default, user_text, user_full_name):
     '''Update an existing users info'''
     timestamp = datetime.datetime.utcnow()
     query = {
@@ -43,6 +43,7 @@ def update(db, user_id, user_type, access_token, user_name, user_avatar, user_av
         '$set': {
             'access_token': access_token,
             'user_type': user_type,
+            'status': status,
             'user_name': user_name,
             'user_avatar': user_avatar,
             'user_avatar_is_default': user_avatar_is_default,
@@ -145,5 +146,18 @@ def inc_polls_count(db, user_id):
         '$inc': {
             'polls_count': 1,
         }
+    }
+    db.users.update(query, mutation)
+
+
+def require_requth(db, user_id):
+    '''auth has expired and needs to be redone'''
+    query = {
+        '_id': user_id,
+    }
+    mutation = {
+        '$set': {
+            'status': 'reauth',
+        },
     }
     db.users.update(query, mutation)

@@ -43,7 +43,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         if db is not None and user_id is not None:
             self.current_user = users.find_by_id(db=db, user_id=ObjectId(user_id))
-            if self.current_user['status'] == 'disabled':
+            if self.current_user['status'] in (u'disabled', u'reauth'):
                 self.current_user = None
 
 
@@ -242,6 +242,7 @@ class AuthCallbackHandler(BaseHandler):
 
             update = {
                 'user_type': 'user',
+                'status': current_user['status'],
                 'access_token': token['access_token'],
                 'user_name': token['username'],
                 'user_avatar': token['token']['user']['avatar_image']['url'],
@@ -251,6 +252,10 @@ class AuthCallbackHandler(BaseHandler):
                 'user_text': None,
                 'user_full_name': token['token']['user']['name'],
             }
+
+            if current_user['status'] == 'reauth':
+                update['status'] = 'active'
+
             if token['token']['user'].get('description', None) is not None:
                 update['user_text'] = token['token']['user']['description']['text']
             users.update(db=db, user_id=current_user['_id'], **update)
@@ -528,10 +533,27 @@ class CreateHandler(BaseHandler):
                 },
             }],
         }
-        response = requests.post(url, data=json.dumps(args), headers=headers)
-        if response.status_code != 200:
-            raise Exception(response.content)
-        post = response.json()
+        request = requests.post(url, data=json.dumps(args), headers=headers)
+
+        if request.status_code != 200:
+            if request.status_code == 401:
+                response = request.json()
+
+                if response['meta']['error_slug'] in (u'requires-reauth', u'not-authorized'):
+                    print 'WARNING: user requires reauth', current_user['_id']
+                    users.require_requth(db=db, user_id=current_user['_id'])
+
+                    context = {
+                        'title': 'Expired authentication',
+                        'header': 'Expired Authentication',
+                        'message': "You have to <a href='/auth/redirect?redirect=/create'>reauthorize access</a> to App.net before you can create a poll.",
+                    }
+                    self.render('templates/error.html', **context)
+                    return
+
+            raise Exception(request.content)
+
+        post = request.json()
 
         args = {
             'poll_id': poll_id,
