@@ -61,7 +61,7 @@ class BaseHandler(tornado.web.RequestHandler):
             "img-src 'self' https:",
             "media-src 'none'",
             "script-src 'self' https://www.google.com https://ajax.googleapis.com https://www.google-analytics.com 'unsafe-eval'",
-            "style-src 'self' https://ajax.googleapis.com",
+            "style-src 'self' https://ajax.googleapis.com https://www.google.com",
         ]
         self.set_header('Content-Security-Policy', '; '.join(directives))
         self.set_header('X-XSS-Protection', '1; mode=block')
