@@ -19,6 +19,13 @@
 
 
     <div class="col-md-8 col-md-offset-2">
+
+        {% if error_type == 'missing-required-fields' %}
+            <div class="alert alert-danger">
+                <strong>A question</strong>  and at least two options are required.
+            </div>
+        {% end %}
+
         <form role="form" method="post" action="/create" class='row form-polls-create'>
 
 

@@ -489,8 +489,15 @@ class CreateHandler(BaseHandler):
     def get(self):
         db = self.db
         current_user = self.current_user
+        error_type = False
+
+        query_error = self.get_argument('error', False)
+
+        if query_error == 'missing-required-fields':
+            error_type = 'missing-required-fields'
 
         context = {
+            'error_type': error_type,
             'current_user': current_user,
             'xsrf_input': self.xsrf_form_html(),
         }
@@ -510,6 +517,10 @@ class CreateHandler(BaseHandler):
         for option in self.get_arguments('options'):
             if option != '':
                 options.append(option[:100])
+
+        if len(question) == 0 or len(options) < 2:
+            self.redirect('/create?error=missing-required-fields')
+            return
 
         poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
         text = u'Q: {}\n\nVote on @polls at {}'.format(question, poll_url)
