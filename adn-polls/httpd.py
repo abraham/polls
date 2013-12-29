@@ -18,6 +18,7 @@ from app import (
     TopViewedHandler,
 
     CreateHandler,
+    CreateFreeformHandler,
     PostsHandler,
 
     PollsIdHandler,
@@ -84,6 +85,7 @@ application = tornado.web.Application([
     (r'/users/([^/]+)', UsersIdHandler, base_args),
 
     (r'/create', CreateHandler, base_args),
+    (r'/create/freeform', CreateFreeformHandler, base_args),
     (r'/posts', PostsHandler, base_args),
 
     (r'/auth/redirect', AuthRedirectHandler),

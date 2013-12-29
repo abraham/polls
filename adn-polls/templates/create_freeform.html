@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+{% block title %}Create a freeform poll{% end %}
+
+
+{% block container %}
+<div class="row">
+
+
+    <div class="page-header">
+        <h1>
+            Create a freeform poll
+            <small class="text-muted">
+                that will be visible to everyone
+            </small>
+        </h1>
+    </div>
+
+
+    <div class="col-md-8 col-md-offset-2">
+
+        {% if error_type == 'missing-required-fields' %}
+            <div class="alert alert-danger">
+                <strong>A question</strong>  and at least two options are required.
+            </div>
+        {% end %}
+
+        <form role="form" method="post" action="/create/freeform" class='row form-polls-create'>
+
+
+           {% raw xsrf_input %}
+
+
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea
+                class="form-control"
+                id="question"
+                name="question"
+                rows="3"
+                maxlength="150"
+                placeholder="How awesome is @abraham for making this swank tool?"
+                required
+                autocomplete="off"></textarea>
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-default btn-lg pull-right btn-danger">
+                <span class="glyphicon glyphicon-heart-empty"></span>
+                Create and post to ADN
+            </button>
+
+
+        </form>
+    </div>
+</div>
+{% end %}

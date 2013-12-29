@@ -600,6 +600,119 @@ class CreateHandler(BaseHandler):
         users.inc_polls_count(db=db, user_id=current_user['_id'])
 
 
+class CreateFreeformHandler(BaseHandler):
+
+    @require_auth
+    def get(self):
+        db = self.db
+        current_user = self.current_user
+        error_type = False
+
+        query_error = self.get_argument('error', False)
+
+        if query_error == 'missing-required-fields':
+            error_type = 'missing-required-fields'
+
+        context = {
+            'error_type': error_type,
+            'current_user': current_user,
+            'xsrf_input': self.xsrf_form_html(),
+        }
+        self.render('templates/create_freeform.html', **context)
+
+
+    @require_auth
+    def post(self):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+
+        poll_id = ObjectId()
+        poll_id_str = str(poll_id)
+        question = self.get_argument('question')[:150]
+
+        if len(question) == 0:
+            self.redirect('/create?error=missing-required-fields')
+            return
+
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
+        text = u'Q: {}\n\nVote on @polls at {}'.format(question, poll_url)
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
+            'Content-type': 'application/json',
+        }
+        args = {
+            'text': text,
+            'annotations': [{
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                },
+            },
+            {
+                "type": "net.app.core.fallback_url",
+                "value": {
+                    "url": poll_url,
+                },
+            }],
+        }
+        request = requests.post(url, data=json.dumps(args), headers=headers)
+
+        if request.status_code != 200:
+            if request.status_code == 401:
+                response = request.json()
+
+                if response['meta']['error_slug'] in (u'requires-reauth', u'not-authorized'):
+                    print 'WARNING: user requires reauth', current_user['_id']
+                    users.require_requth(db=db, user_id=current_user['_id'])
+
+                    context = {
+                        'title': 'Expired authentication',
+                        'header': 'Expired Authentication',
+                        'message': "You have to <a href='/auth/redirect?redirect=/create'>reauthorize access</a> to App.net before you can create a poll.",
+                    }
+                    self.render('templates/error.html', **context)
+                    return
+
+            raise Exception(request.content)
+
+        post = request.json()
+
+        args = {
+            'poll_id': poll_id,
+            'poll_type': 'freeform',
+            'display_type': 'list',
+            'question': question,
+            'options': [],
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'post_id': post['data']['id'],
+            'post_url': post['data']['canonical_url'],
+
+        }
+        poll = polls.create(db=self.db, **args)
+
+        self.redirect('/polls/{}'.format(poll_id_str))
+
+        action = {
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'user_id': current_user['_id'],
+            'question': question,
+            'poll_id': poll['_id'],
+            'post_url': post['data']['canonical_url'],
+        }
+        actions.new_poll(db=db, **action)
+
+        subject = u'{} by @{}'.format(question, current_user['user_name'])
+        channel_id = os.environ.get('ADN_CHANNEL_ID')
+        polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
+
+        users.inc_polls_count(db=db, user_id=current_user['_id'])
+
+
 class PollsIdPrevHandler(BaseHandler):
 
     def get(self, poll_id):
