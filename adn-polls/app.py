@@ -904,7 +904,7 @@ class PollsIdVotesHandler(BaseHandler):
         polls.vote(db=db, poll_id=poll_id, **args)
 
         if text is None or text in (u'', ''):
-            text = '@{} {}'.format(poll['user_name'], current_option['display_text'])
+            text = u'@{} {}'.format(poll['user_name'], current_option['display_text'])
         else:
             custom_reply = True
 
