@@ -40,6 +40,85 @@
         <div class="col-md-12">
 
 
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    <form
+                        role="form"
+                        class="js-polls-vote-{{poll['_id']}} js-signals-submit"
+                        data-poll-id="{{poll['_id']}}"
+                        data-signals-name="vote-on-poll">
+                        {% raw xsrf_input %}
+
+
+                        {% if current_user is None %}
+
+
+                            <textarea
+                                class="form-control js-votes-{{poll['_id']}}-custom-input"
+                                id="text"
+                                rows="5"
+                                tabindex="2"
+                                data-default-value="@{{poll['user_name']}}"
+                                required
+                                maxlength="256"
+                                autofocus>@{{poll['user_name']}} </textarea>
+
+
+                            <div class='pull-right'>
+                                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                            </div>
+
+                        {% else %}
+                            
+
+                            {% if user_has_voted %}
+                                <div class="alert alert-success js-has-not-voted-{{poll['_id']}}">
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
+                                </div>
+                            {% end %}
+
+
+                            {% if not user_has_voted %}
+                                <div class="js-has-not-voted-{{poll['_id']}}">
+
+
+                                    <textarea
+                                        class="form-control js-votes-{{poll['_id']}}-custom-input"
+                                        id="text"
+                                        rows="5"
+                                        tabindex="2"
+                                        data-default-value="@{{poll['user_name']}}"
+                                        required
+                                        maxlength="256"
+                                        autofocus>@{{poll['user_name']}} </textarea>
+
+                                    <div class='col-md-8'></div>
+
+
+                                    <div class="col-md-4">
+                                        <button
+                                            type="submit"
+                                            id="post-vote"
+                                            class="btn btn-default btn-lg btn-danger pull-right js-votes-{{poll['_id']}}"
+                                            tabindex="3">
+                                            <span class="glyphicon glyphicon-check"></span>
+                                            Vote and post to ADN
+                                        </button>
+                                    </div>
+                                </div>
+                            {% end %}
+
+
+                        {% end %}
+                    </form>
+                </div>
+            </div>
+
+
             {% if poll['total_votes'] >= 5 %}
                 {% module VotesFacepile(poll=poll) %}
             {% end %}
