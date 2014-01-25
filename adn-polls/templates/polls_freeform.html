@@ -198,19 +198,9 @@
 
             <div class='row'>
                 <div class='col-md-10 col-md-offset-1'>
-                    {% if len(poll.get('post_replies', [])) > 10 %}
-                        <p>
-                            <a href="#poll-reply-form">
-                                <span class="glyphicon glyphicon-arrow-down"></span>
-                                Jump to leave a reply
-                            </a>
-                        </p>
-                    {% end %}
-                    <div class="poll-replies-list-{{poll['_id']}}">
-                        {% for reply in poll.get('post_replies', []) %}
-                            {% module PollsReplies(reply=reply) %}
-                        {% end %}
-                    </div>
+
+
+                    {% module RepliesList(poll=poll) %}
 
 
                     <form

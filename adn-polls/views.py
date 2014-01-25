@@ -60,5 +60,17 @@ class PollsReplies(UIModule):
         return self.render_string(path, **context)
 
 
+class RepliesList(UIModule):
+
+    def render(self, poll):
+        '''Render actions from with templates'''
+        context = {
+            'replies': poll.get('post_replies', []),
+            'poll_id': poll['_id'],
+        }
+        path = 'templates/mod_replies_list.html'
+        return self.render_string(path, **context)
+
+
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)
