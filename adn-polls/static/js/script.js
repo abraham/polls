@@ -213,6 +213,7 @@ function deletePollsIdRepostsUI(options) {
  * Votes
  */
 signals.on('vote-on-poll', postVote);
+signals.on('vote-on-poll-freeform', postVoteFreeform);
 
 signals.on('click-polls-options', enableVotes);
 signals.on('click-polls-options', setCustomVotesValue);
@@ -290,6 +291,18 @@ function hideCustomVotesInput(options) {
         $textarea.slideUp(function() {
             $textarea.addClass('hidden');
         });
+}
+
+
+function postVoteFreeform(options) {
+    var $form = $('form.js-polls-vote-' + options.pollId);
+    var optionId = options.optionId;
+
+    var path = "/polls/" + options.pollId + "/votes-freeform";
+    var text = $('textarea.js-votes-' + options.pollId + '-input').val();
+    var data = { text: text, optionId: optionId };
+
+    postAPI(path, data, partial(postVoteDone, options), partial(postVoteFail, options));
 }
 
 

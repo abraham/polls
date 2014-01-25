@@ -46,7 +46,8 @@
                         role="form"
                         class="js-polls-vote-{{poll['_id']}} js-signals-submit"
                         data-poll-id="{{poll['_id']}}"
-                        data-signals-name="vote-on-poll">
+                        data-option-id="{{poll['options'][0]['_id']}}"
+                        data-signals-name="vote-on-poll-freeform">
                         {% raw xsrf_input %}
 
 
@@ -54,7 +55,7 @@
 
 
                             <textarea
-                                class="form-control js-votes-{{poll['_id']}}-custom-input"
+                                class="form-control js-votes-{{poll['_id']}}-input"
                                 id="text"
                                 rows="3"
                                 tabindex="2"
@@ -88,7 +89,7 @@
 
 
                                     <textarea
-                                        class="form-control js-votes-{{poll['_id']}}-custom-input"
+                                        class="form-control js-votes-{{poll['_id']}}-input"
                                         id="text"
                                         rows="5"
                                         tabindex="2"

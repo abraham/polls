@@ -684,7 +684,7 @@ class CreateFreeformHandler(BaseHandler):
             'poll_type': 'freeform',
             'display_type': 'list',
             'question': question,
-            'options': [],
+            'options': ['freeform'],
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],
@@ -939,6 +939,103 @@ class PollsIdVotesHandler(BaseHandler):
 
         reply = {
             'reply_type': reply_type,
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'post_id': post['id'],
+            'post_url': post['canonical_url'],
+            'post_text': post['text'],
+            'post_client_id': post['source']['client_id'],
+            'post_reply_to': post['reply_to'],
+            'post_thread_id': post['thread_id'],
+        }
+        reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
+
+        html = self.render_string('templates/polls_replies.html', **{ 'reply': reply})
+        self.set_header('Content-Type', 'text/html')
+        self.write(html)
+
+        action = {
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+            'user_id': current_user['_id'],
+            'question': poll['question'],
+            'poll_id': poll['_id'],
+            'option': text,
+            'post_url': post_url,
+            'post_id': post_id,
+        }
+        actions.new_vote(db=db, **action)
+        # TODO: update existing vote with post details
+        # TODO: add post details to replies
+
+        if poll['total_votes'] == 4: # Current vote is not yet tallied
+            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id)
+            subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
+            channel_id = os.environ.get('ADN_CHANNEL_ID_2')
+            polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
+
+        users.inc_votes_count(db=db, user_id=current_user['_id'])
+
+
+class PollsIdVotesFreeformHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+
+        text = self.get_argument('text')
+        option_id = object_id(self.get_argument('optionId'))
+        poll_id = object_id(poll_id)
+        if text is None or text == '' or poll_id is None:
+            self.write_error(404)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.write_error(404)
+            return
+
+        if current_user['_id'] in poll['votes_user_ids']:
+            self.write_error(400)
+            return
+
+        args = {
+            'option_id': option_id,
+            'user_id': current_user['_id'],
+            'user_name': current_user['user_name'],
+            'user_avatar': current_user['user_avatar'],
+        }
+        polls.vote(db=db, poll_id=poll_id, **args)
+
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
+            'Content-type': 'application/json',
+        }
+        args = {
+            'text': text,
+            'reply_to': poll['post_id'],
+            'annotations': [{
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                },
+            }],
+        }
+        response = requests.post(url, data=json.dumps(args), headers=headers)
+        if response.status_code != 200:
+            raise Exception(response.content)
+
+        post = response.json()['data']
+        post_url = post['canonical_url']
+        post_id = post['id']
+
+        reply = {
+            'reply_type': 'polls_vote_freeform',
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],
