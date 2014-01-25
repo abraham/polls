@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+
+{% block xsrf %}<meta name="_xsrf" content="{{xsrf_token}}">{% end %}
+
+
+{% block title %}{{poll['question']}}{% end %}
+
+
+{% block container %}
+    <div class="row">
+
+
+        <div class="page-header">
+            <h1>{{poll['question']}}</h1>
+        </div>
+
+
+        <div class="lead text-muted">
+
+            By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}" rel="author">{{poll['user_name']}}</a>
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
+                <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
+            <span>{{poll['views']}} views</span>&nbsp;
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
+                <span class="glyphicon glyphicon-link"></span></a>&nbsp;
+
+            {% if current_user is not None %}
+                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}&nbsp;
+                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}&nbsp;
+            {% end %}
+
+            <span class="dropdown" title="Share poll">
+                <a data-toggle="dropdown" href="#" class="remove-decoration"><span class="glyphicon glyphicon-share-alt"></span></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="https://alpha.app.net/intent/post/?text={{escape(poll['question'])}}%0A%0AVote%20on%20%40polls%20at%20{{url_escape(poll_url)}}" target="_blank">App.net</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="https://twitter.com/intent/tweet?text={{escape(poll['question'])}}%0A%0AVote%20on%20Polls%20at%20{{url_escape(poll_url)}}" target="_blank">Twitter</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="https://plus.google.com/share?url={{url_escape(poll_url)}}" target="_blank">Google+</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="https://www.facebook.com/sharer/sharer.php?u={{url_escape(poll_url)}}" target="_blank">Facebook</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="https://www.linkedin.com/shareArticle?mini=true&url={{url_escape(poll_url)}}" target="_blank">Linkedin</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+
+
+        <div class="col-md-12">
+
+        {% if poll['display_type'] == 'donut' %}
+            {% if poll['total_votes'] == 0 %}
+            <div
+                id="donutchart-{{poll['_id']}}"
+                class='row donut-graph donutchart-{{poll['_id']}} polls-empty'
+                data-poll-id="{{poll['_id']}}"
+                data-poll-options='{% raw poll['options_object'] %}'
+            >
+                <p class="lead text-center">No one has cast a vote yet, be the first and make history!</p>
+            {% else %}
+            <div
+                id="donutchart-{{poll['_id']}}"
+                class='row donut-graph donutchart-{{poll['_id']}}'
+                data-poll-id="{{poll['_id']}}"
+                data-poll-options='{% raw poll['options_object'] %}'
+            >
+            {% end %}
+            </div>
+
+
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    <form
+                        role="form"
+                        class="js-polls-vote-{{poll['_id']}} js-signals-submit"
+                        data-poll-id="{{poll['_id']}}"
+                        data-signals-name="vote-on-poll">
+                        {% raw xsrf_input %}
+
+                        {% for option in poll['options'] %}
+                            <div class="radio">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        class="js-signals-click"
+                                        data-signals-name="click-polls-options"
+                                        name="option"
+                                        id="option"
+                                        value="{{option['_id']}}"
+                                        tabindex="1"
+                                        data-option-text="{{option['display_text']}}"
+                                        data-option-id="{{option['_id']}}"
+                                        data-poll-id="{{poll['_id']}}">
+
+                                    {{option['display_text']}}
+                                </label>
+                            </div>
+                        {% end %}
+
+                        <br/>
+
+                        {% if current_user is None %}
+                            
+                            <div class='pull-right'>
+                                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                            </div>
+
+                        {% else %}
+                            
+                            {% if user_has_voted %}
+                                <div class="alert alert-success js-has-not-voted-{{poll['_id']}}">
+                            {% else %}
+                                <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
+                            {% end %}
+                                    <strong>Nice vote!</strong>
+                                    Help out <a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a> and give their poll a
+                                    {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
+                                    and&nbsp;
+                                    {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
+                                    or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.
+                                </div>
+
+                            {% if not user_has_voted %}
+                                <div class="js-has-not-voted-{{poll['_id']}}">
+
+                                    <textarea
+                                        class="form-control hidden js-votes-{{poll['_id']}}-custom-input"
+                                        id="text"
+                                        rows="5"
+                                        tabindex="2"
+                                        data-default-value="@{{poll['user_name']}}"
+                                        required
+                                        maxlength="256">@{{poll['user_name']}}</textarea>
+
+                                    <div class='col-md-8'>
+                                        <a  href="#" 
+                                            class="pull-right hidden js-signals-click js-votes-{{poll['_id']}}-custom top-15"
+                                            data-poll-id="{{poll['_id']}}"
+                                            data-signals-name="enable-custom-votes">Customize post</a>
+
+                                        <a  href="#" 
+                                            class="pull-right hidden js-signals-click js-post-votes-custom-discard js-votes-{{poll['_id']}}-custom-discard top-15"
+                                            data-poll-id="{{poll['_id']}}"
+                                            data-signals-name="disable-custom-votes">Discard</a>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button
+                                            type="submit"
+                                            id="post-vote"
+                                            class="btn btn-default btn-lg btn-danger pull-right js-votes-{{poll['_id']}}"
+                                            disabled="disabled"
+                                            tabindex="3">
+                                            <span class="glyphicon glyphicon-check"></span>
+                                            Vote and post to ADN
+                                        </button>
+                                    </div>
+                                </div>
+                            {% end %}
+
+                        {% end %}
+                    </form>
+                </div>
+            </div>
+        {% end %}
+
+
+            {% if poll['total_votes'] > 5 %}
+                <div class='row'>
+                    <div class='col-md-10 col-md-offset-1'>
+                        <br/>
+                        <h4>{{poll['total_votes']}} people with opinions</h4>
+                        <div>
+                            {% for vote in poll['votes'][:100] %}
+                            <a href="/users/{{vote['user_id']}}">
+                                <img
+                                    class="img-rounded vote-grid"
+                                    src="{{vote['user_avatar']}}?h=114&amp;w=114"
+                                    title="{{vote['user_name']}}"
+                                    width="57"
+                                    height="57"
+                                    alt="{{vote['user_name']}}'s avatar"/>
+                            </a>
+                            {% end %}
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+            {% end %}
+
+
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    {% if len(poll.get('post_replies', [])) > 10 %}
+                        <p>
+                            <a href="#poll-reply-form">
+                                <span class="glyphicon glyphicon-arrow-down"></span>
+                                Jump to leave a reply
+                            </a>
+                        </p>
+                    {% end %}
+                    <div class="poll-replies-list-{{poll['_id']}}">
+                        {% for reply in poll.get('post_replies', []) %}
+                            {% module PollsReplies(reply=reply) %}
+                        {% end %}
+                    </div>
+
+
+                    <form
+                        role="form"
+                        id="poll-reply-form"
+                        class="js-post-reply post-reply-{{poll['post_id']}}"
+                        data-signals-name="post-reply"
+                        data-poll-id="{{poll['_id']}}"
+                        data-post-id="{{poll['post_id']}}">
+
+                        <textarea
+                            class="form-control post-reply-{{poll['post_id']}}"
+                            rows="5"
+                            tabindex="50"
+                            data-value="@{{poll['user_name']}} "
+                            maxlength="256"
+                            required>@{{poll['user_name']}} </textarea>
+
+                        {% if current_user is not None %}
+                            <span class='text-muted reply-help'>
+                                Last synced replies <span class='datetime' data-datetime="{{poll['synced_at']}}">{{ moment(poll['synced_at'])}}</span>
+                            </span>
+                            <button
+                                type="submit"
+                                class="btn btn-default btn-lg pull-right btn-danger js-signals-click post-reply-{{poll['post_id']}}"
+                                data-signals-name="post-reply"
+                                data-poll-id="{{poll['_id']}}"
+                                data-post-id="{{poll['post_id']}}"
+                                tabindex="51"
+                                data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..."
+                                data-toggle="button">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                                Reply on ADN
+                            </button>
+
+                        {% else %}
+                            <div class="pull-right">
+                                <a  href='/auth/redirect?redirect={{escape(redirect)}}'
+                                    class="btn btn-default btn-lg">
+                                    Sign in to reply
+                                </a>
+                            </div>
+                        {% end %}
+
+                    </form>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+{% end %}
