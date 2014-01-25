@@ -1134,7 +1134,7 @@ class PollsIdHandler(BaseHandler):
             'poll_url': url,
             'post_text': post_text,
         }
-        self.render('templates/polls.html', **context)
+        self.render('templates/polls_{}.html'.format(poll['poll_type']), **context)
 
         polls.inc_views(db=db, poll_id=poll['_id'])
 
