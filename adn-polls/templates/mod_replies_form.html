@@ -6,15 +6,17 @@
     data-poll-id="{{poll_id}}"
     data-post-id="{{post_id}}">
 
-    <textarea
-        class="form-control post-reply-{{post_id}}"
-        rows="5"
-        tabindex="50"
-        data-value="@{{user_name}} "
-        maxlength="256"
-        required>@{{user_name}} </textarea>
-
     {% if current_user is not None %}
+
+        <textarea
+            class="form-control post-reply-{{post_id}}"
+            rows="5"
+            tabindex="50"
+            data-value="@{{user_name}} "
+            maxlength="256"
+            required>@{{user_name}} </textarea>
+
+
         <span class='text-muted reply-help'>
             Last synced replies <span class='datetime' data-datetime="{{synced_at}}">{{ moment(synced_at)}}</span>
         </span>
@@ -32,6 +34,16 @@
         </button>
 
     {% else %}
+
+        <textarea
+            class="form-control post-reply-{{post_id}}"
+            rows="3"
+            tabindex="50"
+            data-value="@{{user_name}} "
+            maxlength="256"
+            disabled
+            required>@{{user_name}} </textarea>
+
         <div class="pull-right">
             <a  href='/auth/redirect?redirect={{escape(redirect)}}'
                 class="btn btn-default btn-lg">

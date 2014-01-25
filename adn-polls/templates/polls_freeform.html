@@ -56,10 +56,11 @@
                             <textarea
                                 class="form-control js-votes-{{poll['_id']}}-custom-input"
                                 id="text"
-                                rows="5"
+                                rows="3"
                                 tabindex="2"
                                 data-default-value="@{{poll['user_name']}}"
                                 required
+                                disabled
                                 maxlength="256"
                                 autofocus>@{{poll['user_name']}} </textarea>
 
