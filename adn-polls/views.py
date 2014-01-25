@@ -72,5 +72,33 @@ class RepliesList(UIModule):
         return self.render_string(path, **context)
 
 
+class RepliesForm(UIModule):
+
+    def render(self, poll, redirect, current_user):
+        '''Render actions from with templates'''
+        context = {
+            'synced_at': poll['synced_at'],
+            'poll_id': poll['_id'],
+            'post_id': poll['post_id'],
+            'user_name': poll['user_name'],
+            'redirect': redirect,
+            'current_user': current_user,
+        }
+        path = 'templates/mod_replies_form.html'
+        return self.render_string(path, **context)
+
+
+class VotesFacepile(UIModule):
+
+    def render(self, poll):
+        '''Render actions from with templates'''
+        context = {
+            'total_votes': poll['total_votes'],
+            'votes': poll['votes'][:100],
+        }
+        path = 'templates/mod_votes_facepile.html'
+        return self.render_string(path, **context)
+
+
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)

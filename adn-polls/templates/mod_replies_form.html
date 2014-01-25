@@ -1,0 +1,43 @@
+<form
+    role="form"
+    id="poll-reply-form"
+    class="js-post-reply post-reply-{{post_id}}"
+    data-signals-name="post-reply"
+    data-poll-id="{{poll_id}}"
+    data-post-id="{{post_id}}">
+
+    <textarea
+        class="form-control post-reply-{{post_id}}"
+        rows="5"
+        tabindex="50"
+        data-value="@{{user_name}} "
+        maxlength="256"
+        required>@{{user_name}} </textarea>
+
+    {% if current_user is not None %}
+        <span class='text-muted reply-help'>
+            Last synced replies <span class='datetime' data-datetime="{{synced_at}}">{{ moment(synced_at)}}</span>
+        </span>
+        <button
+            type="submit"
+            class="btn btn-default btn-lg pull-right btn-danger js-signals-click post-reply-{{post_id}}"
+            data-signals-name="post-reply"
+            data-poll-id="{{poll_id}}"
+            data-post-id="{{post_id}}"
+            tabindex="51"
+            data-loading-text="<span class='glyphicon glyphicon-refresh'></span> Being awesome..."
+            data-toggle="button">
+            <span class="glyphicon glyphicon-share-alt"></span>
+            Reply on ADN
+        </button>
+
+    {% else %}
+        <div class="pull-right">
+            <a  href='/auth/redirect?redirect={{escape(redirect)}}'
+                class="btn btn-default btn-lg">
+                Sign in to reply
+            </a>
+        </div>
+    {% end %}
+
+</form>
