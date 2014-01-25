@@ -1,0 +1,20 @@
+<span class="dropdown" title="Share poll">
+    <a data-toggle="dropdown" href="#" class="remove-decoration"><span class="glyphicon glyphicon-share-alt"></span></a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="https://alpha.app.net/intent/post/?text={{escape(question)}}%0A%0AVote%20on%20%40polls%20at%20{{url_escape(poll_url)}}" target="_blank">App.net</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="https://twitter.com/intent/tweet?text={{escape(question)}}%0A%0AVote%20on%20Polls%20at%20{{url_escape(poll_url)}}" target="_blank">Twitter</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="https://plus.google.com/share?url={{url_escape(poll_url)}}" target="_blank">Google+</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="https://www.facebook.com/sharer/sharer.php?u={{url_escape(poll_url)}}" target="_blank">Facebook</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="https://www.linkedin.com/shareArticle?mini=true&url={{url_escape(poll_url)}}" target="_blank">Linkedin</a>
+        </li>
+    </ul>
+</span>

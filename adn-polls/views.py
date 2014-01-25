@@ -113,5 +113,17 @@ class GraphDonut(UIModule):
         return self.render_string(path, **context)
 
 
+class ShareDropdown(UIModule):
+
+    def render(self, poll, poll_url):
+        '''Render actions from with templates'''
+        context = {
+            'poll_url': poll_url,
+            'question': poll['question'],
+        }
+        path = 'templates/mod_share_dropdown.html'
+        return self.render_string(path, **context)
+
+
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)
