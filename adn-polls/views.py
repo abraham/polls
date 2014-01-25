@@ -125,5 +125,21 @@ class ShareDropdown(UIModule):
         return self.render_string(path, **context)
 
 
+class VotesComplete(UIModule):
+
+    def render(self, poll, current_user):
+        '''Render actions from with templates'''
+        context = {
+            'poll_id': poll['_id'],
+            'poll_user_id': poll['user_id'],
+            'user_name': poll['user_name'],
+            'post_starred_by': poll['post_starred_by'],
+            'post_reposted_by': poll['post_reposted_by'],
+            'current_user_id': current_user['_id']
+        }
+        path = 'templates/mod_votes_complete.html'
+        return self.render_string(path, **context)
+
+
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)

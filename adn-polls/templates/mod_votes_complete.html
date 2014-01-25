@@ -1,0 +1,7 @@
+
+<strong>Nice vote!</strong>
+Help out <a href="/users/{{poll_user_id}}">{{user_name}}</a> and give their poll a
+{% module PollsStar(poll_id=poll_id, user_id=current_user_id, starred_by=post_starred_by) %}
+and&nbsp;
+{% module PollsRepost(poll_id=poll_id, user_id=current_user_id, reposted_by=post_reposted_by) %}
+or check out <a href="/polls/{{poll_id}}/next">another poll</a>.

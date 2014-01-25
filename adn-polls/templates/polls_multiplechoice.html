@@ -82,20 +82,20 @@
                                 <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
                             </div>
 
+
                         {% else %}
-                            
+
+
                             {% if user_has_voted %}
                                 <div class="alert alert-success js-has-not-voted-{{poll['_id']}}">
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
+                                </div>
                             {% else %}
                                 <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
-                            {% end %}
-                                    <strong>Nice vote!</strong>
-                                    Help out <a href="/users/{{poll['user_id']}}">{{poll['user_name']}}</a> and give their poll a
-                                    {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}
-                                    and&nbsp;
-                                    {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}
-                                    or check out <a href="/polls/{{poll['_id']}}/next">another poll</a>.
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
                                 </div>
+                            {% end %}
+
 
                             {% if not user_has_voted %}
                                 <div class="js-has-not-voted-{{poll['_id']}}">
