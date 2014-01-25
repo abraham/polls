@@ -100,5 +100,18 @@ class VotesFacepile(UIModule):
         return self.render_string(path, **context)
 
 
+class GraphDonut(UIModule):
+
+    def render(self, poll):
+        '''Render actions from with templates'''
+        context = {
+            'poll_id': poll['_id'],
+            'options': poll['options_object'],
+            'total_votes': poll['total_votes'],
+        }
+        path = 'templates/mod_graph_donut.html'
+        return self.render_string(path, **context)
+
+
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)

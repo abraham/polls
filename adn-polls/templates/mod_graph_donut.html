@@ -1,0 +1,20 @@
+{% if total_votes == 0 %}
+    <div
+        id="donutchart-{{poll_id}}"
+        class='row donut-graph donutchart-{{poll_id}} polls-empty'
+        data-poll-id="{{poll_id}}"
+        data-poll-options='{% raw options %}'
+    >
+        <p class="lead text-center">
+            No one has cast a vote yet, be the first and make history!
+        </p>
+    </div>
+{% else %}
+    <div
+        id="donutchart-{{poll_id}}"
+        class='row donut-graph donutchart-{{poll_id}}'
+        data-poll-id="{{poll_id}}"
+        data-poll-options='{% raw options %}'
+    >
+    </div>
+{% end %}

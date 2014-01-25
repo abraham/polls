@@ -56,23 +56,9 @@
         <div class="col-md-12">
 
         {% if poll['display_type'] == 'donut' %}
-            {% if poll['total_votes'] == 0 %}
-            <div
-                id="donutchart-{{poll['_id']}}"
-                class='row donut-graph donutchart-{{poll['_id']}} polls-empty'
-                data-poll-id="{{poll['_id']}}"
-                data-poll-options='{% raw poll['options_object'] %}'
-            >
-                <p class="lead text-center">No one has cast a vote yet, be the first and make history!</p>
-            {% else %}
-            <div
-                id="donutchart-{{poll['_id']}}"
-                class='row donut-graph donutchart-{{poll['_id']}}'
-                data-poll-id="{{poll['_id']}}"
-                data-poll-options='{% raw poll['options_object'] %}'
-            >
-            {% end %}
-            </div>
+
+
+            {% module GraphDonut(poll=poll) %}
 
 
             <div class='row'>
