@@ -984,6 +984,7 @@ class PollsIdVotesHandler(BaseHandler):
             'optionId': str(option_id),
             'replyId': post['id'],
             'pollId': str(poll_id),
+            'views': poll['views'],
         }
         push(channel=str(poll_id), message=nub)
 
@@ -1089,6 +1090,7 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'action': 'new_reply',
             'replyId': post['id'],
             'pollId': str(poll_id),
+            'views': poll['views'],
         }
         push(channel=str(poll_id), message=nub)
 
@@ -1203,6 +1205,7 @@ class PollsIdRepliesHandler(BaseHandler):
             'action': 'new_reply',
             'replyId': post['id'],
             'pollId': str(poll_id),
+            'views': poll['views'],
         }
         push(channel=str(poll_id), message=nub)
 

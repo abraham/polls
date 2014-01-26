@@ -518,6 +518,7 @@ function initPubnub(pollId) {
 
 
 function handlePubnubMessage(message) {
+    $('span.polls-views-' + message.pollId).text(message.views + ' views');
 
     if (message.action == 'new_reply') {
         signals.emit('new-reply', message, message.html);

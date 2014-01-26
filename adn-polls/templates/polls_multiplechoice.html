@@ -24,7 +24,7 @@
             By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}" rel="author">{{poll['user_name']}}</a>
             <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
                 <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
-            <span>{{poll['views']}} views</span>&nbsp;
+            <span class='polls-views-{{poll['_id']}}'>{{poll['views']}} views</span>&nbsp;
             <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
                 <span class="glyphicon glyphicon-link"></span></a>&nbsp;
 
