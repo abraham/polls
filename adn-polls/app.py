@@ -231,7 +231,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
                 'user_text': None,
-                'user_full_name': token['token']['user']['name'],
+                'user_full_name': token['token']['user'].get('name', token['username']),
             }
             if token['token']['user'].get('description', None) is not None:
                 new_user['user_text'] = token['token']['user']['description']['text']
@@ -251,7 +251,7 @@ class AuthCallbackHandler(BaseHandler):
                 'user_cover': token['token']['user']['cover_image']['url'],
                 'user_cover_is_default': token['token']['user']['cover_image']['is_default'],
                 'user_text': None,
-                'user_full_name': token['token']['user']['name'],
+                'user_full_name': token['token']['user'].get('name', token['username']),
             }
 
             if current_user['status'] == 'reauth':
