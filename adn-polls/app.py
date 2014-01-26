@@ -56,7 +56,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         directives = [
             "default-src 'none'",
-            "connect-src 'self'",
+            "connect-src 'self' https://*.pubnub.com",
             "font-src 'self'",
             "frame-src 'none'",
             "img-src 'self' https:",
@@ -985,7 +985,7 @@ class PollsIdVotesHandler(BaseHandler):
             'replyId': post['id'],
             'pollId': str(poll_id),
         }
-        push(channel='pollId', message=nub)
+        push(channel=str(poll_id), message=nub)
 
 
 class PollsIdVotesFreeformHandler(BaseHandler):
@@ -1090,7 +1090,7 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'replyId': post['id'],
             'pollId': str(poll_id),
         }
-        push(channel='pollId', message=nub)
+        push(channel=str(poll_id), message=nub)
 
 
 class PostsHandler(BaseHandler):
@@ -1204,7 +1204,7 @@ class PollsIdRepliesHandler(BaseHandler):
             'replyId': post['id'],
             'pollId': str(poll_id),
         }
-        push(channel='pollId', message=nub)
+        push(channel=str(poll_id), message=nub)
 
 
 class PollsIdHandler(BaseHandler):

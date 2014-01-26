@@ -73,7 +73,9 @@ $(function() {
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
     $("img").unveil(200);
-    initPubnub('pollId');
+    if ($('meta[name="poll-id"]').attr('content')) {
+        initPubnub($('meta[name="poll-id"]').attr('content'));
+    }
 });
 
 
