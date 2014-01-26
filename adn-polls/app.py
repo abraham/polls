@@ -978,6 +978,15 @@ class PollsIdVotesHandler(BaseHandler):
 
         users.inc_votes_count(db=db, user_id=current_user['_id'])
 
+        nub = {
+            'html': html,
+            'action': 'new_vote',
+            'optionId': str(option_id),
+            'replyId': post['id'],
+            'pollId': str(poll_id),
+        }
+        push(channel='pollId', message=nub)
+
 
 class PollsIdVotesFreeformHandler(BaseHandler):
 
@@ -1074,6 +1083,14 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
         users.inc_votes_count(db=db, user_id=current_user['_id'])
+
+        nub = {
+            'html': html,
+            'action': 'new_reply',
+            'replyId': post['id'],
+            'pollId': str(poll_id),
+        }
+        push(channel='pollId', message=nub)
 
 
 class PostsHandler(BaseHandler):

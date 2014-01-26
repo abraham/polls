@@ -516,9 +516,13 @@ function initPubnub(pollId) {
 
 
 function handlePubnubMessage(message) {
-    console.log('msg', message);
+
     if (message.action == 'new_reply') {
         signals.emit('new-reply', message, message.html);
+    } else if (message.action == 'new_vote') {
+        signals.emit('new-reply', message, message.html);
+        incrementVote(message.pollId, message.optionId);
+        initChart(message.pollId);
     } else {
         console.log('UNKNOWN ACTION')
     }
