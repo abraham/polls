@@ -11,6 +11,7 @@ from bson.objectid import ObjectId
 import random
 import momentpy
 
+from Pubnub import Pubnub
 
 from models import polls, users, actions
 from decorators import require_auth
@@ -1179,6 +1180,14 @@ class PollsIdRepliesHandler(BaseHandler):
             'post_url': post['canonical_url'],
         }
         actions.new_reply(db=db, **action)
+        
+        nub = {
+            'html': html,
+            'action': 'new_reply',
+            'replyId': post['id'],
+            'pollId': str(poll_id),
+        }
+        push(channel='pollId', message=nub)
 
 
 class PollsIdHandler(BaseHandler):
@@ -1250,6 +1259,20 @@ def send_simple_message(to, subject, text):
         "text": text,
     }
     return requests.post(url, auth=auth, data=data)
+
+
+def push(channel, message):
+    config = {
+        'publish_key': os.environ.get('PUBNUB_PUBLISH_KEY'),
+        'subscribe_key':os.environ.get('PUBNUB_SUBSCRIBE_KEY'),
+        'secret_key': os.environ.get('PUBNUB_SECRET_KEY'),
+        'ssl_on': False
+    }
+    pubnub = Pubnub(**config)
+    info = pubnub.publish({
+        'channel' : channel,
+        'message' : message,
+    })
 
 
 def object_id(id):
