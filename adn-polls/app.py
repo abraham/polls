@@ -1455,10 +1455,10 @@ class PollsIdHandler(BaseHandler):
             'poll_url': url,
             'post_text': post_text,
         }
-        if poll.get('results_type', 'public'):
-            self.render('templates/polls_anonymous.html', **context)
-        else:
+        if poll.get('results_type', 'public') == 'public':
             self.render('templates/polls_{}.html'.format(poll['poll_type']), **context)
+        else:
+            self.render('templates/polls_anonymous.html', **context)
 
         polls.inc_views(db=db, poll_id=poll['_id'])
 
