@@ -59,6 +59,7 @@ if (typeof console == "undefined") {
 var pollIds = [];
 var pollOptions = {};
 var signals = {};
+var discardVote = false;
 smokesignals.convert(signals);
 google.setOnLoadCallback(initGraphs);
 
@@ -329,6 +330,7 @@ function postVote(options) {
     // TODO: rewrite
     incrementVote(options.pollId, optionId);
     initChart(options.pollId);
+    window.discardVote = true;
 
     var path = "/polls/" + options.pollId + "/votes";
     var data = { optionId: optionId };
@@ -522,10 +524,18 @@ function handlePubnubMessage(message) {
 
     if (message.action == 'new_reply') {
         signals.emit('new-reply', message, message.html);
+
     } else if (message.action == 'new_vote') {
         signals.emit('new-reply', message, message.html);
-        incrementVote(message.pollId, message.optionId);
-        initChart(message.pollId);
+        console.log('new_vote', message);
+
+        if (window.discardVote == true) {
+            window.discardVote = false;
+        } else {
+            incrementVote(message.pollId, message.optionId);
+            initChart(message.pollId);
+        }
+
     } else {
         console.log('UNKNOWN ACTION')
     }
