@@ -14,7 +14,11 @@
             New vote on
             <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
             by
-            <a href="/users/{{action['user_id']}}">{{action['user_name']}}</a>
+            {% if action.get('user_id', False) %}
+                <a href="/users/{{action['user_id']}}">{{action['user_name']}}</a>
+            {% else %}
+                {{action['user_name']}}
+            {% end %}
 
             {% if action.get('post_url', False) %}
                 <a href="{{action['post_url']}}" target="_blank">

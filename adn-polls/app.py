@@ -571,6 +571,7 @@ class CreateHandler(BaseHandler):
             'poll_id': poll_id,
             'poll_type': 'multiplechoice',
             'display_type': 'donut',
+            'results_type': 'public',
             'question': question,
             'options': options,
             'user_id': current_user['_id'],
@@ -591,6 +592,124 @@ class CreateHandler(BaseHandler):
             'question': question,
             'poll_id': poll['_id'],
             'post_url': post['data']['canonical_url'],
+        }
+        actions.new_poll(db=db, **action)
+
+        subject = u'{} by @{}'.format(question, current_user['user_name'])
+        channel_id = os.environ.get('ADN_CHANNEL_ID')
+        polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
+
+        users.inc_polls_count(db=db, user_id=current_user['_id'])
+
+
+class CreateAnonymouseHandler(BaseHandler):
+
+    @require_auth
+    def get(self):
+        db = self.db
+        current_user = self.current_user
+        error_type = False
+
+        query_error = self.get_argument('error', False)
+
+        if query_error == 'missing-required-fields':
+            error_type = 'missing-required-fields'
+
+        context = {
+            'error_type': error_type,
+            'current_user': current_user,
+            'xsrf_input': self.xsrf_form_html(),
+        }
+        self.render('templates/create_anonymous.html', **context)
+
+
+    @require_auth
+    def post(self):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+
+        poll_id = ObjectId()
+        poll_id_str = str(poll_id)
+        question = self.get_argument('question')[:150]
+        options = []
+        for option in self.get_arguments('options'):
+            if option != '':
+                options.append(option[:100])
+
+        if len(question) == 0 or len(options) < 2:
+            self.redirect('/create?error=missing-required-fields')
+            return
+
+        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
+        text = u'Q: {}\n\nVote anonymously on @polls at {}'.format(question, poll_url)
+        url = 'https://alpha-api.app.net/stream/0/posts'
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token']),
+            'Content-type': 'application/json',
+        }
+        args = {
+            'text': text,
+            'annotations': [{
+                "type": "net.app.core.crosspost",
+                "value": {
+                    "canonical_url": poll_url,
+                },
+            },
+            {
+                "type": "net.app.core.fallback_url",
+                "value": {
+                    "url": poll_url,
+                },
+            }],
+        }
+        request = requests.post(url, data=json.dumps(args), headers=headers)
+
+        if request.status_code != 200:
+            if request.status_code == 401:
+                response = request.json()
+
+                if response['meta']['error_slug'] in (u'requires-reauth', u'not-authorized'):
+                    print 'WARNING: user requires reauth', current_user['_id']
+                    users.require_requth(db=db, user_id=current_user['_id'])
+
+                    context = {
+                        'title': 'Expired authentication',
+                        'header': 'Expired Authentication',
+                        'message': "You have to <a href='/auth/redirect?redirect=/create'>reauthorize access</a> to App.net before you can create a poll.",
+                    }
+                    self.render('templates/error.html', **context)
+                    return
+
+            raise Exception(request.content)
+
+        post = request.json()
+
+        args = {
+            'poll_id':      poll_id,
+            'poll_type':    'multiplechoice',
+            'display_type': 'donut',
+            'results_type': 'anonymous',
+            'question':     question,
+            'options':      options,
+            'user_id':      current_user['_id'],
+            'user_name':    current_user['user_name'],
+            'user_avatar':  current_user['user_avatar'],
+            'post_id':      post['data']['id'],
+            'post_url':     post['data']['canonical_url'],
+
+        }
+        poll = polls.create(db=self.db, **args)
+
+        self.redirect('/polls/{}'.format(poll_id_str))
+
+        action = {
+            'user_name':    current_user['user_name'],
+            'user_avatar':  current_user['user_avatar'],
+            'user_id':      current_user['_id'],
+            'question':     question,
+            'poll_id':      poll['_id'],
+            'post_url':     post['data']['canonical_url'],
         }
         actions.new_poll(db=db, **action)
 
@@ -684,6 +803,7 @@ class CreateFreeformHandler(BaseHandler):
             'poll_id': poll_id,
             'poll_type': 'freeform',
             'display_type': 'list',
+            'results_type': 'public',
             'question': question,
             'options': ['freeform'],
             'user_id': current_user['_id'],
@@ -989,6 +1109,81 @@ class PollsIdVotesHandler(BaseHandler):
         push(channel=str(poll_id), message=nub)
 
 
+class PollsIdVotesAnonymousHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+        current_option = None
+
+        option_id = object_id(self.get_argument('optionId'))
+        poll_id = object_id(poll_id)
+        if option_id is None or poll_id is None:
+            self.write_error(404)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.write_error(404)
+            return
+
+        if current_user['_id'] in poll['votes_user_ids']:
+            self.write_error(400)
+            return
+
+        for option in poll['options']:
+            if option_id == option['_id']:
+                current_option = option
+                continue
+
+        if current_option is None:
+            self.write_error(400)
+            return
+
+        args = {
+            'option_id': option_id,
+            'user_id': current_user['_id'],
+        }
+        polls.vote_anonymous(db=db, poll_id=poll_id, **args)
+
+        self.set_header('Content-Type', 'text/html')
+        self.write('')
+
+        action = {
+            'user_name': 'Anonymous',
+            'user_avatar': 'https://d2rfichhc2fb9n.cloudfront.net/image/5/EelxvjPjjXm8XScw2p7hyNLGgxt7InMiOiJzMyIsImIiOiJ0YXBwLWFzc2V0cyIsImsiOiJpL08veC9FL094RThuRVBMUTlnRFN5d3hoeWh5akhRQ1YxRS5wbmciLCJvIjoiIn0',
+            'user_id': None,
+            'question': poll['question'],
+            'poll_id': poll['_id'],
+            'option': current_option['display_text'],
+            'post_url': None,
+            'post_id': None,
+        }
+        actions.new_vote(db=db, **action)
+        # TODO: update existing vote with post details
+        # TODO: add post details to replies
+
+        if poll['total_votes'] == 4: # Current vote is not yet tallied
+            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id)
+            subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
+            channel_id = os.environ.get('ADN_CHANNEL_ID_2')
+            polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
+
+        users.inc_votes_count(db=db, user_id=current_user['_id'])
+
+        nub = {
+            'html': '',
+            'action': 'new_vote',
+            'optionId': str(option_id),
+            'replyId': None,
+            'pollId': str(poll_id),
+            'views': poll['views'],
+        }
+        push(channel=str(poll_id), message=nub)
+
+
 class PollsIdVotesFreeformHandler(BaseHandler):
 
     @require_auth
@@ -1260,7 +1455,10 @@ class PollsIdHandler(BaseHandler):
             'poll_url': url,
             'post_text': post_text,
         }
-        self.render('templates/polls_{}.html'.format(poll['poll_type']), **context)
+        if poll.get('results_type', 'public'):
+            self.render('templates/polls_anonymous.html', **context)
+        else:
+            self.render('templates/polls_{}.html'.format(poll['poll_type']), **context)
 
         polls.inc_views(db=db, poll_id=poll['_id'])
 

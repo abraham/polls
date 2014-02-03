@@ -54,6 +54,7 @@
                 {% end %}
 
 
+                {% if poll.get('results_type', 'public') == 'public' %}
                 <div class='row'>
                     <h3>Vote and join the {{poll['total_votes']}} people with opinions</h3>
                     <div>
@@ -66,6 +67,7 @@
 
                     </div>
                 </div>
+                {% end %}
 
 
                 <br>

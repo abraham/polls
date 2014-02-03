@@ -18,11 +18,13 @@ from app import (
     TopViewedHandler,
 
     CreateHandler,
+    CreateAnonymouseHandler,
     CreateFreeformHandler,
     PostsHandler,
 
     PollsIdHandler,
     PollsIdVotesHandler,
+    PollsIdVotesAnonymousHandler,
     PollsIdVotesFreeformHandler,
     PollsIdPrevHandler,
     PollsIdNextHandler,
@@ -76,6 +78,7 @@ application = tornado.web.Application([
 
     (r'/polls/([^/]+)', PollsIdHandler, base_args),
     (r'/polls/([^/]+)/votes', PollsIdVotesHandler, base_args),
+    (r'/polls/([^/]+)/votes-anonymous', PollsIdVotesAnonymousHandler, base_args),
     (r'/polls/([^/]+)/votes-freeform', PollsIdVotesFreeformHandler, base_args),
     (r'/polls/([^/]+)/prev', PollsIdPrevHandler, base_args),
     (r'/polls/([^/]+)/next', PollsIdNextHandler, base_args),
@@ -87,6 +90,7 @@ application = tornado.web.Application([
     (r'/users/([^/]+)', UsersIdHandler, base_args),
 
     (r'/create', CreateHandler, base_args),
+    (r'/create/anonymous', CreateAnonymouseHandler, base_args),
     (r'/create/freeform', CreateFreeformHandler, base_args),
     (r'/posts', PostsHandler, base_args),
 

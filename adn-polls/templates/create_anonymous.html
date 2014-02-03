@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+
+{% block title %}Create a new poll{% end %}
+
+
+{% block container %}
+<div class="row">
+
+
+    <div class="page-header">
+        <h1>
+            Create a poll
+            <small class="text-muted">
+                with anonymous votes
+            </small>
+        </h1>
+    </div>
+
+
+    <div class="col-md-8 col-md-offset-2">
+
+        {% if error_type == 'missing-required-fields' %}
+            <div class="alert alert-danger">
+                <strong>A question</strong>  and at least two options are required.
+            </div>
+        {% end %}
+
+        <form role="form" method="post" action="/create/anonymous" class='row form-polls-create'>
+
+
+           {% raw xsrf_input %}
+
+
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea
+                class="form-control"
+                id="question"
+                name="question"
+                rows="3"
+                maxlength="150"
+                placeholder="How awesome is @abraham for making this swank tool?"
+                required
+                autocomplete="off"></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label for="options">Options</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="options"
+                    name="options"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="So awesome!"
+                    required>
+
+
+                <input
+                    type="text"
+                    class="form-control js-signals-focus"
+                    data-signals-name="create-unhide-next-input"
+                    data-signals-once="true"
+                    id="options"
+                    name="options"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Beyond awesome!"
+                    required>
+
+
+                {% set placeholders = [
+                    u'The most epic!',
+                    u'!!!',
+                    u'Need moar cowbell!',
+                    u'This is lame!',
+                    u'One seriously bearded dude!',
+                    u'The cake is a lie',
+                    u'My spoon is too big',
+                    u'He was dead the whole time',
+                ] %}
+
+
+                {% for placeholder in placeholders %}
+                    <input
+                        type="text"
+                        class="form-control js-signals-focus hidden"
+                        data-signals-name="create-unhide-next-input"
+                        data-signals-once="true"
+                        id="options"
+                        name="options"
+                        maxlength="100"
+                        autocomplete="off"
+                        placeholder="{{placeholder}}">
+                {% end %}
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>Warnings about anonymous polls</strong>
+                <ul>
+                    <li>The poll will be created as you.</li>
+                    <li>Who has voted will be stored but will not be displayed.</li>
+                    <li>Votes will not be associated with specific users.</li>
+                    <li>Results will not be available in other apps and will only be visible on Polls.</li>
+                    <li>Users will have to vote through Polls and not other apps.</li>
+                    <li>You will not be notified of new votes.</li>
+                </ul>
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-default btn-lg pull-right btn-danger">
+                <span class="glyphicon glyphicon-heart-empty"></span>
+                Create and post to ADN
+            </button>
+
+
+        </form>
+    </div>
+</div>
+{% end %}

@@ -5,12 +5,13 @@ import requests
 import json
 
 
-def create(db, poll_id, poll_type, display_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
+def create(db, poll_id, poll_type, display_type, results_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
     timestamp = datetime.datetime.utcnow()
     new_poll = {
         '_id': poll_id,
         'poll_type': poll_type,
         'display_type': display_type,
+        'results_type': results_type,
         'question': question,
         'options': [],
         'votes': [],
@@ -73,6 +74,41 @@ def vote(db, poll_id, option_id, user_id, user_name, user_avatar, post_id=None, 
                 'created_at': timestamp,
                 'post_id': post_id,
                 'post_url': post_url,
+            }
+        },
+        '$addToSet': {
+            'votes_user_ids': user_id,
+        }
+    }
+    db.polls.update(query, mutation)
+
+
+def vote_anonymous(db, poll_id, option_id, user_id):
+    timestamp = datetime.datetime.utcnow()
+    query = {
+        '_id': poll_id,
+        'votes_user_ids': {'$ne': user_id},
+        'options._id': option_id,
+    }
+    mutation = {
+        '$set': {
+            'active_at': timestamp,
+            'updated_at': timestamp,
+        },
+        '$inc' : {
+            'total_votes' : 1,
+            'options.$.votes': 1,
+        },
+        '$push': {
+            'votes': {
+                '_id': ObjectId(),
+                'user_id': None,
+                'user_name': 'Anonymous',
+                'option_id': option_id,
+                'user_avatar': 'https://d2rfichhc2fb9n.cloudfront.net/image/5/EelxvjPjjXm8XScw2p7hyNLGgxt7InMiOiJzMyIsImIiOiJ0YXBwLWFzc2V0cyIsImsiOiJpL08veC9FL094RThuRVBMUTlnRFN5d3hoeWh5akhRQ1YxRS5wbmciLCJvIjoiIn0',
+                'created_at': timestamp,
+                'post_id': None,
+                'post_url': None,
             }
         },
         '$addToSet': {

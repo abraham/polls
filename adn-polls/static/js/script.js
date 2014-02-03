@@ -226,6 +226,7 @@ function deletePollsIdRepostsUI(options) {
  */
 signals.on('vote-on-poll', postVote);
 signals.on('vote-on-poll-freeform', postVoteFreeform);
+signals.on('vote-on-poll-anonymous', postVoteAnonymous);
 
 signals.on('click-polls-options', enableVotes);
 signals.on('click-polls-options', setCustomVotesValue);
@@ -338,6 +339,27 @@ function postVote(options) {
     if (text) {
         data['text'] = text;
     }
+
+    postAPI(path, data, partial(postVoteDone, options), partial(postVoteFail, options));
+}
+
+
+function postVoteAnonymous(options) {
+    var $form = $('form.js-polls-vote-' + options.pollId);
+    var optionId = $form.find('[name="option"]:checked').prop('value');
+
+    if (!optionId) {
+        alert('You must select a value');
+        return false;
+    }
+
+    // TODO: rewrite
+    incrementVote(options.pollId, optionId);
+    initChart(options.pollId);
+    window.discardVote = true;
+
+    var path = "/polls/" + options.pollId + "/votes-anonymous";
+    var data = { optionId: optionId };
 
     postAPI(path, data, partial(postVoteDone, options), partial(postVoteFail, options));
 }

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+
+{% block xsrf %}<meta name="_xsrf" content="{{xsrf_token}}">{% end %}
+
+
+{% block title %}{{poll['question']}}{% end %}
+
+
+{% block poll_id %}<meta name="poll-id" content="{{poll['_id']}}" >{% end %}
+
+
+{% block container %}
+    <div class="row">
+
+
+        <div class="page-header">
+            <h1>{{poll['question']}}</h1>
+        </div>
+
+
+        <div class="lead text-muted">
+
+            By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}" rel="author">{{poll['user_name']}}</a>
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
+                <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
+            <span class='polls-views-{{poll['_id']}}'>{{poll['views']}} views</span>&nbsp;
+            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
+                <span class="glyphicon glyphicon-link"></span></a>&nbsp;
+
+            {% if current_user is not None %}
+                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}&nbsp;
+                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}&nbsp;
+            {% end %}
+
+
+            {% module ShareDropdown(poll=poll, poll_url=poll_url) %}
+
+
+        </div>
+
+
+        <div class="col-md-12">
+
+        {% if poll['display_type'] == 'donut' %}
+
+
+            {% module GraphDonut(poll=poll) %}
+
+
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    <form
+                        role="form"
+                        class="js-polls-vote-{{poll['_id']}} js-signals-submit"
+                        data-poll-id="{{poll['_id']}}"
+                        data-results-type="{{poll.get('results_type', 'public')}}"
+                        data-signals-name="vote-on-poll-anonymous">
+                        {% raw xsrf_input %}
+
+
+                        {% if not user_has_voted %}
+                            <div class="js-has-not-voted-{{poll['_id']}}">
+                                {% for option in poll['options'] %}
+                                    <div class="radio">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                class="js-signals-click"
+                                                data-signals-name="click-polls-options"
+                                                name="option"
+                                                id="option"
+                                                value="{{option['_id']}}"
+                                                tabindex="1"
+                                                data-option-text="{{option['display_text']}}"
+                                                data-option-id="{{option['_id']}}"
+                                                data-poll-id="{{poll['_id']}}">
+
+                                            {{option['display_text']}}
+                                        </label>
+                                    </div>
+                                {% end %}
+                            </div>
+                        {% end %}
+
+                        <br/>
+
+                        {% if current_user is None %}
+                            
+                            <div class='pull-right'>
+                                <a href='/auth/redirect?redirect={{escape(redirect)}}' class="btn btn-default btn-lg">Sign in and be a voting hero</a>
+                            </div>
+
+
+                        {% else %}
+
+
+                            {% if user_has_voted %}
+                                <div class="alert alert-success js-has-not-voted-{{poll['_id']}}">
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success js-has-voted-{{poll['_id']}} hidden">
+                                    {% module VotesComplete(poll=poll, current_user=current_user) %}
+                                </div>
+                            {% end %}
+
+                            <div class="alert alert-danger">
+                                <strong>Warnings about anonymous votes</strong>
+                                <ul>
+                                    <li>Who has voted will be stored but will not be displayed.</li>
+                                    <li>Votes will not be associated with specific users.</li>
+                                </ul>
+                            </div>
+
+
+                            {% if not user_has_voted %}
+                                <div class="js-has-not-voted-{{poll['_id']}}">
+                                    <div class='col-md-8'></div>
+
+                                    <div class="col-md-4">
+                                        <button
+                                            type="submit"
+                                            id="post-vote"
+                                            class="btn btn-default btn-lg btn-warning pull-right js-votes-{{poll['_id']}}"
+                                            disabled="disabled"
+                                            tabindex="3">
+                                            <span class="glyphicon glyphicon-eye-close"></span>
+                                            Vote anonymously
+                                        </button>
+                                    </div>
+                                </div>
+                            {% end %}
+
+                        {% end %}
+                    </form>
+                </div>
+            </div>
+        {% end %}
+
+
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1'>
+                    
+
+                    {% module RepliesList(poll=poll) %}
+
+
+                    {% module RepliesForm(poll=poll, redirect=redirect, current_user=current_user) %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% end %}
