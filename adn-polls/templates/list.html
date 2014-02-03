@@ -58,16 +58,22 @@
 
 
                             {% if len(poll['votes']) > 0 %}
-                                and voted on by 
-                                {% for vote in poll['votes'][:max] %}
-                                    <a href="/users/{{vote['user_id']}}" class="remove-decoration">
-                                        <img class="" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=32&amp;w=32" title="{{vote['user_name']}}" width="16" height="16" alt="{{vote['user_name']}}'s avatar"/>
-                                    </a>
-                                {% end %}
+
+                                {% if poll.get('results_type', 'public') == 'public' %}
+                                    and voted on by 
+                                    {% for vote in poll['votes'][:max] %}
+                                        <a href="/users/{{vote['user_id']}}" class="remove-decoration">
+                                            <img class="" src="/img/loading.gif" data-src="{{vote['user_avatar']}}?h=32&amp;w=32" title="{{vote['user_name']}}" width="16" height="16" alt="{{vote['user_name']}}'s avatar"/>
+                                        </a>
+                                    {% end %}
 
 
-                                {% if len(poll['votes']) > 20 %}
-                                    and {{more}} more
+                                    {% if len(poll['votes']) > 20 %}
+                                        and {{more}} more
+                                    {% end %}
+
+                                {% else %}
+                                    and voted on by {{len(poll['votes'])}} people
                                 {% end %}
 
 
