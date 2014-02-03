@@ -527,7 +527,6 @@ function handlePubnubMessage(message) {
 
     } else if (message.action == 'new_vote') {
         signals.emit('new-reply', message, message.html);
-        console.log('new_vote', message);
 
         if (window.discardVote == true) {
             window.discardVote = false;
