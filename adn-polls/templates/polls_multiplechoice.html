@@ -57,23 +57,28 @@
                         data-signals-name="vote-on-poll">
                         {% raw xsrf_input %}
 
-                        {% for option in poll['options'] %}
-                            <div class="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        class="js-signals-click"
-                                        data-signals-name="click-polls-options"
-                                        name="option"
-                                        id="option"
-                                        value="{{option['_id']}}"
-                                        tabindex="1"
-                                        data-option-text="{{option['display_text']}}"
-                                        data-option-id="{{option['_id']}}"
-                                        data-poll-id="{{poll['_id']}}">
 
-                                    {{option['display_text']}}
-                                </label>
+                        {% if not user_has_voted %}
+                            <div class="js-has-not-voted-{{poll['_id']}}">
+                                {% for option in poll['options'] %}
+                                    <div class="radio">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                class="js-signals-click"
+                                                data-signals-name="click-polls-options"
+                                                name="option"
+                                                id="option"
+                                                value="{{option['_id']}}"
+                                                tabindex="1"
+                                                data-option-text="{{option['display_text']}}"
+                                                data-option-id="{{option['_id']}}"
+                                                data-poll-id="{{poll['_id']}}">
+
+                                            {{option['display_text']}}
+                                        </label>
+                                    </div>
+                                {% end %}
                             </div>
                         {% end %}
 
