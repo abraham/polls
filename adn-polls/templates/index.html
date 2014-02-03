@@ -44,12 +44,14 @@
                 </div>
 
 
-                <div
-                    id="donutchart-{{poll['_id']}}"
-                    class='row donut-graph donutchart-{{poll['_id']}}'
-                    data-poll-id="{{poll['_id']}}"
-                    data-poll-options='{% raw poll['options_object'] %}'
-                ></div>
+                {% if poll['display_type'] == 'donut' %}
+                    <div
+                        id="donutchart-{{poll['_id']}}"
+                        class='row donut-graph donutchart-{{poll['_id']}}'
+                        data-poll-id="{{poll['_id']}}"
+                        data-poll-options='{% raw poll['options_object'] %}'
+                    ></div>
+                {% end %}
 
 
                 <div class='row'>
