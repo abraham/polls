@@ -1484,7 +1484,7 @@ def push(channel, message):
         'publish_key': os.environ.get('PUBNUB_PUBLISH_KEY'),
         'subscribe_key':os.environ.get('PUBNUB_SUBSCRIBE_KEY'),
         'secret_key': os.environ.get('PUBNUB_SECRET_KEY'),
-        'ssl_on': False
+        'ssl_on': True,
     }
     pubnub = Pubnub(**config)
     info = pubnub.publish({
