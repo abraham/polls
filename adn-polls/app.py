@@ -1029,7 +1029,8 @@ class PollsIdVotesHandler(BaseHandler):
         else:
             custom_reply = True
 
-        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
+        reply_id = ObjectId()
+        poll_url = '{}/polls/{}#{}'.format(os.environ['BASE_WEB_URL'], str(poll_id), str(reply_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -1059,6 +1060,7 @@ class PollsIdVotesHandler(BaseHandler):
             reply_type = 'polls_vote'
 
         reply = {
+            '_id': reply_id,
             'reply_type': reply_type,
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
@@ -1216,7 +1218,8 @@ class PollsIdVotesFreeformHandler(BaseHandler):
         }
         polls.vote(db=db, poll_id=poll_id, **args)
 
-        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
+        reply_id = ObjectId()
+        poll_url = '{}/polls/{}#{}'.format(os.environ['BASE_WEB_URL'], str(poll_id), str(reply_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -1241,6 +1244,7 @@ class PollsIdVotesFreeformHandler(BaseHandler):
         post_id = post['id']
 
         reply = {
+            '_id': reply_id,
             'reply_type': 'polls_vote_freeform',
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
@@ -1342,7 +1346,8 @@ class PollsIdRepliesHandler(BaseHandler):
             self.send_error(404)
             return
 
-        poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll_id))
+        reply_id = ObjectId()
+        poll_url = '{}/polls/{}#{}'.format(os.environ['BASE_WEB_URL'], str(poll_id), str(reply_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -1367,6 +1372,7 @@ class PollsIdRepliesHandler(BaseHandler):
         response = result.json()
         post = response['data']
         reply = {
+            '_id': reply_id,
             'reply_type': 'polls_reply',
             'user_id': current_user['_id'],
             'user_name': current_user['user_name'],
