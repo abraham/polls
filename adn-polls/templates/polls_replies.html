@@ -26,7 +26,7 @@
             </h4>
 
             <p>
-                {{reply['post_text']}}
+                {% raw link_text(escape(reply['post_text'])) %}
             </p>
 
         </div>

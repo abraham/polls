@@ -1,6 +1,7 @@
 from tornado.web import UIModule
 from tornado import template
 import momentpy
+from twitter_text import Autolink
 
 
 class NavbarUser(UIModule):
@@ -143,3 +144,22 @@ class VotesComplete(UIModule):
 
 def moment(self, date):
     return momentpy.from_now(date, from_utc=True)
+
+
+def link_text(self, text):
+    '''Link text'''
+    tt = Autolink(text)
+    options = {
+        'username_url_base': 'https://alpha.app.net/',
+        'hashtag_url_base': 'https://alpha.app.net/hashtags/',
+        'cashtag_url_base': 'https://app.net/search/?type=posts&q=$',
+        # 'supress_lists': True,
+        # 'url_target': '_blank',
+        'url_class': 'external',
+        'list_class': 'external',
+        'username_class': 'external',
+        'cashtag_class': 'external',
+        'hashtag_class': 'external',
+
+    }
+    return tt.auto_link(options)

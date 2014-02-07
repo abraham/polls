@@ -67,9 +67,10 @@ google.setOnLoadCallback(initGraphs);
 $(function() {
     signals.emit('ready');
 
-    $(document).on('focus', '.js-signals-focus', triggerSignals);
-    $(document).on('click', '.js-signals-click', triggerSignals);
-    $(document).on('submit', '.js-signals-submit', triggerSignals);
+    $(document).on('focus',     '.js-signals-focus',    triggerSignals);
+    $(document).on('click',     '.js-signals-click',    triggerSignals);
+    $(document).on('submit',    '.js-signals-submit',   triggerSignals);
+    $(document).on('click',     'a.external',           handleExternalLink);
 
     makeMoments();
     setInterval(makeMoments, 60 * 1000)
@@ -90,6 +91,10 @@ function partial(fn /*, args...*/) {
     };
 }
 
+
+function handleExternalLink(event) {
+    $(event.currentTarget).attr('target', '_blank');
+}
 
 function triggerSignals(event) {
     var $target = $(event.currentTarget);
