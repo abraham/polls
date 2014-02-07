@@ -118,7 +118,7 @@ def thread(db, poll, user):
             'post_thread_id': post['thread_id'],
             'created_at': dateutil.parser.parse(post['created_at']),
         }
-        reply = polls.add_reply(db=db, poll_id=poll['_id'], **reply)
+        reply = polls.add_reply(db=db, _id=ObjectId(), poll_id=poll['_id'], **reply)
 
     polls.set(db=db, poll_id=poll['_id'], field='synced_at', value=now)
     print 'INFO: completed polls sync'
