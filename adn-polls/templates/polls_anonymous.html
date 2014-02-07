@@ -22,11 +22,13 @@
         <div class="lead text-muted">
 
             By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}" rel="author">{{poll['user_name']}}</a>
-            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
-                <span class='datetime' data-datetime="{{poll['created_at']}}">{{poll['created_at_human']}}</span></a>&nbsp;
+            <span class='datetime' data-datetime="{{poll['created_at']}}">
+                {{poll['created_at_human']}}
+            </span>
+            with
             <span class='polls-views-{{poll['_id']}}'>{{poll['views']}} views</span>&nbsp;
-            <a href="{{poll['post_url']}}" target="_blank" title="View on ADN">
-                <span class="glyphicon glyphicon-link"></span></a>&nbsp;
+            <a href="{{poll['post_url']}}" class="external" title="View on ADN">
+                <span class="glyphicon glyphicon-new-window"></span></a>&nbsp;
 
             {% if current_user is not None %}
                 {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}&nbsp;
