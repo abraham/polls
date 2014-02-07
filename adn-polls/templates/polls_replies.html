@@ -1,9 +1,9 @@
 {% if reply['reply_type'] == 'polls_reply' %}
-<div class="media post-reply post-reply-{{reply['post_id']}} callout-left callout-warning" data-post-id="{{reply['post_id']}}">
+<div id="{{reply['_id']}}" class="media post-reply post-reply-{{reply['post_id']}} callout-left callout-warning" data-post-id="{{reply['post_id']}}">
 {% elif reply['reply_type'] in ('polls_vote', 'polls_vote_freeform', 'polls_vote_custom') %}
-<div class="media post-reply post-reply-{{reply['post_id']}} callout-left callout-success" data-post-id="{{reply['post_id']}}">
+<div id="{{reply['_id']}}" class="media post-reply post-reply-{{reply['post_id']}} callout-left callout-success" data-post-id="{{reply['post_id']}}">
 {% else %}
-<div class="media post-reply post-reply-{{reply['post_id']}}" data-post-id="{{reply['post_id']}}">
+<div id="{{reply['_id']}}" class="media post-reply post-reply-{{reply['post_id']}}" data-post-id="{{reply['post_id']}}">
 {% end %}
     <a class="pull-left" href="/users/{{reply['user_id']}}">
         <img class="media-object img-rounded" src="/img/loading.gif" data-src="{{reply['user_avatar']}}?h=114&amp;w=114" title="{{reply['user_name']}}" alt="reply['user_name']'s avatar" width="57" height="57">
@@ -15,11 +15,13 @@
 
             <h4 class="media-heading">
                 <a href="/users/{{reply['user_id']}}">
-                    {{reply['user_name']}}
-                </a>
+                    {{reply['user_name']}}</a>
                 <small>
-                    <a href="{{reply['post_url']}}" target="_blank">
-                        {{ moment(reply['created_at']) }}
+                    <a href="#{{reply['_id']}}">
+                        {{ moment(reply['created_at']) }}</a>
+
+                    <a href="{{reply['post_url']}}" class="external">
+                        <span class="glyphicon glyphicon-new-window"></span>
                     </a>
                 </small>
 
