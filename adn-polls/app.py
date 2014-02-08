@@ -1486,14 +1486,19 @@ def send_simple_message(to, subject, text):
 
 
 def push(channel, message):
+    '''Publish message through pubnub'''
     config = {
-        'publish_key': os.environ.get('PUBNUB_PUBLISH_KEY'),
-        'subscribe_key':os.environ.get('PUBNUB_SUBSCRIBE_KEY'),
-        'secret_key': os.environ.get('PUBNUB_SECRET_KEY'),
-        'ssl_on': True,
+        'publish_key'   : os.environ.get('PUBNUB_PUBLISH_KEY'),
+        'subscribe_key' :os.environ.get('PUBNUB_SUBSCRIBE_KEY'),
+        'secret_key'    : os.environ.get('PUBNUB_SECRET_KEY'),
+        'ssl_on'        : True,
     }
-    pubnub = Pubnub(**config)
-    info = pubnub.publish({
+    nub = Pubnub(**config)
+
+    if message.get('html', None) is not None:
+        message['html'] = message['html'].encode('base64','strict')
+
+    info = nub.publish({
         'channel' : channel,
         'message' : message,
     })
