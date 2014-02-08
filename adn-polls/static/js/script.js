@@ -558,9 +558,7 @@ function handlePubnubMessage(message) {
     }
 
     if (message.html) {
-        console.log(message.html);
         message.html = Base64.decode(message.html);
-        console.log(message.html);
     }
 
     if (message.action == 'new_reply') {
