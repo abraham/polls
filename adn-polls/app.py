@@ -1503,5 +1503,5 @@ def object_id(id):
     '''convert an id to an ObjectId or return None'''
     try:
         return ObjectId(id)
-    except pymongo.errors.InvalidId, e:
+    except pymongo.errors.InvalidId:
         return None
