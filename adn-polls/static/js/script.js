@@ -79,7 +79,7 @@ $(function() {
     $(document).on('click',     'a.external',           handleExternalLink);
 
     makeMoments();
-    setInterval(makeMoments, 60 * 1000)
+    setInterval(makeMoments, 30 * 1000);
     $("img").unveil(200);
     if ($('meta[name="poll-id"]').attr('content')) {
         initPubnub($('meta[name="poll-id"]').attr('content'));
