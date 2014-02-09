@@ -98,13 +98,13 @@ textarea {
 .callout-left {
     margin: 20px 0;
     padding: 20px;
-    border-left: 3px solid #eee;
+    border-left: 2px solid #eee;
 }
 
 .callout-right {
     margin: 20px 0;
     padding: 20px;
-    border-right: 3px solid #eee;
+    border-right: 2px solid #eee;
 }
 
 .callout-bottom {
