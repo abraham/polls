@@ -9,6 +9,6 @@
 
 <div class="poll-replies-list-{{poll_id}}">
     {% for reply in replies %}
-        {% module PollsReplies(reply=reply) %}
+        {% module PollsReplies(poll_id=poll_id, reply=reply) %}
     {% end %}
 </div>

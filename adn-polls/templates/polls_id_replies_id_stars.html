@@ -1,0 +1,12 @@
+<a
+    title="Star"
+    class="js-signals-click js-polls-id-replies-id-stars-{{reply_id}} hover-pointer remove-decoration"
+    data-poll-id="{{poll_id}}"
+    data-reply-id="{{reply_id}}"
+    data-signals-name="polls-id-replies-id-stars">
+    {% if is_starred %}
+        <span class="glyphicon glyphicon-star adn-action-take"></span>
+    {% else %}
+        <span class="glyphicon glyphicon-star-empty"></span>
+    {% end %}
+</a>

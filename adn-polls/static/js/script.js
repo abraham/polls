@@ -106,6 +106,7 @@ function triggerSignals(event) {
     var $target = $(event.currentTarget);
     var data = $target.data();
     signals.emit(data['signalsName'], data);
+    console.log(data['signalsName'], data);
     if (data['signalsOnce']) {
         $target
             .removeClass('js-signals-focus')
@@ -181,6 +182,54 @@ function postPollsIdStarsUI(options) {
 
 function deletePollsIdStarsUI(options) {
     $('.js-polls-stars-' + options.pollId + ' span')
+        .addClass('glyphicon-star-empty')
+        .removeClass('adn-action-take')
+        .removeClass('glyphicon-star');
+}
+
+
+/**
+ * Star replies on a poll
+ */
+signals.on('polls-id-replies-id-stars', postPollsIdRepliesIdStars);
+signals.on('polls-id-replies-id-stars', postPollsIdRepliesIdStarsUI);
+
+
+function postPollsIdRepliesIdStars(options) {
+    var done = function(){};
+    var fail = partial(postPollsIdRepliesIdStarsFail, options);
+    var path = '/polls/' + options.pollId + '/replies/' + options.replyId + '/stars';
+    postAPI(path, {}, done, fail);
+}
+
+
+// TODO: update
+function postPollsIdRepliesIdStarsFail(options, data, textStatus, jqXHR) {
+    signals.emit('unstar-poll', options);
+
+    if (data.status == 400) {
+        alert(data.responseText);
+        return;
+    } else if (data.status == 404) {
+        alert('Sorry, unable to find that.');
+        return;        
+    }
+
+    alert('Something went wrong.');
+    return;
+}
+
+
+function postPollsIdRepliesIdStarsUI(options) {
+    $('.js-polls-id-replies-id-stars-' + options.replyId + ' span')
+        .addClass('glyphicon-star')
+        .addClass('adn-action-take')
+        .removeClass('glyphicon-star-empty');
+}
+
+
+function deletePollsIdStarsUI(options) {
+    $('.js-polls-id-replies-id-stars-' + options.replyId + ' span')
         .addClass('glyphicon-star-empty')
         .removeClass('adn-action-take')
         .removeClass('glyphicon-star');

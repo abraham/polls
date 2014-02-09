@@ -263,6 +263,11 @@ def add_reply(db, _id, poll_id, post_id, user_id, user_name, user_avatar, post_u
         'post_client_id': post_client_id,
         'post_reply_to': post_reply_to,
         'post_thread_id': post_thread_id,
+        'starred_by': [],
+        'starred_count': 0,
+        'reposted_by': [],
+        'reposted_count': 0,
+        'activity': [],
     }
     query = {
             '_id': poll_id,
@@ -274,6 +279,41 @@ def add_reply(db, _id, poll_id, post_id, user_id, user_name, user_avatar, post_u
     }
     db.polls.update(query, mutation)
     return reply
+
+
+def add_reply_star(db, poll_id, reply_id, user_id):
+    '''Increment the views field for a user'''
+
+    query = {
+        '_id': poll_id,
+        'post_replies.post_id': reply_id,
+    }
+
+    mutation = {
+        '$addToSet': {
+            'post_replies.$.starred_by': user_id,
+        },
+        '$inc': {
+            'post_replies.$.starred_count': 1,
+        },
+    }
+    db.polls.update(query, mutation)
+
+
+def add_reply_activity(db, poll_id, reply_id, activity):
+    '''Increment the views field for a user'''
+
+    query = {
+        '_id': poll_id,
+        'post_replies.post_id': reply_id,
+    }
+
+    mutation = {
+        '$addToSet': {
+            'post_replies.$.activity': activity,
+        },
+    }
+    db.polls.update(query, mutation)
 
 
 def send_alert(channel_id, subject, poll_url):
