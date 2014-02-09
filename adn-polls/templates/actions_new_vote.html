@@ -23,7 +23,7 @@
             {% if action.get('post_url', False) %}
                 <a href="{{action['post_url']}}" target="_blank">
             {% end %}
-                <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
+                <span class='datetime' data-datetime="{{action['created_at']}}">{{moment(action['created_at'])}}</span>
             {% if action.get('post_url', False) %}
                 </a>
             {% end %}

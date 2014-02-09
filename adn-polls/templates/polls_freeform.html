@@ -23,7 +23,7 @@
 
             By <a href="/users/{{poll['user_id']}}" title="Created by {{poll['user_name']}}" rel="author">{{poll['user_name']}}</a>
             <span class='datetime' data-datetime="{{poll['created_at']}}">
-                {{poll['created_at_human']}}
+                {{moment(poll['created_at'])}}
             </span>
             with
             <span class='polls-views-{{poll['_id']}}'>{{poll['views']}} views</span>&nbsp;

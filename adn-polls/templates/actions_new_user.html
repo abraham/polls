@@ -11,7 +11,7 @@
             <h4 class="media-heading">
                 <a href="/users/{{action['user_id']}}">{{action['user_name']}}</a> signed up for Polls
             </h4>
-            New user <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
+            New user <span class='datetime' data-datetime="{{action['created_at']}}">{{moment(action['created_at'])}}</span>
         </div>
     </div>
 

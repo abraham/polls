@@ -8,7 +8,7 @@
             reposted 
             <a href="/polls/{{action['poll_id']}}">{{action['question']}}</a>
             <a href="{{action['post_url']}}" target="_blank">
-            <span class='datetime' data-datetime="{{action['created_at']}}">{{action['created_at_human']}}</span>
+            <span class='datetime' data-datetime="{{action['created_at']}}">{{moment(action['created_at'])}}</span>
             </a>
 
         </div>

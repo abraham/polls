@@ -296,7 +296,6 @@ class IndexHandler(BaseHandler):
             random.shuffle(poll['options'])
             poll['options_object'] = json.dumps(polls.build_options_object(poll['options'])).replace("'", "&#39;")
             poll['redirect'] = '/polls/{}'.format(poll['_id'])
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'current_user': current_user,
@@ -317,8 +316,6 @@ class ActivityHandler(BaseHandler):
         current_user = self.current_user
 
         recent_actions = actions.find_recent(db=db)
-        for action in recent_actions:
-            action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
         context = {
             'title': 'Recent activity on Polls',
             'current_user': current_user,
@@ -338,7 +335,6 @@ class RecentHandler(BaseHandler):
         recent_polls = polls.find_recent(db=db)
         for poll in recent_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         context = {
             'current_user': current_user,
             'header_title': 'New polls',
@@ -382,8 +378,7 @@ class UsersIdHandler(BaseHandler):
             return
 
         recent_actions = actions.find_recent_by_user_id(db=db, user_id=ObjectId(user_id))
-        for action in recent_actions:
-            action['created_at_human'] = momentpy.from_now(action['created_at'], from_utc=True)
+
         subtitle = u'<a href="https://alpha.app.net/{}" class="external" title="View on ADN" rel="me"><span class="glyphicon glyphicon-new-window"></span></a> '.format(viewed_user['user_name'])
         subtitle += u'<a href="https://omega.app.net/new-message?to={}" class="external" title="Message on Omega"><span class="glyphicon glyphicon-envelope"></span></a> '.format(viewed_user['adn_id'])
         subtitle += u'{} polls &middot; '.format(viewed_user['polls_count'])
@@ -408,9 +403,10 @@ class ActiveHandler(BaseHandler):
         current_user = self.current_user
 
         recent_polls = polls.find_active(db=db, limit=20, min_vote_count=2)
+
         for poll in recent_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
+
         context = {
             'current_user': current_user,
             'header_title': 'Trending polls',
@@ -428,9 +424,9 @@ class VintageHandler(BaseHandler):
         current_user = self.current_user
 
         vintage_polls = polls.find_vintage(db=db)
+
         for poll in vintage_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'current_user': current_user,
@@ -449,9 +445,9 @@ class TopHandler(BaseHandler):
         current_user = self.current_user
 
         top_polls = polls.find_top(db=db)
+
         for poll in top_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'current_user': current_user,
@@ -470,9 +466,9 @@ class TopViewedHandler(BaseHandler):
         current_user = self.current_user
 
         top_polls = polls.find_top_viewed(db=db)
+
         for poll in top_polls:
             poll['votes'].reverse()
-            poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
 
         context = {
             'current_user': current_user,
@@ -1445,7 +1441,6 @@ class PollsIdHandler(BaseHandler):
         post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
         poll['votes'].reverse()
         random.shuffle(poll['options'])
-        poll['created_at_human'] = momentpy.from_now(poll['created_at'], from_utc=True)
         poll['options_object'] = json.dumps(polls.build_options_object(poll['options'])).replace("'", "&#39;")
 
         poll['post_replies'] = sorted(poll['post_replies'], key=lambda k: k['created_at'])
