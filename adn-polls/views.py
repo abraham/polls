@@ -148,6 +148,7 @@ def moment(self, date):
 
 def link_text(self, text):
     '''Link text'''
+    text = text.replace('\n', '<br />')
     tt = Autolink(text)
     options = {
         'username_url_base': 'https://alpha.app.net/',
