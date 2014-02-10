@@ -20,8 +20,8 @@ def thread(db, poll, user):
     if os.environ['ADN_SYNC_ENABLED'] not in (True, 'True', 'true'):
         print 'WARNING: syncing with ADN is disabled'
         return
-    min_delta = int(os.environ['ADN_SYNC_DELTA'])
 
+    min_delta = int(os.environ['ADN_SYNC_DELTA'])
     now = datetime.datetime.utcnow()
     delta = now - poll['synced_at']
     if delta < datetime.timedelta(minutes=min_delta):
