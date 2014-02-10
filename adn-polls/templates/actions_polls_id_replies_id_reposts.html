@@ -1,0 +1,18 @@
+<div class="media row list-row callout-left">
+
+
+    <div class="media-body">
+        <div class='pull-left'>
+            <span class="glyphicon glyphicon-retweet"></span>
+            <a href="/users/{{action['user_id']}}">{{action['user_name']}}</a>
+            reposted 
+            {{action['text']}}
+            <a href="/polls/{{action['poll_id']}}#{{action['reply_id']}}">
+                <span class='datetime' data-datetime="{{action['created_at']}}">{{moment(action['created_at'])}}</span>
+            </a>
+
+        </div>
+    </div>
+
+
+</div>

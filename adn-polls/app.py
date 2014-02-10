@@ -1390,6 +1390,78 @@ class PollsIdRepliesIdStarsHandler(BaseHandler):
             raise Exception(result.content)
 
 
+class PollsIdRepliesIdRepostsHandler(BaseHandler):
+
+    @require_auth
+    def post(self, poll_id, reply_id):
+        self.check_xsrf_cookie()
+        db = self.db
+        current_user = self.current_user
+        poll_id = object_id(poll_id)
+        reply = None
+
+        if poll_id is None:
+            self.write_error(404)
+            return
+
+        poll = polls.find_by_id(db=db, poll_id=poll_id)
+        if poll is None:
+            self.send_error(404)
+            return
+
+        for n in poll['post_replies']:
+            if n['post_id'] == reply_id:
+                reply = n
+                continue
+
+        if reply is None:
+            self.write_error(404)
+            return
+
+        url = 'https://alpha-api.app.net/stream/0/posts/{}/repost'.format(reply['post_id'])
+        headers = {
+            'Authorization': 'Bearer {}'.format(current_user['access_token'])
+        }
+        result = requests.post(url, headers=headers)
+        response = result.json()
+
+        if result.status_code == 200:
+            self.write('success')
+            self.finish()
+
+            if current_user['_id'] not in reply.get('reposted_by', []):
+                activity = {
+                    'user_id': current_user['_id'],
+                    'type': 'repost',
+                    'user_name': current_user['user_name'],
+                    'user_avatar': current_user['user_avatar'],
+                }
+
+                polls.add_reply_repost(db=db, poll_id=poll['_id'], reply_id=reply_id, user_id=current_user['_id'])
+                polls.add_reply_activity(db=db, poll_id=poll['_id'], reply_id=reply_id, activity=activity)
+
+                action = {
+                    'user_name': current_user['user_name'],
+                    'user_avatar': current_user['user_avatar'],
+                    'user_id': current_user['_id'],
+                    'poll_id': poll['_id'],
+                    'reply_id': reply['_id'],
+                    'text': reply['post_text'],
+                    'post_url': reply['post_url'],
+                    'post_id': reply['post_id'],
+                }
+                actions.new_reply_repost(db=db, **action)
+
+        else:
+            if result.status_code == 400:
+                self.set_status(400)
+                self.write(response['meta']['error_message'])
+                return
+
+            self.set_status(500)
+            raise Exception(result.content)
+
+
 class PollsIdRepliesHandler(BaseHandler):
 
     @require_auth

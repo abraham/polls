@@ -1,0 +1,12 @@
+<a
+    title="Repost"
+    class="js-signals-click js-polls-id-replies-id-reposts-{{reply_id}} hover-pointer remove-decoration"
+    data-poll-id="{{poll_id}}"
+    data-reply-id="{{reply_id}}"
+    data-signals-name="polls-id-replies-id-reposts">
+    {% if is_reposted %}
+        <span class="glyphicon glyphicon-retweet adn-action-take"></span>
+    {% else %}
+        <span class="glyphicon glyphicon-retweet"></span>
+    {% end %}
+</a>

@@ -166,6 +166,29 @@ def new_reply_star(db, user_name, user_avatar, user_id, poll_id, reply_id, text,
     return action
 
 
+def new_reply_repost(db, user_name, user_avatar, user_id, poll_id, reply_id, text, post_url, post_id):
+    '''Create actions for stars on a reply'''
+    timestamp = datetime.datetime.utcnow()
+    action = {
+        '_id': ObjectId(),
+        'type': 'polls_id_replies_id_reposts',
+        'user_name': user_name,
+        'user_avatar': user_avatar,
+        'user_id': user_id,
+
+        'text': text,
+        'poll_id': poll_id,
+        'reply_id': reply_id,
+        'post_url': post_url,
+        'post_id': post_id,
+
+        'created_at': timestamp,
+    }
+
+    db.actions.insert(action)
+    return action
+
+
 def find_recent(db):
     '''Find recent actions'''
     results = db.actions.find().sort('_id', -1).limit(100)

@@ -51,6 +51,18 @@ class PollsIdRepliesIdStars(UIModule):
         return self.render_string('templates/polls_id_replies_id_stars.html', **context)
 
 
+class PollsIdRepliesIdReposts(UIModule):
+
+    def render(self, poll_id, reply_id, user_id, reposted_by):
+        '''Render a star to star a post'''
+        context = {
+            'poll_id': poll_id,
+            'reply_id': reply_id,
+            'is_reposted': user_id in reposted_by,
+        }
+        return self.render_string('templates/polls_id_replies_id_reposts.html', **context)
+
+
 class PollsRepost(UIModule):
 
     def render(self, poll_id, user_id, reposted_by):

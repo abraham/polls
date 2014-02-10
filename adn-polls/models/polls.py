@@ -300,6 +300,25 @@ def add_reply_star(db, poll_id, reply_id, user_id):
     db.polls.update(query, mutation)
 
 
+def add_reply_repost(db, poll_id, reply_id, user_id):
+    '''Increment the views field for a user'''
+
+    query = {
+        '_id': poll_id,
+        'post_replies.post_id': reply_id,
+    }
+
+    mutation = {
+        '$addToSet': {
+            'post_replies.$.reposted_by': user_id,
+        },
+        '$inc': {
+            'post_replies.$.reposted_count': 1,
+        },
+    }
+    db.polls.update(query, mutation)
+
+
 def add_reply_activity(db, poll_id, reply_id, activity):
     '''Increment the views field for a user'''
 

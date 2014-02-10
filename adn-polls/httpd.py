@@ -33,6 +33,7 @@ from app import (
     PollsIdStarsHandler,
 
     PollsIdRepliesIdStarsHandler,
+    PollsIdRepliesIdRepostsHandler,
 
     UsersIdHandler,
     UsersGridHandler,
@@ -88,6 +89,7 @@ application = tornado.web.Application([
     (r'/polls/([^/]+)/stars', PollsIdStarsHandler, base_args),
     (r'/polls/([^/]+)/replies', PollsIdRepliesHandler, base_args),
     (r'/polls/([^/]+)/replies/([^/]+)/stars', PollsIdRepliesIdStarsHandler, base_args),
+    (r'/polls/([^/]+)/replies/([^/]+)/reposts', PollsIdRepliesIdRepostsHandler, base_args),
 
     (r'/users-grid', UsersGridHandler, base_args),
     (r'/users/([^/]+)', UsersIdHandler, base_args),

@@ -26,6 +26,12 @@
                         user_id=current_user['_id'],
                         starred_by=reply.get('starred_by', [])) %}
 
+                    {% module PollsIdRepliesIdReposts(
+                        poll_id=poll_id,
+                        reply_id=reply['post_id'],
+                        user_id=current_user['_id'],
+                        reposted_by=reply.get('reposted_by', [])) %}
+
                     <a href="{{reply['post_url']}}" class="external">
                         <span class="glyphicon glyphicon-new-window"></span>
                     </a>
