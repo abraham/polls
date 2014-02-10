@@ -27,14 +27,23 @@
             </span>
             with
             <span class='polls-views-{{poll['_id']}}'>{{poll['views']}} views</span>&nbsp;
-            <a href="{{poll['post_url']}}" class="external" title="View on ADN">
-                <span class="glyphicon glyphicon-new-window"></span></a>&nbsp;
 
             {% if current_user is not None %}
-                {% module PollsStar(poll_id=poll['_id'], user_id=current_user['_id'], starred_by=poll['post_starred_by']) %}&nbsp;
-                {% module PollsRepost(poll_id=poll['_id'], user_id=current_user['_id'], reposted_by=poll['post_reposted_by']) %}&nbsp;
+                {% module PollsStar(
+                    poll_id=poll['_id'],
+                    user_id=current_user['_id'],
+                    starred_by=poll['post_starred_by']) %}
+                &nbsp;
+                {% module PollsRepost(
+                    poll_id=poll['_id'],
+                    user_id=current_user['_id'],
+                    reposted_by=poll['post_reposted_by']) %}
+                &nbsp;
             {% end %}
 
+            <a href="{{poll['post_url']}}" class="external" title="View on ADN">
+                <span class="glyphicon glyphicon-new-window"></span></a>
+            &nbsp;
 
             {% module ShareDropdown(poll=poll, poll_url=poll_url) %}
 
