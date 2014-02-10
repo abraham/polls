@@ -1194,7 +1194,8 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
 class PollsIdVotesFreeformHandler(BaseHandler):
 
     @require_auth
-    def post(self, poll_id_id):
+    @require_poll
+    def post(self, poll_id_str):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
