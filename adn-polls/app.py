@@ -51,6 +51,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
         proto = self.request.headers.get('X-Forwarded-Proto', 'http')
         origin = self.request.headers.get('Origin', None)
+        referer = self.request.headers.get('Referer', None)
         host = self.request.headers.get('Host', None)
         debug = os.environ.get('DEBUG') in ('True', 'true', True)
 
@@ -72,12 +73,12 @@ class BaseHandler(tornado.web.RequestHandler):
         if proto.lower() == 'https' :
             self.set_header('Strict-Transport-Security', 'max-age="31536000"; includeSubDomains')
         if proto == 'http' and not debug:
-            print 'Redirecting to SSL', self.request.host, self.request.path, 'from', origin
+            print 'Redirecting to SSL', self.request.host, self.request.path, 'from', referer
             url = u'https://{}{}'.format(self.request.host, self.request.path)
             self.redirect(url)
             return
         if host is not None and not debug and host != 'polls.abrah.am':
-            print 'Redirecting to polls.abrah.am', self.request.path, 'from', origin
+            print 'Redirecting to polls.abrah.am', self.request.path, 'from', referer
             url = u'https://{}{}'.format('polls.abrah.am', self.request.path)
             self.redirect(url)
             return
