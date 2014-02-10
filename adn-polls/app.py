@@ -1124,28 +1124,25 @@ class PollsIdVotesHandler(BaseHandler):
 class PollsIdVotesAnonymousHandler(BaseHandler):
 
     @require_auth
-    def post(self, poll_id):
+    @require_poll
+    def post(self, poll_id_str):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
+        current_poll = self.current_poll
+        current_poll_id = self.current_poll_id
         current_option = None
 
         option_id = object_id(self.get_argument('optionId'))
-        poll_id = object_id(poll_id)
-        if option_id is None or poll_id is None:
+        if option_id is None:
             self.write_error(404)
             return
 
-        poll = polls.find_by_id(db=db, poll_id=poll_id)
-        if poll is None:
-            self.write_error(404)
-            return
-
-        if current_user['_id'] in poll['votes_user_ids']:
+        if current_user['_id'] in current_poll['votes_user_ids']:
             self.write_error(400)
             return
 
-        for option in poll['options']:
+        for option in current_poll['options']:
             if option_id == option['_id']:
                 current_option = option
                 continue
@@ -1158,7 +1155,7 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
             'option_id': option_id,
             'user_id': current_user['_id'],
         }
-        polls.vote_anonymous(db=db, poll_id=poll_id, **args)
+        polls.vote_anonymous(db=db, poll_id=current_poll_id, **args)
 
         self.set_header('Content-Type', 'text/html')
         self.write('')
@@ -1167,19 +1164,17 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
             'user_name': 'Anonymous',
             'user_avatar': 'https://d2rfichhc2fb9n.cloudfront.net/image/5/EelxvjPjjXm8XScw2p7hyNLGgxt7InMiOiJzMyIsImIiOiJ0YXBwLWFzc2V0cyIsImsiOiJpL08veC9FL094RThuRVBMUTlnRFN5d3hoeWh5akhRQ1YxRS5wbmciLCJvIjoiIn0',
             'user_id': None,
-            'question': poll['question'],
-            'poll_id': poll['_id'],
+            'question': current_poll['question'],
+            'poll_id': current_poll_id,
             'option': current_option['display_text'],
             'post_url': None,
             'post_id': None,
         }
         actions.new_vote(db=db, **action)
-        # TODO: update existing vote with post details
-        # TODO: add post details to replies
 
-        if poll['total_votes'] == 4: # Current vote is not yet tallied
-            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id)
-            subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
+        if current_poll['total_votes'] == 4: # Current vote is not yet tallied
+            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
+            subject = u'{} by @{}'.format(current_poll['question'], current_poll['user_name'])
             channel_id = os.environ.get('ADN_CHANNEL_ID_2')
             polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
@@ -1190,10 +1185,10 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
             'action': 'new_vote',
             'optionId': str(option_id),
             'replyId': None,
-            'pollId': str(poll_id),
-            'views': poll['views'],
+            'pollId': poll_id_str,
+            'views': current_poll['views'],
         }
-        push(channel=str(poll_id), message=nub)
+        push(channel=poll_id_str, message=nub)
 
 
 class PollsIdVotesFreeformHandler(BaseHandler):
