@@ -286,7 +286,7 @@ def add_reply_star(db, poll_id, reply_id, user_id):
 
     query = {
         '_id': poll_id,
-        'post_replies.post_id': reply_id,
+        'post_replies._id': reply_id,
     }
 
     mutation = {
@@ -305,7 +305,7 @@ def add_reply_repost(db, poll_id, reply_id, user_id):
 
     query = {
         '_id': poll_id,
-        'post_replies.post_id': reply_id,
+        'post_replies._id': reply_id,
     }
 
     mutation = {
@@ -324,7 +324,7 @@ def add_reply_activity(db, poll_id, reply_id, activity):
 
     query = {
         '_id': poll_id,
-        'post_replies.post_id': reply_id,
+        'post_replies._id': reply_id,
     }
 
     mutation = {

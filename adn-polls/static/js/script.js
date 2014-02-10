@@ -194,6 +194,7 @@ function deletePollsIdStarsUI(options) {
  */
 signals.on('polls-id-replies-id-stars', postPollsIdRepliesIdStars);
 signals.on('polls-id-replies-id-stars', postPollsIdRepliesIdStarsUI);
+signals.on('delete-polls-id-replies-id-stars', deltePollsIdRepliesIdStarsUI);
 
 
 function postPollsIdRepliesIdStars(options) {
@@ -204,16 +205,15 @@ function postPollsIdRepliesIdStars(options) {
 }
 
 
-// TODO: update
 function postPollsIdRepliesIdStarsFail(options, data, textStatus, jqXHR) {
-    signals.emit('unstar-poll', options);
+    signals.emit('delete-polls-id-replies-id-stars', options);
 
     if (data.status == 400) {
         alert(data.responseText);
         return;
     } else if (data.status == 404) {
         alert('Sorry, unable to find that.');
-        return;        
+        return;
     }
 
     alert('Something went wrong.');
@@ -229,7 +229,7 @@ function postPollsIdRepliesIdStarsUI(options) {
 }
 
 
-function deletePollsIdStarsUI(options) {
+function deltePollsIdRepliesIdStarsUI(options) {
     $('.js-polls-id-replies-id-stars-' + options.replyId + ' span')
         .addClass('glyphicon-star-empty')
         .removeClass('adn-action-take')
@@ -242,26 +242,26 @@ function deletePollsIdStarsUI(options) {
  */
 signals.on('polls-id-replies-id-reposts', postPollsIdRepliesIdReposts);
 signals.on('polls-id-replies-id-reposts', postPollsIdRepliesIdRepostsUI);
+signals.on('delete-polls-id-replies-id-reposts', deletePollsIdRepliesIdRepostsUI);
 
 
 function postPollsIdRepliesIdReposts(options) {
     var done = function(){};
-    var fail = partial(postPollsIdRepliesIdStarsFail, options);
+    var fail = partial(postPollsIdRepliesIdRepostsFail, options);
     var path = '/polls/' + options.pollId + '/replies/' + options.replyId + '/reposts';
     postAPI(path, {}, done, fail);
 }
 
 
-// TODO: update
 function postPollsIdRepliesIdRepostsFail(options, data, textStatus, jqXHR) {
-    signals.emit('unstar-poll', options);
+    signals.emit('delete-polls-id-replies-id-reposts', options);
 
     if (data.status == 400) {
         alert(data.responseText);
         return;
     } else if (data.status == 404) {
         alert('Sorry, unable to find that.');
-        return;        
+        return;
     }
 
     alert('Something went wrong.');
@@ -275,11 +275,9 @@ function postPollsIdRepliesIdRepostsUI(options) {
 }
 
 
-function deletePollsIdStarsUI(options) {
-    $('.js-polls-id-replies-id-stars-' + options.replyId + ' span')
-        .addClass('glyphicon-star-empty')
-        .removeClass('adn-action-take')
-        .removeClass('glyphicon-star');
+function deletePollsIdRepliesIdRepostsUI(options) {
+    $('.js-polls-id-replies-id-reposts-' + options.replyId + ' span')
+        .removeClass('adn-action-take');
 }
 
 

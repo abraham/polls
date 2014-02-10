@@ -1326,9 +1326,10 @@ class PollsIdRepliesIdStarsHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
         poll_id = object_id(poll_id)
+        reply_id = object_id(reply_id)
         reply = None
 
-        if poll_id is None:
+        if poll_id is None or reply_id is None:
             self.write_error(404)
             return
 
@@ -1338,7 +1339,7 @@ class PollsIdRepliesIdStarsHandler(BaseHandler):
             return
 
         for n in poll['post_replies']:
-            if n['post_id'] == reply_id:
+            if n['_id'] == reply_id:
                 reply = n
                 continue
 
@@ -1398,9 +1399,10 @@ class PollsIdRepliesIdRepostsHandler(BaseHandler):
         db = self.db
         current_user = self.current_user
         poll_id = object_id(poll_id)
+        reply_id = object_id(reply_id)
         reply = None
 
-        if poll_id is None:
+        if poll_id is None or reply_id is None:
             self.write_error(404)
             return
 
@@ -1410,7 +1412,7 @@ class PollsIdRepliesIdRepostsHandler(BaseHandler):
             return
 
         for n in poll['post_replies']:
-            if n['post_id'] == reply_id:
+            if n['_id'] == reply_id:
                 reply = n
                 continue
 
