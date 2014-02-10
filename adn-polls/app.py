@@ -54,7 +54,7 @@ class BaseHandler(tornado.web.RequestHandler):
         referer = self.request.headers.get('Referer', None)
         host = self.request.headers.get('Host', None)
         debug = os.environ.get('DEBUG') in ('True', 'true', True)
-        print 'headers', self.request.headers
+
         directives = [
             "default-src 'none'",
             "connect-src 'self' https://*.pubnub.com",
