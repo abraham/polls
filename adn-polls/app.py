@@ -14,7 +14,7 @@ from Pubnub import Pubnub
 
 
 from models import polls, users, actions
-from decorators import require_auth
+from decorators import require_auth, require_poll
 import sync
 
 
@@ -1569,62 +1569,58 @@ class PollsIdRepliesHandler(BaseHandler):
 
 class PollsIdHandler(BaseHandler):
 
-    def get(self, poll_id):
+    @require_poll
+    def get(self, poll_id_str):
         db = self.db
         current_user = self.current_user
+        current_poll = self.current_poll
+        current_poll_id = self.current_poll_id
+
+        # TODO: refactor
         user_has_voted = False
         user_has_starred_post = False
         user_has_reposted_post = False
-        poll_id = object_id(poll_id)
 
-        if poll_id is None:
-            self.write_error(404)
-            return
-
-        poll = polls.find_by_id(db=db, poll_id=poll_id)
-        if poll is None:
-            self.send_error(404)
-            return
-
-        if current_user and current_user['_id'] in poll['votes_user_ids']:
+        # TODO: refactor
+        if current_user and current_user['_id'] in current_poll['votes_user_ids']:
             user_has_voted = True
-        if current_user and current_user['_id'] in poll['post_starred_by']:
+        if current_user and current_user['_id'] in current_poll['post_starred_by']:
             user_has_starred_post = True
-        if current_user and current_user['_id'] in poll['post_reposted_by']:
+        if current_user and current_user['_id'] in current_poll['post_reposted_by']:
             user_has_reposted_post = True
 
-        url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], str(poll['_id']))
+        url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
 
         voted_on = ''
-        if poll['total_votes'] > 1:
-            voted_on = ' has been answered by {} people. Do you agree with them?'.format(poll['total_votes'])
-        post_text = u'{} by @{}{}\n\n{}'.format(poll['question'], poll['user_name'], voted_on, url)
-        poll['votes'].reverse()
-        random.shuffle(poll['options'])
-        poll['options_object'] = json.dumps(polls.build_options_object(poll['options'])).replace("'", "&#39;")
+        if current_poll['total_votes'] > 1:
+            voted_on = ' has been answered by {} people. Do you agree with them?'.format(current_poll['total_votes'])
+        post_text = u'{} by @{}{}\n\n{}'.format(current_poll['question'], current_poll['user_name'], voted_on, url)
+        current_poll['votes'].reverse()
+        random.shuffle(current_poll['options'])
+        current_poll['options_object'] = json.dumps(polls.build_options_object(current_poll['options'])).replace("'", "&#39;")
 
-        poll['post_replies'] = sorted(poll['post_replies'], key=lambda k: k['created_at'])
+        current_poll['post_replies'] = sorted(current_poll['post_replies'], key=lambda k: k['created_at'])
         context = {
             'current_user': current_user,
             'xsrf_token': self.xsrf_token,
             'xsrf_input': self.xsrf_form_html(),
-            'redirect': '/polls/{}'.format(poll['_id']),
+            'redirect': '/polls/{}'.format(poll_id_str),
             'user_has_voted': user_has_voted,
             'user_has_starred_post': user_has_starred_post,
             'user_has_reposted_post': user_has_reposted_post,
-            'poll': poll,
+            'poll': current_poll,
             'poll_url': url,
             'post_text': post_text,
         }
-        if poll.get('results_type', 'public') == 'public':
-            self.render('templates/polls_{}.html'.format(poll['poll_type']), **context)
+        if current_poll.get('results_type', 'public') == 'public':
+            self.render('templates/polls_{}.html'.format(current_poll['poll_type']), **context)
         else:
             self.render('templates/polls_anonymous.html', **context)
 
-        polls.inc_views(db=db, poll_id=poll['_id'])
+        polls.inc_views(db=db, poll_id=current_poll_id)
 
         if current_user is not None: # TODO and sync time is older than 15 min
-            sync.thread(db=db, poll=poll, user=current_user)
+            sync.thread(db=db, poll=current_poll, user=current_user)
 
 
 def send_simple_message(to, subject, text):
