@@ -176,14 +176,12 @@ def link_text(self, text):
     text = text.replace('\n', '<br />')
     tt = Autolink(text)
     options = {
-        'username_url_base': 'https://alpha.app.net/',
+        'username_url_base': '/username-redirect/',
         'hashtag_url_base': 'https://alpha.app.net/hashtags/',
         'cashtag_url_base': 'https://app.net/search/?type=posts&q=$',
         # 'supress_lists': True,
-        # 'url_target': '_blank',
         'url_class': 'external',
         'list_class': 'external',
-        'username_class': 'external',
         'cashtag_class': 'external',
         'hashtag_class': 'external',
 

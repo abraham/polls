@@ -37,6 +37,7 @@ from app import (
 
     UsersIdHandler,
     UsersGridHandler,
+    UsernameRedirectHandler,
 
     AuthRedirectHandler,
     AuthLogoutHandler,
@@ -93,6 +94,7 @@ application = tornado.web.Application([
 
     (r'/users-grid', UsersGridHandler, base_args),
     (r'/users/([^/]+)', UsersIdHandler, base_args),
+    (r'/username-redirect/([^/]+)', UsernameRedirectHandler, base_args),
 
     (r'/create', CreateHandler, base_args),
     (r'/create/anonymous', CreateAnonymouseHandler, base_args),

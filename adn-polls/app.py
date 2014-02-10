@@ -362,6 +362,18 @@ class UsersGridHandler(BaseHandler):
         self.render('templates/grid.html', **context)
 
 
+class UsernameRedirectHandler(BaseHandler):
+
+    def get(self, username):
+        '''Redirect to Polls profile if in db, else to ADN'''
+        user = users.find_by_username(db=self.db, username=username)
+
+        if user is not None:
+            self.redirect('/users/{}'.format(user['_id']))
+        else:
+            self.redirect(u'https://alpha.app.net/{}'.format(username))
+
+
 class UsersIdHandler(BaseHandler):
 
     def get(self, user_id):

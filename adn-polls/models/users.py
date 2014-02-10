@@ -67,6 +67,14 @@ def find_by_adn_id(db, adn_id):
     return db.users.find_one(query)
 
 
+def find_by_username(db, username):
+    '''Find an existing user by their ADN username'''
+    query = {
+        'user_name': username,
+    }
+    return db.users.find_one(query)
+
+
 def find_by_adn_ids(db, adn_ids):
     '''Find an existing user by their ADN id'''
     users = {
