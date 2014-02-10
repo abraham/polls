@@ -20,17 +20,19 @@
                     <a href="#{{reply['_id']}}">
                         {{ moment(reply['created_at']) }}</a>
 
-                    {% module PollsIdRepliesIdStars(
-                        poll_id=poll_id,
-                        reply_id=reply['_id'],
-                        user_id=current_user['_id'],
-                        starred_by=reply.get('starred_by', [])) %}
+                    {% if current_user is not None %}
+                        {% module PollsIdRepliesIdStars(
+                            poll_id=poll_id,
+                            reply_id=reply['_id'],
+                            user_id=current_user['_id'],
+                            starred_by=reply.get('starred_by', [])) %}
 
-                    {% module PollsIdRepliesIdReposts(
-                        poll_id=poll_id,
-                        reply_id=reply['_id'],
-                        user_id=current_user['_id'],
-                        reposted_by=reply.get('reposted_by', [])) %}
+                        {% module PollsIdRepliesIdReposts(
+                            poll_id=poll_id,
+                            reply_id=reply['_id'],
+                            user_id=current_user['_id'],
+                            reposted_by=reply.get('reposted_by', [])) %}
+                    {% end %}
 
                     <a href="{{reply['post_url']}}" class="external">
                         <span class="glyphicon glyphicon-new-window"></span>
