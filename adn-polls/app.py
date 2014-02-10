@@ -1194,24 +1194,20 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
 class PollsIdVotesFreeformHandler(BaseHandler):
 
     @require_auth
-    def post(self, poll_id):
+    def post(self, poll_id_id):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
+        current_poll = self.current_poll
+        current_poll_id = self.current_poll_id
 
         text = self.get_argument('text')
         option_id = object_id(self.get_argument('optionId'))
-        poll_id = object_id(poll_id)
-        if text is None or text == '' or poll_id is None:
+        if text is None or text == '':
             self.write_error(404)
             return
 
-        poll = polls.find_by_id(db=db, poll_id=poll_id)
-        if poll is None:
-            self.write_error(404)
-            return
-
-        if current_user['_id'] in poll['votes_user_ids']:
+        if current_user['_id'] in current_poll['votes_user_ids']:
             self.write_error(400)
             return
 
@@ -1221,10 +1217,10 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],
         }
-        polls.vote(db=db, poll_id=poll_id, **args)
+        polls.vote(db=db, poll_id=current_poll_id, **args)
 
         reply_id = ObjectId()
-        poll_url = '{}/polls/{}#{}'.format(os.environ['BASE_WEB_URL'], str(poll_id), str(reply_id))
+        poll_url = '{}/polls/{}#{}'.format(os.environ['BASE_WEB_URL'], poll_id_str, str(reply_id))
         url = 'https://alpha-api.app.net/stream/0/posts'
         headers = {
             'Authorization': 'Bearer {}'.format(current_user['access_token']),
@@ -1232,7 +1228,7 @@ class PollsIdVotesFreeformHandler(BaseHandler):
         }
         args = {
             'text': text,
-            'reply_to': poll['post_id'],
+            'reply_to': current_poll['post_id'],
             'annotations': [{
                 "type": "net.app.core.crosspost",
                 "value": {
@@ -1261,9 +1257,9 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'post_reply_to': post['reply_to'],
             'post_thread_id': post['thread_id'],
         }
-        reply = polls.add_reply(db=db, poll_id=poll_id, **reply)
+        reply = polls.add_reply(db=db, poll_id=current_poll_id, **reply)
 
-        html = self.render_string('templates/polls_replies.html', poll_id=poll_id, **{ 'reply': reply})
+        html = self.render_string('templates/polls_replies.html', poll_id=current_poll_id, **{ 'reply': reply})
         self.set_header('Content-Type', 'text/html')
         self.write(html)
 
@@ -1271,8 +1267,8 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'user_name': current_user['user_name'],
             'user_avatar': current_user['user_avatar'],
             'user_id': current_user['_id'],
-            'question': poll['question'],
-            'poll_id': poll['_id'],
+            'question': current_poll['question'],
+            'poll_id': current_poll_id,
             'option': text,
             'post_url': post_url,
             'post_id': post_id,
@@ -1281,9 +1277,9 @@ class PollsIdVotesFreeformHandler(BaseHandler):
         # TODO: update existing vote with post details
         # TODO: add post details to replies
 
-        if poll['total_votes'] == 4: # Current vote is not yet tallied
-            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id)
-            subject = u'{} by @{}'.format(poll['question'], poll['user_name'])
+        if current_poll['total_votes'] == 4: # Current vote is not yet tallied
+            poll_url = '{}/polls/{}'.format(os.environ['BASE_WEB_URL'], poll_id_str)
+            subject = u'{} by @{}'.format(current_poll['question'], current_poll['user_name'])
             channel_id = os.environ.get('ADN_CHANNEL_ID_2')
             polls.send_alert(channel_id=channel_id, subject=subject, poll_url=poll_url)
 
@@ -1293,10 +1289,10 @@ class PollsIdVotesFreeformHandler(BaseHandler):
             'html': html,
             'action': 'new_reply',
             'replyId': post['id'],
-            'pollId': str(poll_id),
-            'views': poll['views'],
+            'pollId': poll_id_str,
+            'views': current_poll['views'],
         }
-        push(channel=str(poll_id), message=nub)
+        push(channel=poll_id_str, message=nub)
 
 
 class PostsHandler(BaseHandler):
