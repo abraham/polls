@@ -1326,24 +1326,21 @@ class PostsHandler(BaseHandler):
 class PollsIdRepliesIdStarsHandler(BaseHandler):
 
     @require_auth
-    def post(self, poll_id, reply_id):
+    @require_poll
+    def post(self, poll_id_str, reply_id_str):
         self.check_xsrf_cookie()
         db = self.db
         current_user = self.current_user
-        poll_id = object_id(poll_id)
-        reply_id = object_id(reply_id)
+        current_poll = self.current_poll
+        current_poll_id = self.current_poll_id
+        reply_id = object_id(reply_id_str)
         reply = None
 
-        if poll_id is None or reply_id is None:
+        if reply_id is None:
             self.write_error(404)
             return
 
-        poll = polls.find_by_id(db=db, poll_id=poll_id)
-        if poll is None:
-            self.send_error(404)
-            return
-
-        for n in poll['post_replies']:
+        for n in current_poll['post_replies']:
             if n['_id'] == reply_id:
                 reply = n
                 continue
@@ -1371,14 +1368,14 @@ class PollsIdRepliesIdStarsHandler(BaseHandler):
                     'user_avatar': current_user['user_avatar'],
                 }
 
-                polls.add_reply_star(db=db, poll_id=poll['_id'], reply_id=reply_id, user_id=current_user['_id'])
-                polls.add_reply_activity(db=db, poll_id=poll['_id'], reply_id=reply_id, activity=activity)
+                polls.add_reply_star(db=db, poll_id=current_poll_id, reply_id=reply_id, user_id=current_user['_id'])
+                polls.add_reply_activity(db=db, poll_id=current_poll_id, reply_id=reply_id, activity=activity)
 
                 action = {
                     'user_name': current_user['user_name'],
                     'user_avatar': current_user['user_avatar'],
                     'user_id': current_user['_id'],
-                    'poll_id': poll['_id'],
+                    'poll_id': current_poll_id,
                     'reply_id': reply['_id'],
                     'text': reply['post_text'],
                     'post_url': reply['post_url'],
