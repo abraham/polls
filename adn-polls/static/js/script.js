@@ -99,7 +99,12 @@ function partial(fn /*, args...*/) {
 
 
 function handleExternalLink(event) {
-    $(event.currentTarget).attr('target', '_blank');
+    var $target = $(event.currentTarget);
+    if ($target.attr('href').indexOf('https://polls.abrah.am') || $target.attr('href').indexOf('http://dev.abrah.am')) {
+        // noop
+    } else {
+        $(event.currentTarget).attr('target', '_blank');
+    }
 }
 
 function triggerSignals(event) {
