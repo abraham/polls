@@ -100,7 +100,8 @@ function partial(fn /*, args...*/) {
 
 function handleExternalLink(event) {
     var $target = $(event.currentTarget);
-    if ($target.attr('href').indexOf('https://polls.abrah.am') || $target.attr('href').indexOf('http://dev.abrah.am')) {
+    if ($target.attr('href').indexOf('https://polls.abrah.am') === 0 ||
+        $target.attr('href').indexOf('http://dev.abrah.am') === 0) {
         // noop
     } else {
         $(event.currentTarget).attr('target', '_blank');
