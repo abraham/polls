@@ -119,7 +119,7 @@ def vote_anonymous(db, poll_id, option_id, user_id):
 
 
 def find_recent(db):
-    results = db.polls.find({'status': 'active'}).sort('created_at', -1).limit(20)
+    results = db.polls.find({'status': 'active'}).sort('_id', -1).limit(20)
     polls = []
     for poll in results:
         polls.append(poll)
