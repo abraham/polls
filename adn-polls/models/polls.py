@@ -3,6 +3,7 @@ from bson.objectid import ObjectId
 import os
 import requests
 import json
+import random
 
 
 def create(db, poll_id, poll_type, display_type, results_type, question, options, user_name, user_avatar, user_id, post_id, post_url):
@@ -200,6 +201,12 @@ def find_prev(db, current_id):
         'status': 'active',
     }
     return db.polls.find_one(query, sort=[('_id', 1)])
+
+def find_random(db):
+    query = {'status': 'active'}
+    count = db.polls.find(query).count()
+    rand = random.randint(0, count - 1)
+    return db.polls.find(query).limit(-1).skip(rand).next()
 
 
 def build_options_object(options):

@@ -54,7 +54,7 @@
                         <a href="/activity">Activity</a>
                     </li>
                     <li>
-                        <a href="/create"><strong class='success'>Create a poll for free</strong></a>
+                        <a href="/create"><strong class='success'>Create a poll</strong></a>
                     </li>
                 </ul>
 
@@ -63,6 +63,11 @@
                     <li>
                         <a href="/polls/{{poll['_id']}}/prev">Prev</a>
                     </li>
+                    {% end %}
+                    <li>
+                        <a href="/random">Random</a>
+                    </li>
+                    {% if globals().get('poll', False) %}
                     <li>
                         <a href="/polls/{{poll['_id']}}/next">Next</a>
                     </li>

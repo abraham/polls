@@ -310,6 +310,15 @@ class IndexHandler(BaseHandler):
             polls.inc_views(db=db, poll_id=poll['_id'])
 
 
+class RandomHandler(BaseHandler):
+
+    def get(self):
+        db = self.db
+
+        poll = polls.find_random(db=db)
+        self.redirect('/polls/{}'.format(poll['_id']))
+
+
 class ActivityHandler(BaseHandler):
 
     def get(self):

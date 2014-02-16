@@ -10,6 +10,7 @@ import views
 from app import (
     IndexHandler,
 
+    RandomHandler,
     ActivityHandler,
     RecentHandler,
     ActiveHandler,
@@ -74,6 +75,7 @@ base_args = {
 application = tornado.web.Application([
     (r'/', IndexHandler, base_args),
 
+    (r'/random', RandomHandler, base_args),
     (r'/activity', ActivityHandler, base_args),
     (r'/recent', RecentHandler, base_args),
     (r'/active', ActiveHandler, base_args),
