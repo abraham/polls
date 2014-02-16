@@ -394,7 +394,7 @@ class UsersIdHandler(BaseHandler):
 
         subtitle = u'<a href="https://alpha.app.net/{}" class="external" title="View on ADN" rel="me"><span class="glyphicon glyphicon-new-window"></span></a> '.format(viewed_user['user_name'])
         subtitle += u'<a href="https://omega.app.net/new-message?to={}" class="external" title="Message on Omega"><span class="glyphicon glyphicon-envelope"></span></a> '.format(viewed_user['adn_id'])
-        subtitle += u'{} polls &middot; '.format(viewed_user['polls_count'])
+        subtitle += u'&nbsp;<a href="/users/{}/polls" title="View polls by user">{} polls</a> &middot; '.format(viewed_user['_id'], viewed_user['polls_count'])
         subtitle += u'{} votes &middot; '.format(viewed_user['votes_count'])
         subtitle += u'{} views'.format(viewed_user['views'])
 
