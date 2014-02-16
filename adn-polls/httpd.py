@@ -36,6 +36,7 @@ from app import (
     PollsIdRepliesIdRepostsHandler,
 
     UsersIdHandler,
+    UsersIdPollsHandler,
     UsersGridHandler,
     UsernameRedirectHandler,
 
@@ -94,6 +95,7 @@ application = tornado.web.Application([
 
     (r'/users-grid', UsersGridHandler, base_args),
     (r'/users/([^/]+)', UsersIdHandler, base_args),
+    (r'/users/([^/]+)/polls', UsersIdPollsHandler, base_args),
     (r'/username-redirect/([^/]+)', UsernameRedirectHandler, base_args),
 
     (r'/create', CreateHandler, base_args),

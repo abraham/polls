@@ -14,7 +14,7 @@ from Pubnub import Pubnub
 
 
 from models import polls, users, actions
-from decorators import require_auth, require_poll
+from decorators import require_auth, require_poll, require_user
 import sync
 
 
@@ -407,6 +407,31 @@ class UsersIdHandler(BaseHandler):
         }
         self.render('templates/actions.html', **context)
         users.inc_views(db=db, user_id=viewed_user['_id'])
+
+
+class UsersIdPollsHandler(BaseHandler):
+
+    @require_user
+    def get(self, user_id):
+        db = self.db
+        current_user = self.current_user
+        viewed_user = self.viewed_user
+        viewed_user_id = self.viewed_user_id
+
+        recent_polls = polls.find_recent_by_user_id(db=db, user_id=viewed_user_id)
+
+        context = {
+            'current_user': current_user,
+            'title': u'{} on Polls for App.net'.format(viewed_user['user_name']),
+            'current_user': current_user,
+            'header_title': u'Polls by {}'.format(viewed_user['user_name']),
+            'header_subtitle': '',
+            'recent_polls': recent_polls,
+            'show_views': False,
+        }
+
+        self.render('templates/list.html', **context)
+        users.inc_views(db=db, user_id=viewed_user_id)
 
 
 class ActiveHandler(BaseHandler):

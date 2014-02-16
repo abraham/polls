@@ -126,6 +126,14 @@ def find_recent(db):
     return polls
 
 
+def find_recent_by_user_id(db, user_id):
+    results = db.polls.find({'user_id': user_id, 'status': 'active'}).sort('_id', -1).limit(20)
+    polls = []
+    for poll in results:
+        polls.append(poll)
+    return polls
+
+
 def find_active(db, limit, min_vote_count):
     query = {
         'status': 'active',
