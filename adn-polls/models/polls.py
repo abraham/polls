@@ -203,10 +203,9 @@ def find_prev(db, current_id):
     return db.polls.find_one(query, sort=[('_id', 1)])
 
 def find_random(db):
-    query = {'status': 'active'}
-    count = db.polls.find(query).count()
+    count = db.polls.count()
     rand = random.randint(0, count - 1)
-    return db.polls.find(query).limit(-1).skip(rand).next()
+    return db.polls.find().limit(-1).skip(rand).next()
 
 
 def build_options_object(options):

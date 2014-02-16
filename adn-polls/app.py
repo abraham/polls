@@ -313,9 +313,14 @@ class IndexHandler(BaseHandler):
 class RandomHandler(BaseHandler):
 
     def get(self):
-        db = self.db
+        db              = self.db
+        current_user    = self.current_user
+        poll            = polls.find_random(db=db)
 
-        poll = polls.find_random(db=db)
+        while (current_user is not None and poll['user_id'] == current_user['_id']) \
+            or poll['status'] != 'active':
+            poll = polls.find_random(db=db)
+
         self.redirect('/polls/{}'.format(poll['_id']))
 
 
