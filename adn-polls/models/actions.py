@@ -143,7 +143,8 @@ def new_poll_repost(db, user_name, user_avatar, user_id, poll_id, question, post
     return action
 
 
-def new_reply_star(db, user_name, user_avatar, user_id, poll_id, reply_id, text, post_url, post_id):
+def new_reply_star(db, user_name, user_avatar, user_id, poll_id, reply_id, text,
+    post_url, post_id, reply_user_name, reply_user_id):
     '''Create actions for stars on a reply'''
     timestamp = datetime.datetime.utcnow()
     action = {
@@ -158,6 +159,8 @@ def new_reply_star(db, user_name, user_avatar, user_id, poll_id, reply_id, text,
         'reply_id': reply_id,
         'post_url': post_url,
         'post_id': post_id,
+        'reply_user_name': reply_user_name,
+        'reply_user_id': reply_user_id,
 
         'created_at': timestamp,
     }
