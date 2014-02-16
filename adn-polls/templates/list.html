@@ -85,6 +85,12 @@
                     </div>
                 </div>
             {% end %}
+
+            {% if len(recent_polls) == 0 %}
+                <br>
+                <p class="lead">User hasn't created an polls...yet.</p>
+            {% end %}
+
         </div>
     </div>
 {% end %}
