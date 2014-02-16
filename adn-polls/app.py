@@ -1452,6 +1452,8 @@ class PollsIdRepliesIdRepostsHandler(BaseHandler):
                     'text': reply['post_text'],
                     'post_url': reply['post_url'],
                     'post_id': reply['post_id'],
+                    'reply_user_name': reply['user_name'],
+                    'reply_user_id': reply['user_id'],
                 }
                 actions.new_reply_repost(db=db, **action)
 
