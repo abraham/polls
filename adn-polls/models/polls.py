@@ -105,7 +105,7 @@ def vote_anonymous(db, poll_id, option_id, user_id):
                 'user_id': None,
                 'user_name': 'Anonymous',
                 'option_id': option_id,
-                'user_avatar': 'https://d2rfichhc2fb9n.cloudfront.net/image/5/EelxvjPjjXm8XScw2p7hyNLGgxt7InMiOiJzMyIsImIiOiJ0YXBwLWFzc2V0cyIsImsiOiJpL08veC9FL094RThuRVBMUTlnRFN5d3hoeWh5akhRQ1YxRS5wbmciLCJvIjoiIn0',
+                'user_avatar': 'https://polls.abrah.am/img/incognito.png',
                 'created_at': timestamp,
                 'post_id': None,
                 'post_url': None,

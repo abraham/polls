@@ -1162,7 +1162,7 @@ class PollsIdVotesAnonymousHandler(BaseHandler):
 
         action = {
             'user_name': 'Anonymous',
-            'user_avatar': 'https://d2rfichhc2fb9n.cloudfront.net/image/5/EelxvjPjjXm8XScw2p7hyNLGgxt7InMiOiJzMyIsImIiOiJ0YXBwLWFzc2V0cyIsImsiOiJpL08veC9FL094RThuRVBMUTlnRFN5d3hoeWh5akhRQ1YxRS5wbmciLCJvIjoiIn0',
+            'user_avatar': 'https://polls.abrah.am/img/incognito.png',
             'user_id': None,
             'question': current_poll['question'],
             'poll_id': current_poll_id,
