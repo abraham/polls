@@ -93,7 +93,8 @@ application = tornado.web.Application([
     (r'/polls/([^/]+)/replies/([^/]+)/stars', PollsIdRepliesIdStarsHandler, base_args),
     (r'/polls/([^/]+)/replies/([^/]+)/reposts', PollsIdRepliesIdRepostsHandler, base_args),
 
-    (r'/users-grid', UsersGridHandler, base_args),
+    (r'/users', UsersGridHandler, base_args),
+    (r'/users-grid', tornado.web.RedirectHandler, {'url': '/users'}),
     (r'/users/([^/]+)', UsersIdHandler, base_args),
     (r'/users/([^/]+)/polls', UsersIdPollsHandler, base_args),
     (r'/username-redirect/([^/]+)', UsernameRedirectHandler, base_args),
