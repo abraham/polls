@@ -204,8 +204,8 @@ def find_prev(db, current_id):
 
 def find_random(db):
     count = db.polls.count()
-    rand = random.randint(0, count - 1)
-    return db.polls.find().limit(-1).skip(rand).next()
+    rand = int(random.randint(0, count - 1) * 0.9)
+    return db.polls.find().sort('_id', 1).limit(-1).skip(rand).next()
 
 
 def build_options_object(options):
