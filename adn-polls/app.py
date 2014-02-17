@@ -11,6 +11,8 @@ from bson.objectid import ObjectId
 import random
 import momentpy
 from Pubnub import Pubnub
+import dateutil.parser
+import time
 
 
 from models import polls, users, actions
@@ -308,6 +310,49 @@ class IndexHandler(BaseHandler):
 
         for poll in active_polls:
             polls.inc_views(db=db, poll_id=poll['_id'])
+
+
+class SearchHandler(BaseHandler):
+
+    def get(self):
+        db              = self.db
+        current_user    = self.current_user
+        query           = self.get_argument('query', None)
+        results         = []
+
+        if query is not None:
+            url = 'https://alpha-api.app.net/stream/0/posts/search'
+            headers = {
+                'Authorization': 'Bearer {}'.format(current_user['access_token']),
+                'Content-type': 'application/json',
+            }
+            args = {
+                'query': query,
+                'crosspost_domain': 'polls.abrah.am',
+                'include_post_annotations': '1',
+            }
+            request = requests.get(url, params=args, headers=headers)
+
+            for r in request.json()['data']:
+                post = {}
+                post['created_at'] = dateutil.parser.parse(r['created_at']).replace(tzinfo=None)
+                post['text'] = r['text']
+                post['user_name'] = r['user']['username']
+                post['user_avatar'] = r['user']['avatar_image']['url']
+
+                for _a in r['annotations']:
+                    if _a['type'] == 'net.app.core.crosspost':
+                        post['url'] = _a['value']['canonical_url']
+                results.append(post)
+
+        context = {
+            'current_user': current_user,
+            'header_title': 'Abracadabra!',
+            'header_subtitle': 'Search results',
+            'results': results,
+            'query': query,
+        }
+        self.render('templates/search.html', **context)
 
 
 class RandomHandler(BaseHandler):

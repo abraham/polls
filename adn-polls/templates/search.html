@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{header_title}}{% end %}
+
+
+{% block container %}
+    <div class="row">
+
+
+        <div class="page-header">
+            <h1>
+                {{header_title}} 
+                <small>
+                    {{header_subtitle}}
+                </small>
+            </h1>
+        </div>
+
+
+        <div class='col-md-12'>
+
+            <form class="form-inline" role="form" action="/search" method="get">
+              <div class="form-group col-md-10">
+                <input type="search"
+                    class="form-control input-lg"
+                    id="query"
+                    name="query"
+                    {% if query is not None %}
+                    value="{{query}}"
+                    {% end %}
+                    autofocus
+                    placeholder="Pan Galactic Gargle Blaster">
+              </div>
+              <button type="submit" class="btn btn-default btn-lg">Search</button>
+            </form>
+
+
+            {% for post in results %}
+                <div class="media list-row">
+
+
+                    <a class="pull-left" href="/username-redirect/{{post['user_name']}}">
+                        <img class="media-object img-rounded"
+                            src="/img/loading.gif"
+                            data-src="{{post['user_avatar']}}?h=114&amp;w=114"
+                            title="{{post['user_name']}}'s avatar"
+                            width="57"
+                            height="57"
+                            alt="{{post['user_name']}}'s avatar">
+                    </a>
+
+
+                    <div class="media-body">
+
+
+                        <h4 class="media-heading">
+                                {% raw link_text(post['text']) %}
+                        </h4>
+
+
+                        <p class="">
+                            <a href="/username-redirect/{{post['user_name']}}">{{post['user_name']}}</a>
+                            <a href="{{post['url']}}">
+                                <span class='datetime' data-datetime="{{post['created_at']}}">{{moment(post['created_at'])}}</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            {% end %}
+
+            {% if len(results) == 0 %}
+                <br><br><br>
+                <p class="lead">No search results :(</p>
+            {% end %}
+
+        </div>
+    </div>
+{% end %}
