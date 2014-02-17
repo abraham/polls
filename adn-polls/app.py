@@ -321,9 +321,14 @@ class SearchHandler(BaseHandler):
         results         = []
 
         if query is not None:
+            if current_user is None:
+                access_token = os.environ('ADN_CLIENT_ACCESS_TOKEN')
+            else:
+                access_token = current_user['access_token']
+
             url = 'https://alpha-api.app.net/stream/0/posts/search'
             headers = {
-                'Authorization': 'Bearer {}'.format(current_user['access_token']),
+                'Authorization': 'Bearer {}'.format(access_token),
                 'Content-type': 'application/json',
             }
             args = {
