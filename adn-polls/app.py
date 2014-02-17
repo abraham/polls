@@ -318,6 +318,7 @@ class SearchHandler(BaseHandler):
         db              = self.db
         current_user    = self.current_user
         query           = self.get_argument('query', None)
+        results_polls   = []
         results         = []
 
         if query is not None:
@@ -351,13 +352,18 @@ class SearchHandler(BaseHandler):
                 for _a in r['annotations']:
                     if _a['type'] == 'net.app.core.crosspost':
                         post['url'] = _a['value']['canonical_url']
-                results.append(post)
+                if r['thread_id'] == r['id']:
+                    post['type'] = 'poll'
+                    results_polls.append(post)
+                else:
+                    post['type'] = 'reply'
+                    results.append(post)
 
         context = {
             'current_user': current_user,
             'header_title': 'Abracadabra!',
             'header_subtitle': 'Search results',
-            'results': results,
+            'results': results_polls + results,
             'query': query,
         }
         self.render('templates/search.html', **context)
