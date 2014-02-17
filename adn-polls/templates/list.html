@@ -73,7 +73,11 @@
                                     {% end %}
 
                                 {% else %}
-                                    and voted on by {{len(poll['votes'])}} people
+                                    {% if len(poll['votes']) == 1 %}
+                                        and voted on by 1 person
+                                    {% else %}
+                                        and voted on by {{len(poll['votes'])}} people
+                                    {% end %}
                                 {% end %}
 
 
