@@ -322,7 +322,7 @@ class SearchHandler(BaseHandler):
 
         if query is not None:
             if current_user is None:
-                access_token = os.environ('ADN_CLIENT_ACCESS_TOKEN')
+                access_token = os.environ['ADN_CLIENT_ACCESS_TOKEN']
             else:
                 access_token = current_user['access_token']
 
