@@ -333,6 +333,9 @@ class SearchHandler(BaseHandler):
             }
             args = {
                 'query': query,
+                'order': 'score',
+                'is_crosspost': '1',
+                'client_id': 'KgWW36vGe8LQPN696ftSUqdKUvjzuYqF',
                 'crosspost_domain': 'polls.abrah.am',
                 'include_post_annotations': '1',
             }
