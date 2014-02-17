@@ -54,6 +54,19 @@
                         <a href="/activity">Activity</a>
                     </li>
                     <li>
+                        <a id='xyz'
+                            class="get-search"
+                            href="/search"
+                            data-container="body"
+                            data-toggle="popover"
+                            data-trigger="click"
+                            data-placement="bottom"
+                            data-content='<form class="form-inline" role="form" action="/search" method="get">
+                                <input type="search" class="form-control input-lg" id="query" name="query" autofocus placeholder="Pan Galactic Gargle Blaster">
+                            </form>'
+                            data-html="true">Search</a>
+                    </li>
+                    <li>
                         <a href="/create"><strong class='success'>Create a poll</strong></a>
                     </li>
                 </ul>

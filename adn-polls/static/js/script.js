@@ -84,6 +84,11 @@ $(function() {
     if ($('meta[name="poll-id"]').attr('content')) {
         initPubnub($('meta[name="poll-id"]').attr('content'));
     }
+
+    $('.get-search').popover();
+    $('.get-search').on('click', function(e) {
+        e.preventDefault();
+    });
 });
 
 
