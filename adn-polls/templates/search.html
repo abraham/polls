@@ -37,36 +37,36 @@
 
 
             {% for post in results %}
-                <div class="media list-row">
+                {% if post['type'] == 'poll' %}
+                    <div class="media row list-row callout-left callout-success">
+                {% elif post['type'] == 'reply' %}
+                    <div class="media row list-row callout-left callout-info">
+                {% end %}
 
+                        <a class="pull-left" href="/username-redirect/{{post['user_name']}}">
+                            <img class="media-object img-rounded"
+                                src="/img/loading.gif"
+                                data-src="{{post['user_avatar']}}?h=114&amp;w=114"
+                                title="{{post['user_name']}}'s avatar"
+                                alt="post['user_name']'s avatar"
+                                width="57"
+                                height="57">
+                        </a>
 
-                    <a class="pull-left" href="/username-redirect/{{post['user_name']}}">
-                        <img class="media-object img-rounded"
-                            src="/img/loading.gif"
-                            data-src="{{post['user_avatar']}}?h=114&amp;w=114"
-                            title="{{post['user_name']}}'s avatar"
-                            width="57"
-                            height="57"
-                            alt="{{post['user_name']}}'s avatar">
-                    </a>
+                        <div class="media-body">
+                            <div class='pull-left'>
+                                <h4 class="media-heading">
+                                    {% raw link_text(post['text']) %}
+                                </h4>
+                                <a href="/username-redirect/{{post['user_name']}}">{{post['user_name']}}</a>
 
+                                    <a href="{{post['url']}}">
+                                    <span class='datetime' data-datetime="{{post['created_at']}}">{{moment(post['created_at'])}}</span>
+                                    </a>
 
-                    <div class="media-body">
-
-
-                        <h4 class="media-heading">
-                                {% raw link_text(post['text']) %}
-                        </h4>
-
-
-                        <p class="">
-                            <a href="/username-redirect/{{post['user_name']}}">{{post['user_name']}}</a>
-                            <a href="{{post['url']}}">
-                                <span class='datetime' data-datetime="{{post['created_at']}}">{{moment(post['created_at'])}}</span>
-                            </a>
-                        </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
             {% end %}
 
             {% if len(results) == 0 %}
