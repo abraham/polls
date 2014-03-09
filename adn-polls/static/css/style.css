@@ -132,3 +132,11 @@ textarea {
     /*background-color: #dff0d8;*/
     border-color: #5cb85c;
 }
+
+.popover {
+    max-width: 400px;
+}
+
+.popover .search {
+    width: 350px;
+}
