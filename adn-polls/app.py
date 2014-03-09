@@ -421,7 +421,6 @@ class RecentHandler(BaseHandler):
 
 class UsersGridHandler(BaseHandler):
 
-    @require_auth
     def get(self):
         db = self.db
         current_user = self.current_user
