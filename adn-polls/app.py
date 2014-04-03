@@ -10,7 +10,6 @@ import time
 from bson.objectid import ObjectId
 import random
 import momentpy
-from Pubnub import Pubnub
 import dateutil.parser
 import time
 
@@ -59,7 +58,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         directives = [
             "default-src 'none'",
-            "connect-src 'self' https://*.pubnub.com",
+            "connect-src 'self'",
             "font-src 'self'",
             "frame-src 'none'",
             "img-src 'self' https:",
@@ -1724,22 +1723,8 @@ def send_simple_message(to, subject, text):
 
 
 def push(channel, message):
-    '''Publish message through pubnub'''
-    config = {
-        'publish_key'   : os.environ.get('PUBNUB_PUBLISH_KEY'),
-        'subscribe_key' :os.environ.get('PUBNUB_SUBSCRIBE_KEY'),
-        'secret_key'    : os.environ.get('PUBNUB_SECRET_KEY'),
-        'ssl_on'        : True,
-    }
-    nub = Pubnub(**config)
-
-    if message.get('html', None) is not None:
-        message['html'] = message['html'].encode('base64','strict')
-
-    info = nub.publish({
-        'channel' : channel,
-        'message' : message,
-    })
+    '''Publish message through channels'''
+    pass
 
 
 def object_id(id):

@@ -4,5 +4,4 @@ requests==2.2.1
 markdown2==2.2.0
 momentpy==0.6.3
 python-dateutil==2.2
-pubnub==3.3.5
 twitter-text-py==2.0.2
