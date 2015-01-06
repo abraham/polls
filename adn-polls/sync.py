@@ -89,7 +89,7 @@ def thread(db, poll, user):
                 'user_cover': adn['cover_image']['url'],
                 'user_cover_is_default': adn['cover_image']['is_default'],
                 'user_text': None,
-                'user_full_name': adn['name'],
+                'user_full_name': adn.get('name', adn['username']),
             }
             if adn.get('description', None) is not None:
                 new_user['user_text'] = adn['description']['text']
